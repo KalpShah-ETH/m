@@ -15,6 +15,13 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, size }) => <Home color={color} size={size} /> 
         }} 
       />
+      <Tabs.Screen 
+        name="search" 
+        options={{ 
+          title: 'Search',
+          tabBarIcon: ({ color, size }) => <Search color={color} size={size} /> 
+        }} 
+      />
     </Tabs>
   );
 }

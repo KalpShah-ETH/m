@@ -69,11 +69,11 @@ export default function CartScreen() {
                 <View style={styles.itemActions}>
                   <View style={styles.stepperContainer}>
                     <TouchableOpacity style={styles.stepperButton} onPress={() => updateQuantity(item.id, item.quantity - 1)}>
-                      <Minus color="#0F9B8E" size={18} />
+                      <Minus color="#1F5B4E" size={18} />
                     </TouchableOpacity>
                     <Text style={styles.stepperValue}>{item.quantity}</Text>
                     <TouchableOpacity style={styles.stepperButton} onPress={() => updateQuantity(item.id, item.quantity + 1)}>
-                      <Plus color="#0F9B8E" size={18} />
+                      <Plus color="#1F5B4E" size={18} />
                     </TouchableOpacity>
                   </View>
                   <TouchableOpacity style={styles.removeButton} onPress={() => removeItem(item.id)}>
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   distributorName: {
     fontSize: 16, fontFamily: 'Inter_400Regular',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#0F9B8E',
+    color: '#1F5B4E',
     marginBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
@@ -171,10 +171,10 @@ const styles = StyleSheet.create({
   stepperContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#E0F2F1',
+    backgroundColor: '#E8F0EE',
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#0F9B8E',
+    borderColor: '#1F5B4E',
     height: 36,
     marginRight: 12,
   },
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   stepperValue: {
     fontSize: 14, fontFamily: 'Inter_400Regular',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#0F9B8E',
+    color: '#1F5B4E',
     minWidth: 20,
     textAlign: 'center',
   },
@@ -222,10 +222,10 @@ const styles = StyleSheet.create({
   summaryTotal: {
     fontSize: 20, fontFamily: 'Inter_400Regular',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#0F9B8E',
+    color: '#1F5B4E',
   },
   checkoutButton: {
-    backgroundColor: '#0F9B8E',
+    backgroundColor: '#1F5B4E',
     height: 56,
     borderRadius: 12,
     justifyContent: 'center',
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
   successTitle: {
     fontSize: 24, fontFamily: 'Inter_400Regular',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#16A34A',
+    color: '#1F5B4E',
     marginBottom: 8,
   },
 });

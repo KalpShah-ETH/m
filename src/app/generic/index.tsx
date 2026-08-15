@@ -60,7 +60,7 @@ export default function GenericProductsScreen() {
         <View style={styles.productHeader}>
           <View style={styles.productInfo}>
             <View style={styles.productNameRow}>
-              <Pill color="#0F9B8E" size={18} style={{ marginRight: 8 }} />
+              <Pill color="#1F5B4E" size={18} style={{ marginRight: 8 }} />
               <Text style={styles.productName}>{item.name}</Text>
             </View>
             <Text style={styles.packSize}>Pack: {item.packSize}</Text>
@@ -135,7 +135,7 @@ export default function GenericProductsScreen() {
         {/* Categories */}
         <View style={styles.categoriesWrapper}>
           {isLoadingCategories ? (
-            <ActivityIndicator size="small" color="#0F9B8E" />
+            <ActivityIndicator size="small" color="#1F5B4E" />
           ) : (
             <FlatList
               horizontal
@@ -151,7 +151,7 @@ export default function GenericProductsScreen() {
         {/* Product List */}
         {isLoadingProducts ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0F9B8E" />
+            <ActivityIndicator size="large" color="#1F5B4E" />
           </View>
         ) : (
           <FlatList
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   categoryTileSelected: {
-    backgroundColor: '#0F9B8E',
+    backgroundColor: '#1F5B4E',
   },
   categoryText: {
     fontSize: 14, fontFamily: 'Inter_400Regular',
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   stockIn: {
-    backgroundColor: '#DCFCE7',
+    backgroundColor: '#E8F0EE',
   },
   stockOut: {
     backgroundColor: '#FEE2E2',
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
   stockText: {
     fontSize: 10, fontFamily: 'Inter_400Regular',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#16A34A',
+    color: '#1F5B4E',
   },
   stockTextOut: {
     color: '#DC2626',
@@ -331,13 +331,13 @@ const styles = StyleSheet.create({
   discountValue: {
     fontSize: 15, fontFamily: 'Inter_400Regular',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#16A34A',
+    color: '#1F5B4E',
   },
   actionContainer: {
     marginTop: 16,
   },
   addButton: {
-    backgroundColor: '#0F9B8E',
+    backgroundColor: '#1F5B4E',
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',

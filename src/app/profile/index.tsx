@@ -36,9 +36,9 @@ export default function ProfileScreen() {
   };
 
   const menuItems = [
-    { id: 'orders', title: 'Order History', icon: <Clock color="#0F9B8E" size={24} />, route: '/orders' },
-    { id: 'distributors', title: 'My Distributors', icon: <Truck color="#0F9B8E" size={24} />, route: '/distributors' },
-    { id: 'outstandings', title: 'Outstandings', icon: <Wallet color="#0F9B8E" size={24} />, route: '/outstandings' },
+    { id: 'orders', title: 'Order History', icon: <Clock color="#1F5B4E" size={24} />, route: '/orders' },
+    { id: 'distributors', title: 'My Distributors', icon: <Truck color="#1F5B4E" size={24} />, route: '/distributors' },
+    { id: 'outstandings', title: 'Outstandings', icon: <Wallet color="#1F5B4E" size={24} />, route: '/outstandings' },
   ];
 
   const supportItems = [
@@ -52,7 +52,7 @@ export default function ProfileScreen() {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#0F9B8E" />
+          <ActivityIndicator size="large" color="#1F5B4E" />
         </View>
       </SafeAreaView>
     );
@@ -69,7 +69,7 @@ export default function ProfileScreen() {
         {/* Profile Card */}
         <View style={styles.profileCard}>
           <View style={styles.profileAvatar}>
-            <User color="#0F9B8E" size={40} />
+            <User color="#1F5B4E" size={40} />
           </View>
           <View style={styles.profileInfo}>
             <Text style={styles.profileName}>{profile?.name}</Text>
@@ -77,7 +77,7 @@ export default function ProfileScreen() {
             <Text style={styles.profileDetail}>{profile?.email}</Text>
           </View>
           <TouchableOpacity style={styles.editButton} onPress={handleEditOpen}>
-            <Edit2 color="#0F9B8E" size={20} />
+            <Edit2 color="#1F5B4E" size={20} />
           </TouchableOpacity>
         </View>
 
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: '#E0F2F1',
+    backgroundColor: '#E8F0EE',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   },
   editButton: {
     padding: 8,
-    backgroundColor: '#E0F2F1',
+    backgroundColor: '#E8F0EE',
     borderRadius: 20,
   },
   sectionTitle: {
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 8,
-    backgroundColor: '#E0F2F1',
+    backgroundColor: '#E8F0EE',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
   },
   primaryButton: {
-    backgroundColor: '#0F9B8E',
+    backgroundColor: '#1F5B4E',
     paddingVertical: 16,
     borderRadius: 8,
     alignItems: 'center',

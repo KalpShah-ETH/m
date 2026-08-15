@@ -113,7 +113,7 @@ export default function InitiateReturnScreen() {
               return (
                 <View key={item.id} style={[styles.itemCard, isSelected && styles.itemCardSelected]}>
                   <TouchableOpacity style={styles.itemHeader} onPress={() => toggleItem(item)}>
-                    {isSelected ? <CheckCircle color="#0F9B8E" size={24} /> : <Circle color="#ccc" size={24} />}
+                    {isSelected ? <CheckCircle color="#1F5B4E" size={24} /> : <Circle color="#ccc" size={24} />}
                     <View style={styles.itemInfo}>
                       <Text style={styles.itemName}>{item.name}</Text>
                       <Text style={styles.itemMeta}>Max Qty: {item.qty}</Text>
@@ -151,7 +151,7 @@ export default function InitiateReturnScreen() {
                 style={[styles.typeCard, selectedType === 'saleable' && styles.typeCardSelected]}
                 onPress={() => setSelectedType('saleable')}
               >
-                <ShoppingCart color={selectedType === 'saleable' ? '#0F9B8E' : '#666'} size={32} style={styles.typeIcon} />
+                <ShoppingCart color={selectedType === 'saleable' ? '#1F5B4E' : '#666'} size={32} style={styles.typeIcon} />
                 <Text style={[styles.typeText, selectedType === 'saleable' && styles.typeTextSelected]}>Saleable</Text>
                 <Text style={styles.typeDesc}>Products are in good condition and resalable.</Text>
               </TouchableOpacity>
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#0F9B8E',
+    backgroundColor: '#1F5B4E',
     borderRadius: 3,
   },
   stepContent: {
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
   },
   primaryButton: {
-    backgroundColor: '#0F9B8E',
+    backgroundColor: '#1F5B4E',
     paddingVertical: 16,
     borderRadius: 8,
     alignItems: 'center',
@@ -272,8 +272,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   itemCardSelected: {
-    borderColor: '#0F9B8E',
-    backgroundColor: '#E0F2F1',
+    borderColor: '#1F5B4E',
+    backgroundColor: '#E8F0EE',
   },
   itemHeader: {
     flexDirection: 'row',
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: '#E0F2F1',
+    borderTopColor: '#E8F0EE',
     marginLeft: 36,
   },
   qtyLabel: {
@@ -329,8 +329,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   typeCardSelected: {
-    borderColor: '#0F9B8E',
-    backgroundColor: '#E0F2F1',
+    borderColor: '#1F5B4E',
+    backgroundColor: '#E8F0EE',
   },
   typeIcon: {
     marginBottom: 12,
@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   typeTextSelected: {
-    color: '#0F9B8E',
+    color: '#1F5B4E',
   },
   typeDesc: {
     fontSize: 13, fontFamily: 'Inter_400Regular',

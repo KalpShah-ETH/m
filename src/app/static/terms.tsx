@@ -26,7 +26,7 @@ export default function TermsScreen() {
       <ScrollView contentContainerStyle={styles.container}>
         {!staticContent.terms ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0F9B8E" />
+            <ActivityIndicator size="large" color="#1F5B4E" />
           </View>
         ) : (
           <Text style={styles.contentText}>{staticContent.terms}</Text>

@@ -26,7 +26,7 @@ export default function PrivacyScreen() {
       <ScrollView contentContainerStyle={styles.container}>
         {!staticContent.privacy ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0F9B8E" />
+            <ActivityIndicator size="large" color="#1F5B4E" />
           </View>
         ) : (
           <Text style={styles.contentText}>{staticContent.privacy}</Text>

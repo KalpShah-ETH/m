@@ -95,7 +95,7 @@ export default function LoginScreen() {
             style={styles.outlineButton}
             onPress={() => Alert.alert('Coming Soon', 'OTP Login is under development. Please login with your username and password.')}
           >
-            <Phone color="#0F9B8E" size={20} style={styles.buttonIcon} />
+            <Phone color="#1F5B4E" size={20} style={styles.buttonIcon} />
             <Text style={styles.outlineButtonText}>Login with mobile OTP</Text>
           </TouchableOpacity>
 
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32, fontFamily: 'Inter_400Regular',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#0F9B8E',
+    color: '#1F5B4E',
     marginBottom: 8,
     textAlign: 'center',
   },
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   primaryButton: {
-    backgroundColor: '#0F9B8E',
+    backgroundColor: '#1F5B4E',
     height: 50,
     borderRadius: 8,
     justifyContent: 'center',
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   forgotPasswordText: {
-    color: '#0F9B8E',
+    color: '#1F5B4E',
     fontSize: 14, fontFamily: 'Inter_400Regular',
   },
   dividerContainer: {
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 50,
     borderWidth: 1,
-    borderColor: '#0F9B8E',
+    borderColor: '#1F5B4E',
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   outlineButtonText: {
-    color: '#0F9B8E',
+    color: '#1F5B4E',
     fontSize: 16, fontFamily: 'Inter_400Regular',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     fontSize: 15, fontFamily: 'Inter_400Regular',
   },
   signupLink: {
-    color: '#0F9B8E',
+    color: '#1F5B4E',
     fontSize: 15, fontFamily: 'Inter_400Regular',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },

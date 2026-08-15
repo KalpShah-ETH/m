@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     bottom: 0, // Should be positioned above bottom tabs if inside Tab layout
     left: 0,
     right: 0,
-    backgroundColor: '#0F9B8E',
+    backgroundColor: '#1F5B4E',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,

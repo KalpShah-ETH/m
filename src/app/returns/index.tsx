@@ -115,7 +115,7 @@ export default function ReturnsScreen() {
 
         {isLoading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0F9B8E" />
+            <ActivityIndicator size="large" color="#1F5B4E" />
           </View>
         ) : (
           <FlatList
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   tabActive: {
-    borderBottomColor: '#0F9B8E',
+    borderBottomColor: '#1F5B4E',
   },
   tabText: {
     fontSize: 15, fontFamily: 'Inter_400Regular',
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   tabTextActive: {
-    color: '#0F9B8E',
+    color: '#1F5B4E',
   },
   subFilterContainer: {
     flexDirection: 'row',
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#e6e6e6',
   },
   subFilterActive: {
-    backgroundColor: '#0F9B8E',
+    backgroundColor: '#1F5B4E',
   },
   subFilterText: {
     fontSize: 14, fontFamily: 'Inter_400Regular',
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
-    backgroundColor: '#0F9B8E',
+    backgroundColor: '#1F5B4E',
   },
   submitButtonText: {
     color: '#fff',
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#eee',
   },
   fullWidthButton: {
-    backgroundColor: '#0F9B8E',
+    backgroundColor: '#1F5B4E',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',

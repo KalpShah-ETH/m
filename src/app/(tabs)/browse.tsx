@@ -120,11 +120,11 @@ export default function BrowseScreen() {
             ) : item.quantityInCart > 0 ? (
               <View style={styles.stepperContainer}>
                 <TouchableOpacity style={styles.stepperButton} onPress={() => updateProductQuantity(item.id, item.quantityInCart - 1)}>
-                  <Minus color="#0F9B8E" size={20} />
+                  <Minus color="#1F5B4E" size={20} />
                 </TouchableOpacity>
                 <Text style={styles.stepperValue}>{item.quantityInCart}</Text>
                 <TouchableOpacity style={styles.stepperButton} onPress={() => updateProductQuantity(item.id, item.quantityInCart + 1)}>
-                  <Plus color="#0F9B8E" size={20} />
+                  <Plus color="#1F5B4E" size={20} />
                 </TouchableOpacity>
               </View>
             ) : (
@@ -166,7 +166,7 @@ export default function BrowseScreen() {
         {/* Outstanding Banner */}
         {outstandingRecord && outstandingRecord.amountOwed > 0 && (
           <View style={[styles.outstandingBanner, outstandingRecord.isOverdue && styles.outstandingBannerOverdue]}>
-            <AlertCircle color={outstandingRecord.isOverdue ? "#DC2626" : "#F5A623"} size={20} style={{ marginRight: 8 }} />
+            <AlertCircle color={outstandingRecord.isOverdue ? "#DC2626" : "#1F5B4E"} size={20} style={{ marginRight: 8 }} />
             <Text style={[styles.outstandingBannerText, outstandingRecord.isOverdue && styles.outstandingBannerTextOverdue]}>
               Outstanding: ₹{outstandingRecord.amountOwed.toFixed(2)} 
               {outstandingRecord.isOverdue ? ' (Overdue)' : ` (Due: ${outstandingRecord.dueDate})`}
@@ -199,7 +199,7 @@ export default function BrowseScreen() {
             </TouchableOpacity>
           </View>
           {isLoadingCategories ? (
-            <ActivityIndicator size="small" color="#0F9B8E" style={{ marginVertical: 16 }} />
+            <ActivityIndicator size="small" color="#1F5B4E" style={{ marginVertical: 16 }} />
           ) : (
             <FlatList
               horizontal
@@ -215,7 +215,7 @@ export default function BrowseScreen() {
         {/* Product List */}
         {isLoadingProducts ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0F9B8E" />
+            <ActivityIndicator size="large" color="#1F5B4E" />
           </View>
         ) : (
           <FlatList
@@ -265,10 +265,10 @@ const styles = StyleSheet.create({
   outstandingBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FEF3C7',
+    backgroundColor: '#E8F0EE',
     padding: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#FDE68A',
+    borderBottomColor: '#1F5B4E',
   },
   outstandingBannerOverdue: {
     backgroundColor: '#FEE2E2',
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
   outstandingBannerText: {
     fontSize: 14, fontFamily: 'Inter_400Regular',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#F5A623',
+    color: '#1F5B4E',
     flex: 1,
   },
   outstandingBannerTextOverdue: {
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   tabActive: {
-    borderBottomColor: '#0F9B8E',
+    borderBottomColor: '#1F5B4E',
   },
   tabText: {
     fontSize: 15, fontFamily: 'Inter_400Regular',
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   tabTextActive: {
-    color: '#0F9B8E',
+    color: '#1F5B4E',
   },
   categoriesWrapper: {
     backgroundColor: '#fff',
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   categoryTileSelected: {
-    backgroundColor: '#0F9B8E',
+    backgroundColor: '#1F5B4E',
   },
   categoryText: {
     fontSize: 14, fontFamily: 'Inter_400Regular',
@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   stockIn: {
-    backgroundColor: '#DCFCE7',
+    backgroundColor: '#E8F0EE',
   },
   stockOut: {
     backgroundColor: '#FEE2E2',
@@ -398,7 +398,7 @@ const styles = StyleSheet.create({
   stockText: {
     fontSize: 10, fontFamily: 'Inter_400Regular',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#16A34A',
+    color: '#1F5B4E',
   },
   stockTextOut: {
     color: '#DC2626',
@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
   discountValue: {
     fontSize: 15, fontFamily: 'Inter_400Regular',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#16A34A',
+    color: '#1F5B4E',
   },
   lockedPricing: {
     flexDirection: 'row',
@@ -444,7 +444,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   addButton: {
-    backgroundColor: '#0F9B8E',
+    backgroundColor: '#1F5B4E',
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -471,10 +471,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#E0F2F1',
+    backgroundColor: '#E8F0EE',
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#0F9B8E',
+    borderColor: '#1F5B4E',
     height: 44,
   },
   stepperButton: {
@@ -486,12 +486,12 @@ const styles = StyleSheet.create({
   stepperValue: {
     fontSize: 16, fontFamily: 'Inter_400Regular',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#0F9B8E',
+    color: '#1F5B4E',
   },
   requestButton: {
     backgroundColor: '#fff',
     borderWidth: 1,
-    borderColor: '#0F9B8E',
+    borderColor: '#1F5B4E',
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -501,7 +501,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
   },
   requestButtonText: {
-    color: '#0F9B8E',
+    color: '#1F5B4E',
     fontSize: 15, fontFamily: 'Inter_400Regular',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },

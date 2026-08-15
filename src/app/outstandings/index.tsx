@@ -25,7 +25,7 @@ export default function OutstandingsScreen() {
       <View style={styles.cardHeader}>
         <View style={styles.distributorInfo}>
           <View style={styles.iconContainer}>
-            <Receipt color="#0F9B8E" size={24} />
+            <Receipt color="#1F5B4E" size={24} />
           </View>
           <Text style={styles.distributorName}>{item.distributorName}</Text>
         </View>
@@ -85,7 +85,7 @@ export default function OutstandingsScreen() {
 
         {isLoading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0F9B8E" />
+            <ActivityIndicator size="large" color="#1F5B4E" />
           </View>
         ) : (
           <FlatList
@@ -135,11 +135,11 @@ const styles = StyleSheet.create({
   summaryContainer: {
     marginHorizontal: 16,
     marginBottom: 16,
-    backgroundColor: '#0F9B8E',
+    backgroundColor: '#1F5B4E',
     borderRadius: 12,
     padding: 20,
     alignItems: 'center',
-    shadowColor: '#0F9B8E',
+    shadowColor: '#1F5B4E',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#E0F2F1',
+    backgroundColor: '#E8F0EE',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,

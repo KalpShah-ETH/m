@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28, fontFamily: 'Inter_400Regular',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#0F9B8E',
+    color: '#1F5B4E',
     marginBottom: 8,
   },
   subtitle: {
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderWidth: 2,
-    borderColor: '#0F9B8E',
+    borderColor: '#1F5B4E',
     borderRadius: 4,
     marginRight: 12,
     justifyContent: 'center',
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   checkboxChecked: {
-    backgroundColor: '#0F9B8E',
+    backgroundColor: '#1F5B4E',
   },
   checkmark: {
     color: '#fff',
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
     flex: 2,
     height: 50,
     borderRadius: 8,
-    backgroundColor: '#0F9B8E',
+    backgroundColor: '#1F5B4E',
     justifyContent: 'center',
     alignItems: 'center',
   },

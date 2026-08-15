@@ -23,12 +23,12 @@ export default function HomeScreen() {
   }, []);
 
   const gridItems = [
-    { id: '1', title: 'Distributors', icon: <Truck color="#0F9B8E" size={32} />, route: '/distributors' },
-    { id: '2', title: 'Outstandings', icon: <Wallet color="#0F9B8E" size={32} />, route: '/outstandings' },
-    { id: '3', title: 'Company Schemes', icon: <Tag color="#0F9B8E" size={32} /> },
-    { id: '4', title: 'Generic', icon: <Pill color="#0F9B8E" size={32} />, route: '/generic' },
-    { id: '5', title: 'Company Cashback', icon: <Gift color="#0F9B8E" size={32} /> },
-    { id: '6', title: 'Returns', icon: <RotateCcw color="#0F9B8E" size={32} />, route: '/returns' },
+    { id: '1', title: 'Distributors', icon: <Truck color="#1F5B4E" size={32} />, route: '/distributors' },
+    { id: '2', title: 'Outstandings', icon: <Wallet color="#1F5B4E" size={32} />, route: '/outstandings' },
+    { id: '3', title: 'Company Schemes', icon: <Tag color="#1F5B4E" size={32} /> },
+    { id: '4', title: 'Generic', icon: <Pill color="#1F5B4E" size={32} />, route: '/generic' },
+    { id: '5', title: 'Company Cashback', icon: <Gift color="#1F5B4E" size={32} /> },
+    { id: '6', title: 'Returns', icon: <RotateCcw color="#1F5B4E" size={32} />, route: '/returns' },
   ];
 
   return (
@@ -43,7 +43,7 @@ export default function HomeScreen() {
             <Bell color="#1F2937" size={24} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={() => router.push('/profile')}>
-            <User color="#0F9B8E" size={24} />
+            <User color="#1F5B4E" size={24} />
           </TouchableOpacity>
         </View>
       </View>
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
   banner: {
-    backgroundColor: '#E0F2F1',
+    backgroundColor: '#E8F0EE',
     padding: 20,
     borderRadius: 12,
     marginBottom: 24,
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
   bannerTitle: {
     fontSize: 20, fontFamily: 'Inter_400Regular',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#0F9B8E',
+    color: '#1F5B4E',
     marginBottom: 4,
   },
   bannerSubtitle: {
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter_600SemiBold', fontWeight: '600',
   },
   toggleTextActive: {
-    color: '#0F9B8E',
+    color: '#1F5B4E',
   },
   searchInputContainer: {
     flexDirection: 'row',
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 48,
     height: 48,
-    backgroundColor: '#E0F2F1',
+    backgroundColor: '#E8F0EE',
     borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',

@@ -90,11 +90,11 @@ export default function MyDistributorsScreen() {
       </View>
       <View style={styles.reorderControls}>
         <TouchableOpacity onPress={() => handleMoveUp(index)} disabled={index === 0}>
-          <ChevronUp color={index === 0 ? '#ccc' : '#0F9B8E'} size={24} />
+          <ChevronUp color={index === 0 ? '#ccc' : '#1F5B4E'} size={24} />
         </TouchableOpacity>
         <GripVertical color="#999" size={20} style={{ marginVertical: 4 }} />
         <TouchableOpacity onPress={() => handleMoveDown(index)} disabled={index === mappedDistributors.length - 1}>
-          <ChevronDown color={index === mappedDistributors.length - 1 ? '#ccc' : '#0F9B8E'} size={24} />
+          <ChevronDown color={index === mappedDistributors.length - 1 ? '#ccc' : '#1F5B4E'} size={24} />
         </TouchableOpacity>
       </View>
     </View>
@@ -106,7 +106,7 @@ export default function MyDistributorsScreen() {
         <Text style={styles.itemName}>{item.name}</Text>
       </View>
       <TouchableOpacity style={styles.connectButton} onPress={() => handleConnect(item.id)}>
-        <Plus color="#0F9B8E" size={16} style={{ marginRight: 4 }} />
+        <Plus color="#1F5B4E" size={16} style={{ marginRight: 4 }} />
         <Text style={styles.connectButtonText}>Connect</Text>
       </TouchableOpacity>
     </View>
@@ -166,7 +166,7 @@ export default function MyDistributorsScreen() {
 
         {isLoading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0F9B8E" />
+            <ActivityIndicator size="large" color="#1F5B4E" />
           </View>
         ) : (
           <>
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
   },
   resetLink: {
     fontSize: 16, fontFamily: 'Inter_400Regular',
-    color: '#0F9B8E',
+    color: '#1F5B4E',
     fontFamily: 'Inter_500Medium', fontWeight: '500',
   },
   container: {
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   tabActive: {
-    borderBottomColor: '#0F9B8E',
+    borderBottomColor: '#1F5B4E',
   },
   tabText: {
     fontSize: 14, fontFamily: 'Inter_400Regular',
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   tabTextActive: {
-    color: '#0F9B8E',
+    color: '#1F5B4E',
   },
   searchContainer: {
     flexDirection: 'row',
@@ -336,13 +336,13 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#E0F2F1',
+    backgroundColor: '#E8F0EE',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
   numberText: {
-    color: '#0F9B8E',
+    color: '#1F5B4E',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     fontSize: 14, fontFamily: 'Inter_400Regular',
   },
@@ -369,13 +369,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#0F9B8E',
+    borderColor: '#1F5B4E',
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 12,
   },
   connectButtonText: {
-    color: '#0F9B8E',
+    color: '#1F5B4E',
     fontFamily: 'Inter_600SemiBold', fontWeight: '600',
     fontSize: 14, fontFamily: 'Inter_400Regular',
   },
@@ -423,7 +423,7 @@ const styles = StyleSheet.create({
     fontSize: 15, fontFamily: 'Inter_400Regular',
   },
   submitButton: {
-    backgroundColor: '#0F9B8E',
+    backgroundColor: '#1F5B4E',
     height: 50,
     borderRadius: 8,
     justifyContent: 'center',
@@ -452,7 +452,7 @@ const styles = StyleSheet.create({
   },
   shareButton: {
     flexDirection: 'row',
-    backgroundColor: '#16A34A',
+    backgroundColor: '#1F5B4E',
     height: 50,
     borderRadius: 8,
     justifyContent: 'center',

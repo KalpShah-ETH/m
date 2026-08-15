@@ -43,7 +43,7 @@ export default function SearchScreen() {
   const renderProductItem = ({ item }: { item: any }) => (
     <TouchableOpacity style={styles.resultItem}>
       <View style={styles.resultIcon}>
-        <Pill color="#0F9B8E" size={24} />
+        <Pill color="#1F5B4E" size={24} />
       </View>
       <View style={styles.resultDetails}>
         <Text style={styles.resultTitle}>{item.name}</Text>
@@ -56,7 +56,7 @@ export default function SearchScreen() {
   const renderDistributorItem = ({ item }: { item: any }) => (
     <TouchableOpacity style={styles.resultItem}>
       <View style={styles.resultIcon}>
-        <Truck color="#0F9B8E" size={24} />
+        <Truck color="#1F5B4E" size={24} />
       </View>
       <View style={styles.resultDetails}>
         <Text style={styles.resultTitle}>{item.name}</Text>
@@ -115,7 +115,7 @@ export default function SearchScreen() {
 
         {/* Results Info */}
         <View style={styles.resultsInfo}>
-          {isLoading && <ActivityIndicator size="small" color="#0F9B8E" />}
+          {isLoading && <ActivityIndicator size="small" color="#1F5B4E" />}
           {!isLoading && query.length > 0 && query.length < 3 && (
             <Text style={styles.helperText}>Please enter at least 3 characters to search.</Text>
           )}
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter_600SemiBold', fontWeight: '600',
   },
   toggleTextActive: {
-    color: '#0F9B8E',
+    color: '#1F5B4E',
   },
   searchInputContainer: {
     flexDirection: 'row',
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
   resultIcon: {
     width: 48,
     height: 48,
-    backgroundColor: '#E0F2F1',
+    backgroundColor: '#E8F0EE',
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
   resultPrice: {
     fontSize: 16, fontFamily: 'Inter_400Regular',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#0F9B8E',
+    color: '#1F5B4E',
   },
   emptyContainer: {
     paddingTop: 40,

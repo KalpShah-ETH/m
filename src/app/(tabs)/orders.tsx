@@ -41,7 +41,7 @@ export default function OrdersScreen() {
       case 'processed':
       case 'shipped':
       case 'delivered':
-        return <CheckCircle color="#16A34A" size={16} style={{ marginRight: 4 }} />;
+        return <CheckCircle color="#1F5B4E" size={16} style={{ marginRight: 4 }} />;
       default:
         return <Clock color="#f29900" size={16} style={{ marginRight: 4 }} />;
     }
@@ -63,7 +63,7 @@ export default function OrdersScreen() {
         <View style={styles.infoRow}>
           <Text style={styles.distributorName}>{item.distributorName}</Text>
           <TouchableOpacity onPress={() => handleCall(item.distributorContact)} style={styles.callButton}>
-            <Phone color="#0F9B8E" size={16} />
+            <Phone color="#1F5B4E" size={16} />
           </TouchableOpacity>
         </View>
         <Text style={styles.dateText}>{item.date}</Text>
@@ -75,7 +75,7 @@ export default function OrdersScreen() {
         onPress={() => router.push(`/order/${item.id}`)}
       >
         <Text style={styles.viewDetailsText}>View Details</Text>
-        <ChevronRight color="#0F9B8E" size={20} />
+        <ChevronRight color="#1F5B4E" size={20} />
       </TouchableOpacity>
     </View>
   );
@@ -129,13 +129,13 @@ export default function OrdersScreen() {
             />
           </View>
           <TouchableOpacity style={styles.filterButton}>
-            <Filter color="#0F9B8E" size={20} />
+            <Filter color="#1F5B4E" size={20} />
           </TouchableOpacity>
         </View>
 
         {isLoading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0F9B8E" />
+            <ActivityIndicator size="large" color="#1F5B4E" />
           </View>
         ) : (
           <FlatList
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
   },
   summaryContainer: {
     flexDirection: 'row',
-    backgroundColor: '#E0F2F1',
+    backgroundColor: '#E8F0EE',
     borderRadius: 8,
     padding: 16,
   },
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   },
   summaryLabel: {
     fontSize: 12, fontFamily: 'Inter_400Regular',
-    color: '#0F9B8E',
+    color: '#1F5B4E',
     marginBottom: 4,
     textTransform: 'uppercase',
     fontFamily: 'Inter_600SemiBold', fontWeight: '600',
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   tabActive: {
-    borderBottomColor: '#0F9B8E',
+    borderBottomColor: '#1F5B4E',
   },
   tabText: {
     fontSize: 14, fontFamily: 'Inter_400Regular',
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   tabTextActive: {
-    color: '#0F9B8E',
+    color: '#1F5B4E',
   },
   filtersRow: {
     flexDirection: 'row',
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
   filterButton: {
     width: 44,
     height: 44,
-    backgroundColor: '#E0F2F1',
+    backgroundColor: '#E8F0EE',
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -292,20 +292,20 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   statusPending: {
-    backgroundColor: '#FEF3C7',
+    backgroundColor: '#E8F0EE',
   },
   statusProcessed: {
-    backgroundColor: '#DCFCE7',
+    backgroundColor: '#E8F0EE',
   },
   statusText: {
     fontSize: 12, fontFamily: 'Inter_400Regular',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   statusTextPending: {
-    color: '#F5A623',
+    color: '#1F5B4E',
   },
   statusTextProcessed: {
-    color: '#16A34A',
+    color: '#1F5B4E',
   },
   cardBody: {
     padding: 16,
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
   },
   callButton: {
     padding: 8,
-    backgroundColor: '#E0F2F1',
+    backgroundColor: '#E8F0EE',
     borderRadius: 20,
     marginLeft: 8,
   },
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
   totalValue: {
     fontSize: 18, fontFamily: 'Inter_400Regular',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#0F9B8E',
+    color: '#1F5B4E',
   },
   cardFooter: {
     flexDirection: 'row',
@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#eee',
   },
   viewDetailsText: {
-    color: '#0F9B8E',
+    color: '#1F5B4E',
     fontSize: 14, fontFamily: 'Inter_400Regular',
     fontFamily: 'Inter_600SemiBold', fontWeight: '600',
   },

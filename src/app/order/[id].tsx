@@ -25,7 +25,7 @@ export default function OrderDetailScreen() {
           <Text style={styles.headerTitle}>Order Details</Text>
         </View>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#0F9B8E" />
+          <ActivityIndicator size="large" color="#1F5B4E" />
         </View>
       </SafeAreaView>
     );
@@ -52,13 +52,13 @@ export default function OrderDetailScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Distributor</Text>
           <View style={styles.distributorCard}>
-            <Building2 color="#0F9B8E" size={24} style={{ marginRight: 12 }} />
+            <Building2 color="#1F5B4E" size={24} style={{ marginRight: 12 }} />
             <View style={styles.distributorInfo}>
               <Text style={styles.distributorName}>{currentOrder.distributorName}</Text>
               <Text style={styles.distributorContact}>{currentOrder.distributorContact}</Text>
             </View>
             <TouchableOpacity onPress={handleCall} style={styles.callButton}>
-              <Phone color="#0F9B8E" size={20} />
+              <Phone color="#1F5B4E" size={20} />
             </TouchableOpacity>
           </View>
         </View>
@@ -71,9 +71,9 @@ export default function OrderDetailScreen() {
               <View key={index} style={styles.timelineItem}>
                 <View style={styles.timelineIconContainer}>
                   {index === currentOrder.timeline!.length - 1 && currentOrder.status === 'delivered' ? (
-                    <CheckCircle color="#16A34A" size={20} />
+                    <CheckCircle color="#1F5B4E" size={20} />
                   ) : index === 0 ? (
-                    <CheckCircle color="#0F9B8E" size={20} />
+                    <CheckCircle color="#1F5B4E" size={20} />
                   ) : (
                     <Clock color="#f29900" size={20} />
                   )}
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   },
   callButton: {
     padding: 12,
-    backgroundColor: '#E0F2F1',
+    backgroundColor: '#E8F0EE',
     borderRadius: 8,
   },
   timelineCard: {
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     color: '#1F2937',
   },
   summaryCard: {
-    backgroundColor: '#0F9B8E',
+    backgroundColor: '#1F5B4E',
     borderRadius: 12,
     padding: 20,
     marginTop: 8,

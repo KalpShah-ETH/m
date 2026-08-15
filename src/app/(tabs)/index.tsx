@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
 import { Truck, Wallet, Tag, Pill, Gift, RotateCcw, Search } from 'lucide-react-native';
+import { useRouter } from 'expo-router';
 import { useHomeStore } from '@/store/homeStore';
 
 export default function HomeScreen() {
+  const router = useRouter();
   const fetchSummary = useHomeStore((state) => state.fetchSummary);
   const fetchDistributors = useHomeStore((state) => state.fetchDistributors);
   const summary = useHomeStore((state) => state.summary);
@@ -18,12 +20,12 @@ export default function HomeScreen() {
   }, []);
 
   const gridItems = [
-    { id: '1', title: 'Distributors', icon: <Truck color="#0066cc" size={32} /> },
-    { id: '2', title: 'Outstandings', icon: <Wallet color="#0066cc" size={32} /> },
+    { id: '1', title: 'Distributors', icon: <Truck color="#0066cc" size={32} />, route: '/distributors' },
+    { id: '2', title: 'Outstandings', icon: <Wallet color="#0066cc" size={32} />, route: '/outstandings' },
     { id: '3', title: 'Company Schemes', icon: <Tag color="#0066cc" size={32} /> },
     { id: '4', title: 'Generic', icon: <Pill color="#0066cc" size={32} /> },
     { id: '5', title: 'Company Cashback', icon: <Gift color="#0066cc" size={32} /> },
-    { id: '6', title: 'Returns', icon: <RotateCcw color="#0066cc" size={32} /> },
+    { id: '6', title: 'Returns', icon: <RotateCcw color="#0066cc" size={32} />, route: '/returns' },
   ];
 
   return (
@@ -73,7 +75,11 @@ export default function HomeScreen() {
         <Text style={styles.sectionTitle}>Explore</Text>
         <View style={styles.gridContainer}>
           {gridItems.map((item) => (
-            <TouchableOpacity key={item.id} style={styles.gridItem}>
+            <TouchableOpacity 
+              key={item.id} 
+              style={styles.gridItem}
+              onPress={() => item.route && router.push(item.route as any)}
+            >
               <View style={styles.iconContainer}>
                 {item.icon}
               </View>

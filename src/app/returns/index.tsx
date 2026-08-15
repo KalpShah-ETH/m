@@ -133,13 +133,16 @@ export default function ReturnsScreen() {
         )}
       </View>
 
-      {/* Floating Action Button for New Return */}
-      <TouchableOpacity 
-        style={styles.fab}
-        onPress={() => router.push('/returns/initiate')}
-      >
-        <Plus color="#fff" size={24} />
-      </TouchableOpacity>
+      {/* Full-width Action Button for New Return */}
+      <View style={styles.footerContainer}>
+        <TouchableOpacity 
+          style={styles.fullWidthButton}
+          onPress={() => router.push('/returns/initiate')}
+        >
+          <Plus color="#fff" size={24} style={{ marginRight: 8 }} />
+          <Text style={styles.fullWidthButtonText}>Initiate Return</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -316,20 +319,23 @@ const styles = StyleSheet.create({
     color: '#999',
     fontSize: 16,
   },
-  fab: {
-    position: 'absolute',
-    right: 24,
-    bottom: 24,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+  footerContainer: {
+    padding: 16,
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+  },
+  fullWidthButton: {
     backgroundColor: '#0066cc',
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 6,
+    paddingVertical: 16,
+    borderRadius: 8,
+  },
+  fullWidthButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

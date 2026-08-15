@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, FlatList, SafeAreaView, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { Search, AlertCircle, ChevronRight, Receipt } from 'lucide-react-native';
+import { useRouter } from 'expo-router';
+import { Search, AlertCircle, ChevronRight, Receipt, ArrowLeft } from 'lucide-react-native';
 import { useOutstandingsStore, OutstandingRecord } from '@/store/outstandingsStore';
 
 export default function OutstandingsScreen() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   
   const { records, isLoading, fetchOutstandings } = useOutstandingsStore();
@@ -56,9 +58,15 @@ export default function OutstandingsScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
+      <View style={styles.topBar}>
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <ArrowLeft color="#333" size={24} />
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>Outstandings</Text>
+        <View style={{ width: 24 }} />
+      </View>
 
+      <View style={styles.container}>
         <View style={styles.summaryContainer}>
           <Text style={styles.summaryLabel}>Total Outstanding Amount</Text>
           <Text style={styles.summaryValue}>₹{totalOutstanding.toFixed(2)}</Text>
@@ -100,15 +108,28 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f7fa',
   },
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  backButton: {
+    padding: 4,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },
   container: {
     flex: 1,
     paddingTop: 16,
   },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    paddingHorizontal: 16,
     marginBottom: 16,
   },
   summaryContainer: {

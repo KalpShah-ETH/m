@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
-import { Truck, Wallet, Tag, Pill, Gift, RotateCcw, Search } from 'lucide-react-native';
+import { Truck, Wallet, Tag, Pill, Gift, RotateCcw, Search, Bell, User } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useHomeStore } from '@/store/homeStore';
+import { useAccountStore } from '@/store/accountStore';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { profile, fetchProfile } = useAccountStore();
   const fetchSummary = useHomeStore((state) => state.fetchSummary);
   const fetchDistributors = useHomeStore((state) => state.fetchDistributors);
   const summary = useHomeStore((state) => state.summary);
@@ -17,6 +19,7 @@ export default function HomeScreen() {
   useEffect(() => {
     fetchSummary();
     fetchDistributors();
+    fetchProfile();
   }, []);
 
   const gridItems = [
@@ -30,11 +33,26 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <View style={styles.topBar}>
+        <View>
+          <Text style={styles.greetingText}>Hello, {profile?.name ? profile.name.split(' ')[0] : 'User'}</Text>
+          <Text style={styles.subGreetingText}>Welcome back</Text>
+        </View>
+        <View style={styles.topBarIcons}>
+          <TouchableOpacity style={styles.iconButton}>
+            <Bell color="#333" size={24} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton} onPress={() => router.push('/profile')}>
+            <User color="#0066cc" size={24} />
+          </TouchableOpacity>
+        </View>
+      </View>
+
       <ScrollView contentContainerStyle={styles.container}>
         
-        {/* Welcome Banner */}
+        {/* Banner */}
         <View style={styles.banner}>
-          <Text style={styles.bannerTitle}>Welcome to MedConnect</Text>
+          <Text style={styles.bannerTitle}>MedConnect</Text>
           <Text style={styles.bannerSubtitle}>Your dedicated B2B Pharma Ordering Platform</Text>
         </View>
 
@@ -131,6 +149,35 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  greetingText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  subGreetingText: {
+    fontSize: 14,
+    color: '#666',
+  },
+  topBarIcons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconButton: {
+    marginLeft: 16,
+    padding: 8,
+    backgroundColor: '#f5f7fa',
+    borderRadius: 20,
   },
   container: {
     padding: 16,

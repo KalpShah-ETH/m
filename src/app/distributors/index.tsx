@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, SafeAreaView, ActivityIndicator, Alert, Share as RNShare } from 'react-native';
-import { Search, GripVertical, Plus, Share, ChevronUp, ChevronDown } from 'lucide-react-native';
+import { useRouter } from 'expo-router';
+import { Search, GripVertical, Plus, Share, ChevronUp, ChevronDown, ArrowLeft } from 'lucide-react-native';
 import { useMyDistributorsStore, MyDistributor } from '@/store/myDistributorsStore';
 
 export default function MyDistributorsScreen() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<'mapped' | 'non-mapped' | 'refer'>('mapped');
   const [searchQuery, setSearchQuery] = useState('');
   
@@ -115,9 +117,17 @@ export default function MyDistributorsScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
+      <View style={styles.topBar}>
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <ArrowLeft color="#333" size={24} />
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>My Distributors</Text>
+        <TouchableOpacity>
+          <Text style={styles.resetLink}>Reset</Text>
+        </TouchableOpacity>
+      </View>
 
+      <View style={styles.container}>
         {/* Inner Tabs */}
         <View style={styles.tabContainer}>
           <TouchableOpacity 
@@ -234,15 +244,33 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f7fa',
   },
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  backButton: {
+    padding: 4,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  resetLink: {
+    fontSize: 16,
+    color: '#0066cc',
+    fontWeight: '500',
+  },
   container: {
     flex: 1,
     paddingTop: 16,
   },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    paddingHorizontal: 16,
     marginBottom: 16,
   },
   tabContainer: {

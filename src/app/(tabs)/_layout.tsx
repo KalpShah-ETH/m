@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Home, Search, ShoppingCart, User, Truck, Receipt, ClipboardList } from 'lucide-react-native';
+import { Home, Search, ShoppingCart, List, ClipboardList } from 'lucide-react-native';
 
 export default function TabsLayout() {
   return (
@@ -13,6 +13,13 @@ export default function TabsLayout() {
         options={{ 
           title: 'Home',
           tabBarIcon: ({ color, size }) => <Home color={color} size={size} /> 
+        }} 
+      />
+      <Tabs.Screen 
+        name="browse" 
+        options={{ 
+          title: 'Browse',
+          tabBarIcon: ({ color, size }) => <List color={color} size={size} /> 
         }} 
       />
       <Tabs.Screen 
@@ -30,20 +37,6 @@ export default function TabsLayout() {
         }} 
       />
       <Tabs.Screen 
-        name="distributors" 
-        options={{ 
-          title: 'Distributors',
-          tabBarIcon: ({ color, size }) => <Truck color={color} size={size} /> 
-        }} 
-      />
-      <Tabs.Screen 
-        name="outstandings" 
-        options={{ 
-          title: 'Outstandings',
-          tabBarIcon: ({ color, size }) => <Receipt color={color} size={size} /> 
-        }} 
-      />
-      <Tabs.Screen 
         name="orders" 
         options={{ 
           title: 'Orders',
@@ -51,10 +44,10 @@ export default function TabsLayout() {
         }} 
       />
       <Tabs.Screen 
-        name="profile" 
+        name="cart" 
         options={{ 
-          title: 'Profile',
-          tabBarIcon: ({ color, size }) => <User color={color} size={size} /> 
+          title: 'Cart',
+          tabBarIcon: ({ color, size }) => <ShoppingCart color={color} size={size} /> 
         }} 
       />
     </Tabs>

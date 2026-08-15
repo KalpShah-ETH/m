@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { supabase } from '@/lib/supabase';
+import { useAuthStore } from './authStore';
 
 export interface MyDistributor {
   id: string;
@@ -20,7 +21,6 @@ interface MyDistributorsState {
   requestConnection: (distributorId: string) => Promise<{ success: boolean }>;
   referDistributor: (data: any) => Promise<{ success: boolean }>;
   
-  // Local state update helper for immediate UI feedback on reorder
   setMappedLocally: (distributors: MyDistributor[]) => void;
 }
 
@@ -33,91 +33,92 @@ export const useMyDistributorsStore = create<MyDistributorsState>((set, get) => 
 
   fetchMapped: async () => {
     set({ isLoading: true });
-    // GET /distributors/mapped
+    const user = useAuthStore.getState().user;
+    if (!user) {
+      set({ mappedDistributors: [], isLoading: false });
+      return;
+    }
+
     const { data, error } = await supabase
-      .from('mapped_distributors')
-      .select('*')
-      .order('priority', { ascending: true })
-      .catch(() => ({ data: null, error: { message: 'Network error' } }));
+      .from('retailer_distributor_map')
+      .select('priority, distributors(id, name, phone, address)')
+      .eq('retailer_id', user.id)
+      .eq('status', 'mapped')
+      .order('priority', { ascending: true });
 
     if (error || !data) {
-      // Mock data
-      set({
-        mappedDistributors: [
-          { id: '1', name: 'PharmaCorp Distributors', priority: 1, contact: '+91 9876543210' },
-          { id: '2', name: 'HealthPlus Logistics', priority: 2, contact: '+91 8765432109' },
-          { id: '3', name: 'MediLife Suppliers', priority: 3, contact: '+91 7654321098' },
-        ],
-        isLoading: false
-      });
+      set({ mappedDistributors: [], isLoading: false });
     } else {
-      set({ mappedDistributors: data, isLoading: false });
+      const mapped = data.map((item: any) => ({
+        id: item.distributors.id,
+        name: item.distributors.name,
+        priority: item.priority,
+        contact: item.distributors.phone,
+        address: item.distributors.address
+      }));
+      set({ mappedDistributors: mapped, isLoading: false });
     }
   },
 
   fetchNonMapped: async () => {
     set({ isLoading: true });
-    // GET /distributors/non-mapped
-    const { data, error } = await supabase
-      .from('non_mapped_distributors')
-      .select('*')
-      .catch(() => ({ data: null, error: { message: 'Network error' } }));
+    const user = useAuthStore.getState().user;
+    if (!user) {
+      set({ nonMappedDistributors: [], isLoading: false });
+      return;
+    }
+
+    // Get all distributors that are NOT mapped for this retailer
+    const { data: mappedMaps } = await supabase
+      .from('retailer_distributor_map')
+      .select('distributor_id')
+      .eq('retailer_id', user.id);
+      
+    const mappedIds = mappedMaps?.map(m => m.distributor_id) || [];
+
+    let query = supabase.from('distributors').select('id, name, phone, address');
+    
+    const { data, error } = await query;
 
     if (error || !data) {
-      // Mock data
-      set({
-        nonMappedDistributors: [
-          { id: '101', name: 'Sunrise Medicals' },
-          { id: '102', name: 'Apex Pharma Distributors' },
-          { id: '103', name: 'Global Health Distributors' },
-        ],
-        isLoading: false
-      });
+      set({ nonMappedDistributors: [], isLoading: false });
     } else {
-      set({ nonMappedDistributors: data, isLoading: false });
+      // Filter out mapped locally if postgrest doesn't support 'not in' easily in JS client
+      const nonMapped = data.filter(d => !mappedIds.includes(d.id)).map(item => ({
+        id: item.id,
+        name: item.name,
+        contact: item.phone,
+        address: item.address
+      }));
+      set({ nonMappedDistributors: nonMapped, isLoading: false });
     }
   },
 
   reorderMapped: async (newOrder) => {
-    // PATCH /distributors/reorder
-    // We expect an array of distributor IDs in the new priority order
-    const { error } = await supabase.functions.invoke('distributors-reorder', {
-      body: { order: newOrder }
-    }).catch(() => ({ error: { message: 'Network error' } }));
-
-    if (error) {
-      console.log('Mocked reorder success for ids:', newOrder);
-    }
+    const items = newOrder.map((id, index) => ({ distributor_id: id, priority: index }));
+    const { error } = await supabase.functions.invoke('reorder-distributors', {
+      body: { items }
+    });
+    if (error) console.error('Reorder failed', error);
   },
 
   requestConnection: async (distributorId) => {
-    // POST /distributors/{id}/connect-request
-    const { error } = await supabase
-      .from('connection_requests')
-      .insert({ distributor_id: distributorId })
-      .catch(() => ({ error: { message: 'Network error' } }));
+    const { data, error } = await supabase.functions.invoke('request-distributor-connect', {
+      body: { distributor_id: distributorId }
+    });
 
-    if (error) {
-      // Mock success and remove from non-mapped locally
+    if (!error && data?.success) {
       set((state) => ({
         nonMappedDistributors: state.nonMappedDistributors.filter(d => d.id !== distributorId)
       }));
       return { success: true };
     }
-    return { success: true };
+    return { success: false };
   },
 
   referDistributor: async (data) => {
-    // POST /distributors/refer
-    const { error } = await supabase
-      .from('distributor_referrals')
-      .insert(data)
-      .catch(() => ({ error: { message: 'Network error' } }));
-
-    if (error) {
-      console.log('Mocked referral success for:', data);
-      return { success: true };
-    }
+    // Left as mock since referral isn't in DB yet
+    console.log('Referral submitted', data);
     return { success: true };
   }
 }));

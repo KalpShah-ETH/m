@@ -34,22 +34,12 @@ export const useGenericStore = create<GenericState>((set, get) => ({
   fetchCategories: async () => {
     set({ isLoadingCategories: true });
     
-    // We can assume there's a generic_categories table or similar
     const { data, error } = await supabase
-      .from('generic_categories')
-      .select('*')
-      .catch(() => ({ data: null, error: { message: 'Network error' } }));
+      .from('categories')
+      .select('*');
 
     if (error || !data) {
-      set({
-        categories: [
-          { id: 'c1', name: 'Pain Relief' },
-          { id: 'c2', name: 'Antibiotics' },
-          { id: 'c3', name: 'Vitamins & Supplements' },
-          { id: 'c4', name: 'Cough & Cold' },
-        ],
-        isLoadingCategories: false
-      });
+      set({ categories: [], isLoadingCategories: false });
     } else {
       set({ categories: data, isLoadingCategories: false });
     }
@@ -58,51 +48,58 @@ export const useGenericStore = create<GenericState>((set, get) => ({
   fetchProductsByCategory: async (categoryId) => {
     set({ isLoadingProducts: true });
     
-    // GET /products/generic?category={id}
-    let query = supabase.from('generic_products').select('*');
+    let query = supabase.from('products').select('*').eq('is_generic', true);
     if (categoryId) {
       query = query.eq('category_id', categoryId);
     }
     
-    const { data, error } = await query.catch(() => ({ data: null, error: { message: 'Network error' } }));
+    const { data, error } = await query;
 
     if (error || !data) {
-      // Mock data using the CatalogProduct structure so we can reuse the same card style
-      const mockProducts: CatalogProduct[] = [
-        { id: 'gp1', name: 'Paracetamol 500mg', packSize: '10x10', ptr: 12.50, mrp: 15.00, stockStatus: 'in-stock', discountPercentage: 10, quantityInCart: 0 },
-        { id: 'gp2', name: 'Amoxicillin 250mg', packSize: '10x6', ptr: 45.00, mrp: 55.00, stockStatus: 'in-stock', discountPercentage: 15, quantityInCart: 0 },
-        { id: 'gp3', name: 'Vitamin C Chewable', packSize: '1x15', ptr: 25.00, mrp: 35.00, stockStatus: 'out-of-stock', discountPercentage: 5, quantityInCart: 0 },
-      ];
-      set({ products: mockProducts, isLoadingProducts: false });
+      set({ products: [], isLoadingProducts: false });
     } else {
-      set({ products: data, isLoadingProducts: false });
+      const mappedProducts: CatalogProduct[] = data.map((p: any) => ({
+        id: p.id,
+        name: p.name,
+        packSize: p.pack_size,
+        ptr: p.ptr,
+        mrp: p.mrp,
+        stockStatus: p.stock_status,
+        discountPercentage: p.discount_percent || 0,
+        quantityInCart: 0
+      }));
+      set({ products: mappedProducts, isLoadingProducts: false });
     }
   },
 
   searchProducts: async (query) => {
     if (!query || query.length < 3) {
-      // If query is cleared, fetch by category again
       get().fetchProductsByCategory(get().selectedCategory);
       return;
     }
 
     set({ isLoadingProducts: true });
     
-    // GET /products/generic/search?q={query}
     const { data, error } = await supabase
-      .from('generic_products')
+      .from('products')
       .select('*')
-      .ilike('name', `%${query}%`)
-      .catch(() => ({ data: null, error: { message: 'Network error' } }));
+      .eq('is_generic', true)
+      .ilike('name', `%${query}%`);
 
     if (error || !data) {
-      // Mock search data
-      const mockProducts: CatalogProduct[] = [
-        { id: 'gp1', name: `${query} 500mg`, packSize: '10x10', ptr: 12.50, mrp: 15.00, stockStatus: 'in-stock', discountPercentage: 10, quantityInCart: 0 },
-      ];
-      set({ products: mockProducts, isLoadingProducts: false });
+      set({ products: [], isLoadingProducts: false });
     } else {
-      set({ products: data, isLoadingProducts: false });
+      const mappedProducts: CatalogProduct[] = data.map((p: any) => ({
+        id: p.id,
+        name: p.name,
+        packSize: p.pack_size,
+        ptr: p.ptr,
+        mrp: p.mrp,
+        stockStatus: p.stock_status,
+        discountPercentage: p.discount_percent || 0,
+        quantityInCart: 0
+      }));
+      set({ products: mappedProducts, isLoadingProducts: false });
     }
   }
 }));

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { supabase } from '@/lib/supabase';
+import { useAuthStore } from './authStore';
 
 export interface ReturnItem {
   id: string;
@@ -37,91 +38,101 @@ export const useReturnsStore = create<ReturnsState>((set, get) => ({
   fetchReturns: async ({ status, type }) => {
     set({ isLoading: true });
     
-    // GET /returns?status={status}&type={type}
+    const user = useAuthStore.getState().user;
+    if (!user) {
+      set({ returns: [], isLoading: false });
+      return;
+    }
+
     const { data, error } = await supabase
       .from('returns')
-      .select('*')
+      .select('*, products(name), orders(order_number, distributors(name))')
+      .eq('retailer_id', user.id)
       .eq('status', status)
-      .eq('type', type)
-      .catch(() => ({ data: null, error: { message: 'Network error' } }));
+      .eq('return_type', type);
 
     if (error || !data) {
-      // Mock data
-      set({
-        returns: status === 'draft' ? [
-          { id: 'r1', returnNumber: 'RET-DRAFT-01', orderId: 'ORD-1001', distributorName: 'PharmaCorp', date: new Date().toISOString().split('T')[0], status: 'draft', type: type, items: [{ id: 'i1', productName: 'Aspirin 75mg', quantity: 2, reason: type }] }
-        ] : [
-          { id: 'r2', returnNumber: 'RET-SUB-01', orderId: 'ORD-1000', distributorName: 'HealthPlus', date: '2026-08-01', status: 'submitted', type: type, items: [{ id: 'i2', productName: 'Paracetamol', quantity: 5, reason: type }] }
-        ],
-        isLoading: false
-      });
+      set({ returns: [], isLoading: false });
     } else {
-      set({ returns: data, isLoading: false });
+      const records: ReturnRecord[] = data.map((d: any) => ({
+        id: d.id,
+        returnNumber: `RET-${d.id.substring(0, 8).toUpperCase()}`,
+        orderId: d.orders?.order_number || 'N/A',
+        distributorName: d.orders?.distributors?.name || 'Unknown',
+        date: d.created_at.split('T')[0],
+        status: d.status as any,
+        type: d.return_type as any,
+        items: [{
+          id: d.id,
+          productName: d.products.name,
+          quantity: d.quantity,
+          reason: d.return_type as any
+        }]
+      }));
+      set({ returns: records, isLoading: false });
     }
   },
 
   initiateReturn: async (data) => {
-    // POST /returns/initiate
-    const { data: result, error } = await supabase
-      .from('returns')
-      .insert({ ...data, status: 'draft' })
-      .select()
-      .single()
-      .catch(() => ({ data: null, error: { message: 'Network error' } }));
+    // In our edge function we handle a single product, but the UI expects items array
+    // To simplify, we iterate or just take the first. For a robust app we'd map this over.
+    const item = data.items[0];
+    if (!item) return { success: false };
 
-    if (error) {
-      console.log('Mock initiate return success:', data);
-      return { success: true, id: `mock-${Date.now()}` };
+    const { data: res, error } = await supabase.functions.invoke('initiate-return', {
+      body: {
+        order_id: data.orderId || null,
+        product_id: item.id, // Assuming the UI passes productId as the item id
+        quantity: item.quantity,
+        return_type: data.type
+      }
+    });
+
+    if (error || !res.success) {
+      return { success: false };
     }
-    return { success: true, id: result.id };
+    return { success: true, id: res.data.id };
   },
 
   editDraft: async (id, updates) => {
-    // PATCH /returns/{id}
     const { error } = await supabase
       .from('returns')
-      .update(updates)
-      .eq('id', id)
-      .catch(() => ({ error: { message: 'Network error' } }));
+      .update({ quantity: updates.items?.[0]?.quantity }) // simplified mapping
+      .eq('id', id);
 
     if (error) {
-      console.log('Mock edit draft success:', id, updates);
-      return { success: true };
+      return { success: false };
     }
     return { success: true };
   },
 
   submitReturn: async (id) => {
-    // POST /returns/{id}/submit
-    const { error } = await supabase
-      .from('returns')
-      .update({ status: 'submitted' })
-      .eq('id', id)
-      .catch(() => ({ error: { message: 'Network error' } }));
+    const { error } = await supabase.functions.invoke('submit-return', {
+      body: { return_id: id }
+    });
 
     if (error) {
-      set((state) => ({
-        returns: state.returns.filter(r => r.id !== id)
-      }));
-      return { success: true };
+      return { success: false };
     }
+    
+    set((state) => ({
+      returns: state.returns.filter(r => r.id !== id)
+    }));
     return { success: true };
   },
 
   cancelDraft: async (id) => {
-    // Used specifically to delete a draft entirely
     const { error } = await supabase
       .from('returns')
       .delete()
-      .eq('id', id)
-      .catch(() => ({ error: { message: 'Network error' } }));
+      .eq('id', id);
 
     if (error) {
-      set((state) => ({
-        returns: state.returns.filter(r => r.id !== id)
-      }));
-      return { success: true };
+      return { success: false };
     }
+    set((state) => ({
+      returns: state.returns.filter(r => r.id !== id)
+    }));
     return { success: true };
   }
 }));

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { supabase } from '@/lib/supabase';
+import { useAuthStore } from './authStore';
 
 export interface OutstandingRecord {
   distributorId: string;
@@ -26,7 +27,7 @@ interface OutstandingsState {
   fetchOutstandingsDetail: (distributorId: string) => Promise<void>;
 }
 
-export const useOutstandingsStore = create<OutstandingsState>((set, get) => ({
+export const useOutstandingsStore = create<OutstandingsState>((set) => ({
   records: [],
   details: {},
   isLoading: false,
@@ -34,53 +35,47 @@ export const useOutstandingsStore = create<OutstandingsState>((set, get) => ({
 
   fetchOutstandings: async () => {
     set({ isLoading: true });
-    // GET /outstandings
+    
+    const user = useAuthStore.getState().user;
+    if (!user) {
+      set({ records: [], isLoading: false });
+      return;
+    }
+
     const { data, error } = await supabase
-      .from('outstandings')
-      .select('*')
-      .catch(() => ({ data: null, error: { message: 'Table not found' } }));
+      .from('retailer_distributor_map')
+      .select('distributor_id, outstanding_amount, distributors(name)')
+      .eq('retailer_id', user.id)
+      .gt('outstanding_amount', 0); // only show those with balance
 
     if (error || !data) {
-      // Mock data
-      set({
-        records: [
-          { distributorId: '1', distributorName: 'PharmaCorp Distributors', amountOwed: 45000.00, dueDate: '2026-08-20', isOverdue: false },
-          { distributorId: '2', distributorName: 'HealthPlus Logistics', amountOwed: 12500.50, dueDate: '2026-08-10', isOverdue: true },
-          { distributorId: '3', distributorName: 'MediLife Suppliers', amountOwed: 0.00, dueDate: '', isOverdue: false },
-        ],
-        isLoading: false
-      });
+      set({ records: [], isLoading: false });
     } else {
-      set({ records: data, isLoading: false });
+      const records = data.map((d: any) => ({
+        distributorId: d.distributor_id,
+        distributorName: d.distributors.name,
+        amountOwed: d.outstanding_amount,
+        dueDate: new Date(Date.now() + 864000000).toISOString().split('T')[0], // Mocking due date since it's not in db yet
+        isOverdue: false // Mocking overdue
+      }));
+      set({ records, isLoading: false });
     }
   },
 
   fetchOutstandingsDetail: async (distributorId) => {
     set((state) => ({ isLoadingDetails: { ...state.isLoadingDetails, [distributorId]: true } }));
-    // GET /outstandings/{distributorId}
-    const { data, error } = await supabase
-      .from('outstanding_details')
-      .select('*')
-      .eq('distributor_id', distributorId)
-      .catch(() => ({ data: null, error: { message: 'Table not found' } }));
-
-    if (error || !data) {
-      // Mock data
+    
+    // We don't have an invoices/outstanding_details table yet, so mock it for now
+    setTimeout(() => {
       set((state) => ({
         details: {
           ...state.details,
           [distributorId]: [
             { invoiceNumber: `INV-${Math.floor(Math.random() * 10000)}`, date: '2026-07-25', amount: 5000, status: 'pending' },
-            { invoiceNumber: `INV-${Math.floor(Math.random() * 10000)}`, date: '2026-07-15', amount: 7500.50, status: 'overdue' },
           ]
         },
         isLoadingDetails: { ...state.isLoadingDetails, [distributorId]: false }
       }));
-    } else {
-      set((state) => ({
-        details: { ...state.details, [distributorId]: data },
-        isLoadingDetails: { ...state.isLoadingDetails, [distributorId]: false }
-      }));
-    }
+    }, 500);
   }
 }));

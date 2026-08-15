@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { supabase } from '@/lib/supabase';
+import { useAuthStore } from './authStore';
 
 export interface OrderLineItem {
   id: string;
@@ -50,85 +51,95 @@ export const useOrdersStore = create<OrdersState>((set) => ({
   fetchOrders: async ({ tab, from, to, distributorId }) => {
     set({ isLoading: true });
     
-    // Build query for GET /orders
+    const user = useAuthStore.getState().user;
+    if (!user) {
+      set({ orders: [], isLoading: false });
+      return;
+    }
+
     let query = supabase
       .from('orders')
-      .select('*')
-      .eq('mapped_status', tab)
-      .gte('date', from)
-      .lte('date', to);
+      .select('*, distributors(name, phone), retailer_distributor_map!inner(status)')
+      .eq('retailer_id', user.id)
+      .eq('retailer_distributor_map.retailer_id', user.id)
+      .eq('retailer_distributor_map.status', tab)
+      .gte('created_at', from)
+      .lte('created_at', to);
       
     if (distributorId) {
       query = query.eq('distributor_id', distributorId);
     }
 
-    const { data, error } = await query.catch(() => ({ data: null, error: { message: 'Network error' } }));
+    const { data, error } = await query;
 
     if (error || !data) {
-      // Mock data
-      set({
-        orders: [
-          { id: '1', orderNumber: 'ORD-1001', distributorId: 'd1', distributorName: 'PharmaCorp Distributors', distributorContact: '+91 9876543210', date: new Date().toISOString().split('T')[0], totalValue: 12500, status: 'pending', mappedStatus: 'mapped' },
-          { id: '2', orderNumber: 'ORD-1002', distributorId: 'd2', distributorName: 'HealthPlus Logistics', distributorContact: '+91 8765432109', date: new Date(Date.now() - 86400000).toISOString().split('T')[0], totalValue: 4500, status: 'processed', mappedStatus: tab },
-        ],
-        isLoading: false
-      });
+      set({ orders: [], isLoading: false });
     } else {
-      set({ orders: data, isLoading: false });
+      const orders: Order[] = data.map((d: any) => ({
+        id: d.id,
+        orderNumber: d.order_number,
+        distributorId: d.distributor_id,
+        distributorName: d.distributors.name,
+        distributorContact: d.distributors.phone,
+        date: d.created_at.split('T')[0],
+        totalValue: d.total_amount,
+        status: d.status as any,
+        mappedStatus: tab
+      }));
+      set({ orders, isLoading: false });
     }
   },
 
   fetchOrderById: async (id) => {
     set({ isLoadingDetail: true, currentOrder: null });
     
-    // GET /orders/{id}
     const { data, error } = await supabase
       .from('orders')
-      .select('*, items:order_items(*), timeline:order_timeline(*)')
+      .select('*, distributors(name, phone), order_items(*, products(name))')
       .eq('id', id)
-      .single()
-      .catch(() => ({ data: null, error: { message: 'Network error' } }));
+      .single();
 
     if (error || !data) {
-      // Mock detail data
-      set({
-        currentOrder: {
-          id,
-          orderNumber: `ORD-100${id}`,
-          distributorId: 'd1',
-          distributorName: 'PharmaCorp Distributors',
-          distributorContact: '+91 9876543210',
-          date: new Date().toISOString().split('T')[0],
-          totalValue: 12500,
-          status: 'pending',
-          mappedStatus: 'mapped',
-          items: [
-            { id: 'i1', productName: 'Paracetamol 500mg', quantity: 10, ptr: 15, total: 150 },
-            { id: 'i2', productName: 'Azithromycin 250mg', quantity: 5, ptr: 55, total: 275 },
-          ],
-          timeline: [
-            { status: 'Order Placed', date: new Date().toISOString() },
-            { status: 'Pending Confirmation', date: new Date().toISOString() }
-          ]
-        },
-        isLoadingDetail: false
-      });
+      set({ currentOrder: null, isLoadingDetail: false });
     } else {
-      set({ currentOrder: data, isLoadingDetail: false });
+      const currentOrder: Order = {
+        id: data.id,
+        orderNumber: data.order_number,
+        distributorId: data.distributor_id,
+        distributorName: data.distributors.name,
+        distributorContact: data.distributors.phone,
+        date: data.created_at.split('T')[0],
+        totalValue: data.total_amount,
+        status: data.status as any,
+        mappedStatus: 'mapped', // Simplified
+        items: data.order_items.map((item: any) => ({
+          id: item.id,
+          productName: item.products.name,
+          quantity: item.quantity,
+          ptr: item.ptr_at_order,
+          total: item.quantity * item.ptr_at_order
+        })),
+        timeline: [
+          { status: 'Order Placed', date: data.created_at }
+        ]
+      };
+      set({ currentOrder, isLoadingDetail: false });
     }
   },
 
   fetchSummary: async () => {
-    // GET /orders/summary
-    const { data, error } = await supabase
-      .rpc('get_orders_summary')
-      .catch(() => ({ data: null, error: { message: 'Network error' } }));
+    const user = useAuthStore.getState().user;
+    if (!user) return;
 
-    if (error || !data) {
-      // Mock summary
-      set({ summary: { totalCount: 24, totalValue: 145000 } });
-    } else {
-      set({ summary: data });
+    const { data, error } = await supabase
+      .from('orders')
+      .select('total_amount')
+      .eq('retailer_id', user.id);
+
+    if (!error && data) {
+      const totalCount = data.length;
+      const totalValue = data.reduce((sum, order) => sum + Number(order.total_amount), 0);
+      set({ summary: { totalCount, totalValue } });
     }
   }
 }));

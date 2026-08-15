@@ -36,9 +36,9 @@ export default function ProfileScreen() {
   };
 
   const menuItems = [
-    { id: 'orders', title: 'Order History', icon: <Clock color="#0066cc" size={24} />, route: '/orders' },
-    { id: 'distributors', title: 'My Distributors', icon: <Truck color="#0066cc" size={24} />, route: '/distributors' },
-    { id: 'outstandings', title: 'Outstandings', icon: <Wallet color="#0066cc" size={24} />, route: '/outstandings' },
+    { id: 'orders', title: 'Order History', icon: <Clock color="#0F9B8E" size={24} />, route: '/orders' },
+    { id: 'distributors', title: 'My Distributors', icon: <Truck color="#0F9B8E" size={24} />, route: '/distributors' },
+    { id: 'outstandings', title: 'Outstandings', icon: <Wallet color="#0F9B8E" size={24} />, route: '/outstandings' },
   ];
 
   const supportItems = [
@@ -52,7 +52,7 @@ export default function ProfileScreen() {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#0066cc" />
+          <ActivityIndicator size="large" color="#0F9B8E" />
         </View>
       </SafeAreaView>
     );
@@ -69,7 +69,7 @@ export default function ProfileScreen() {
         {/* Profile Card */}
         <View style={styles.profileCard}>
           <View style={styles.profileAvatar}>
-            <User color="#0066cc" size={40} />
+            <User color="#0F9B8E" size={40} />
           </View>
           <View style={styles.profileInfo}>
             <Text style={styles.profileName}>{profile?.name}</Text>
@@ -77,7 +77,7 @@ export default function ProfileScreen() {
             <Text style={styles.profileDetail}>{profile?.email}</Text>
           </View>
           <TouchableOpacity style={styles.editButton} onPress={handleEditOpen}>
-            <Edit2 color="#0066cc" size={20} />
+            <Edit2 color="#0F9B8E" size={20} />
           </TouchableOpacity>
         </View>
 
@@ -130,7 +130,7 @@ export default function ProfileScreen() {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Edit Profile</Text>
               <TouchableOpacity onPress={() => setEditModalVisible(false)}>
-                <X color="#333" size={24} />
+                <X color="#1F2937" size={24} />
               </TouchableOpacity>
             </View>
             
@@ -166,7 +166,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f5f7fa',
+    backgroundColor: '#FAFAFA',
   },
   loadingContainer: {
     flex: 1,
@@ -181,9 +181,9 @@ const styles = StyleSheet.create({
     borderBottomColor: '#eee',
   },
   headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 24, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
   },
   container: {
     padding: 16,
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: '#e6f2ff',
+    backgroundColor: '#E0F2F1',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
@@ -215,24 +215,24 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   profileName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 20, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
     marginBottom: 4,
   },
   profileDetail: {
-    fontSize: 14,
+    fontSize: 14, fontFamily: 'Inter_400Regular',
     color: '#666',
     marginBottom: 2,
   },
   editButton: {
     padding: 8,
-    backgroundColor: '#f0f8ff',
+    backgroundColor: '#E0F2F1',
     borderRadius: 20,
   },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#666',
     marginBottom: 8,
     textTransform: 'uppercase',
@@ -259,29 +259,29 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 8,
-    backgroundColor: '#e6f2ff',
+    backgroundColor: '#E0F2F1',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
   },
   menuItemTitle: {
     flex: 1,
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#333',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_500Medium', fontWeight: '500',
+    color: '#1F2937',
   },
   logoutButton: {
     backgroundColor: '#fff',
     borderWidth: 1,
-    borderColor: '#d93025',
+    borderColor: '#DC2626',
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
   },
   logoutButtonText: {
-    color: '#d93025',
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: '#DC2626',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   modalOverlay: {
     flex: 1,
@@ -302,29 +302,29 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 20, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
   },
   inputGroup: {
     marginBottom: 16,
   },
   label: {
-    fontSize: 14,
+    fontSize: 14, fontFamily: 'Inter_400Regular',
     color: '#666',
     marginBottom: 8,
-    fontWeight: '500',
+    fontFamily: 'Inter_500Medium', fontWeight: '500',
   },
   input: {
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 8,
     padding: 14,
-    fontSize: 16,
+    fontSize: 16, fontFamily: 'Inter_400Regular',
     backgroundColor: '#f9f9f9',
   },
   primaryButton: {
-    backgroundColor: '#0066cc',
+    backgroundColor: '#0F9B8E',
     paddingVertical: 16,
     borderRadius: 8,
     alignItems: 'center',
@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
   },
   primaryButtonText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
 });

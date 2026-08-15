@@ -41,7 +41,7 @@ export default function OrdersScreen() {
       case 'processed':
       case 'shipped':
       case 'delivered':
-        return <CheckCircle color="#1e8e3e" size={16} style={{ marginRight: 4 }} />;
+        return <CheckCircle color="#16A34A" size={16} style={{ marginRight: 4 }} />;
       default:
         return <Clock color="#f29900" size={16} style={{ marginRight: 4 }} />;
     }
@@ -63,7 +63,7 @@ export default function OrdersScreen() {
         <View style={styles.infoRow}>
           <Text style={styles.distributorName}>{item.distributorName}</Text>
           <TouchableOpacity onPress={() => handleCall(item.distributorContact)} style={styles.callButton}>
-            <Phone color="#0066cc" size={16} />
+            <Phone color="#0F9B8E" size={16} />
           </TouchableOpacity>
         </View>
         <Text style={styles.dateText}>{item.date}</Text>
@@ -75,7 +75,7 @@ export default function OrdersScreen() {
         onPress={() => router.push(`/order/${item.id}`)}
       >
         <Text style={styles.viewDetailsText}>View Details</Text>
-        <ChevronRight color="#0066cc" size={20} />
+        <ChevronRight color="#0F9B8E" size={20} />
       </TouchableOpacity>
     </View>
   );
@@ -129,13 +129,13 @@ export default function OrdersScreen() {
             />
           </View>
           <TouchableOpacity style={styles.filterButton}>
-            <Filter color="#0066cc" size={20} />
+            <Filter color="#0F9B8E" size={20} />
           </TouchableOpacity>
         </View>
 
         {isLoading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0066cc" />
+            <ActivityIndicator size="large" color="#0F9B8E" />
           </View>
         ) : (
           <FlatList
@@ -156,7 +156,7 @@ export default function OrdersScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f5f7fa',
+    backgroundColor: '#FAFAFA',
   },
   container: {
     flex: 1,
@@ -168,14 +168,14 @@ const styles = StyleSheet.create({
     borderBottomColor: '#eee',
   },
   headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 24, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
     marginBottom: 16,
   },
   summaryContainer: {
     flexDirection: 'row',
-    backgroundColor: '#e6f2ff',
+    backgroundColor: '#E0F2F1',
     borderRadius: 8,
     padding: 16,
   },
@@ -189,15 +189,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   summaryLabel: {
-    fontSize: 12,
-    color: '#0066cc',
+    fontSize: 12, fontFamily: 'Inter_400Regular',
+    color: '#0F9B8E',
     marginBottom: 4,
     textTransform: 'uppercase',
-    fontWeight: '600',
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
   },
   summaryValue: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 20, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#004c99',
   },
   tabContainer: {
@@ -215,15 +215,15 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   tabActive: {
-    borderBottomColor: '#0066cc',
+    borderBottomColor: '#0F9B8E',
   },
   tabText: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 14, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
     color: '#666',
   },
   tabTextActive: {
-    color: '#0066cc',
+    color: '#0F9B8E',
   },
   filtersRow: {
     flexDirection: 'row',
@@ -248,12 +248,12 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     height: '100%',
-    fontSize: 15,
+    fontSize: 15, fontFamily: 'Inter_400Regular',
   },
   filterButton: {
     width: 44,
     height: 44,
-    backgroundColor: '#e6f2ff',
+    backgroundColor: '#E0F2F1',
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -280,9 +280,9 @@ const styles = StyleSheet.create({
     borderBottomColor: '#f0f0f0',
   },
   orderNumber: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
   },
   statusBadge: {
     flexDirection: 'row',
@@ -292,20 +292,20 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   statusPending: {
-    backgroundColor: '#fef7e0',
+    backgroundColor: '#FEF3C7',
   },
   statusProcessed: {
-    backgroundColor: '#e6f4ea',
+    backgroundColor: '#DCFCE7',
   },
   statusText: {
-    fontSize: 12,
-    fontWeight: 'bold',
+    fontSize: 12, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   statusTextPending: {
-    color: '#b06000',
+    color: '#F5A623',
   },
   statusTextProcessed: {
-    color: '#1e8e3e',
+    color: '#16A34A',
   },
   cardBody: {
     padding: 16,
@@ -317,26 +317,26 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   distributorName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    color: '#1F2937',
     flex: 1,
   },
   callButton: {
     padding: 8,
-    backgroundColor: '#f0f8ff',
+    backgroundColor: '#E0F2F1',
     borderRadius: 20,
     marginLeft: 8,
   },
   dateText: {
-    fontSize: 13,
+    fontSize: 13, fontFamily: 'Inter_400Regular',
     color: '#666',
     marginBottom: 8,
   },
   totalValue: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#0066cc',
+    fontSize: 18, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#0F9B8E',
   },
   cardFooter: {
     flexDirection: 'row',
@@ -348,9 +348,9 @@ const styles = StyleSheet.create({
     borderTopColor: '#eee',
   },
   viewDetailsText: {
-    color: '#0066cc',
-    fontSize: 14,
-    fontWeight: '600',
+    color: '#0F9B8E',
+    fontSize: 14, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
   },
   loadingContainer: {
     flex: 1,
@@ -361,6 +361,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#999',
     marginTop: 40,
-    fontSize: 15,
+    fontSize: 15, fontFamily: 'Inter_400Regular',
   },
 });

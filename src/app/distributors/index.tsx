@@ -90,11 +90,11 @@ export default function MyDistributorsScreen() {
       </View>
       <View style={styles.reorderControls}>
         <TouchableOpacity onPress={() => handleMoveUp(index)} disabled={index === 0}>
-          <ChevronUp color={index === 0 ? '#ccc' : '#0066cc'} size={24} />
+          <ChevronUp color={index === 0 ? '#ccc' : '#0F9B8E'} size={24} />
         </TouchableOpacity>
         <GripVertical color="#999" size={20} style={{ marginVertical: 4 }} />
         <TouchableOpacity onPress={() => handleMoveDown(index)} disabled={index === mappedDistributors.length - 1}>
-          <ChevronDown color={index === mappedDistributors.length - 1 ? '#ccc' : '#0066cc'} size={24} />
+          <ChevronDown color={index === mappedDistributors.length - 1 ? '#ccc' : '#0F9B8E'} size={24} />
         </TouchableOpacity>
       </View>
     </View>
@@ -106,7 +106,7 @@ export default function MyDistributorsScreen() {
         <Text style={styles.itemName}>{item.name}</Text>
       </View>
       <TouchableOpacity style={styles.connectButton} onPress={() => handleConnect(item.id)}>
-        <Plus color="#0066cc" size={16} style={{ marginRight: 4 }} />
+        <Plus color="#0F9B8E" size={16} style={{ marginRight: 4 }} />
         <Text style={styles.connectButtonText}>Connect</Text>
       </TouchableOpacity>
     </View>
@@ -119,7 +119,7 @@ export default function MyDistributorsScreen() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.topBar}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <ArrowLeft color="#333" size={24} />
+          <ArrowLeft color="#1F2937" size={24} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>My Distributors</Text>
         <TouchableOpacity>
@@ -166,7 +166,7 @@ export default function MyDistributorsScreen() {
 
         {isLoading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0066cc" />
+            <ActivityIndicator size="large" color="#0F9B8E" />
           </View>
         ) : (
           <>
@@ -242,7 +242,7 @@ export default function MyDistributorsScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f5f7fa',
+    backgroundColor: '#FAFAFA',
   },
   topBar: {
     flexDirection: 'row',
@@ -258,14 +258,14 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 20, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
   },
   resetLink: {
-    fontSize: 16,
-    color: '#0066cc',
-    fontWeight: '500',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    color: '#0F9B8E',
+    fontFamily: 'Inter_500Medium', fontWeight: '500',
   },
   container: {
     flex: 1,
@@ -288,15 +288,15 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   tabActive: {
-    borderBottomColor: '#0066cc',
+    borderBottomColor: '#0F9B8E',
   },
   tabText: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 14, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
     color: '#666',
   },
   tabTextActive: {
-    color: '#0066cc',
+    color: '#0F9B8E',
   },
   searchContainer: {
     flexDirection: 'row',
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     height: '100%',
-    fontSize: 15,
+    fontSize: 15, fontFamily: 'Inter_400Regular',
   },
   listContainer: {
     paddingHorizontal: 16,
@@ -336,27 +336,27 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#e6f2ff',
+    backgroundColor: '#E0F2F1',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
   numberText: {
-    color: '#0066cc',
-    fontWeight: 'bold',
-    fontSize: 14,
+    color: '#0F9B8E',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 14, fontFamily: 'Inter_400Regular',
   },
   itemDetails: {
     flex: 1,
   },
   itemName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    color: '#1F2937',
     marginBottom: 4,
   },
   itemSubtitle: {
-    fontSize: 13,
+    fontSize: 13, fontFamily: 'Inter_400Regular',
     color: '#666',
   },
   reorderControls: {
@@ -369,15 +369,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#0066cc',
+    borderColor: '#0F9B8E',
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 12,
   },
   connectButtonText: {
-    color: '#0066cc',
-    fontWeight: '600',
-    fontSize: 14,
+    color: '#0F9B8E',
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    fontSize: 14, fontFamily: 'Inter_400Regular',
   },
   loadingContainer: {
     flex: 1,
@@ -388,19 +388,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#999',
     marginTop: 40,
-    fontSize: 15,
+    fontSize: 15, fontFamily: 'Inter_400Regular',
   },
   referContainer: {
     padding: 16,
   },
   referTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 20, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
     marginBottom: 8,
   },
   referSubtitle: {
-    fontSize: 14,
+    fontSize: 14, fontFamily: 'Inter_400Regular',
     color: '#666',
     marginBottom: 24,
   },
@@ -408,10 +408,10 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   label: {
-    fontSize: 14,
-    color: '#333',
+    fontSize: 14, fontFamily: 'Inter_400Regular',
+    color: '#1F2937',
     marginBottom: 8,
-    fontWeight: '500',
+    fontFamily: 'Inter_500Medium', fontWeight: '500',
   },
   input: {
     backgroundColor: '#fff',
@@ -420,10 +420,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     height: 50,
     paddingHorizontal: 16,
-    fontSize: 15,
+    fontSize: 15, fontFamily: 'Inter_400Regular',
   },
   submitButton: {
-    backgroundColor: '#0066cc',
+    backgroundColor: '#0F9B8E',
     height: 50,
     borderRadius: 8,
     justifyContent: 'center',
@@ -432,8 +432,8 @@ const styles = StyleSheet.create({
   },
   submitButtonText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   dividerContainer: {
     flexDirection: 'row',
@@ -448,11 +448,11 @@ const styles = StyleSheet.create({
   dividerText: {
     marginHorizontal: 16,
     color: '#999',
-    fontWeight: 'bold',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   shareButton: {
     flexDirection: 'row',
-    backgroundColor: '#1e8e3e',
+    backgroundColor: '#16A34A',
     height: 50,
     borderRadius: 8,
     justifyContent: 'center',
@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
   },
   shareButtonText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
 });

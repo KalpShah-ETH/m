@@ -58,7 +58,7 @@ export default function ReturnsScreen() {
       {item.status === 'draft' && (
         <View style={styles.cardFooter}>
           <TouchableOpacity style={styles.discardButton} onPress={() => handleCancelDraft(item.id)}>
-            <X color="#d93025" size={16} style={{ marginRight: 4 }} />
+            <X color="#DC2626" size={16} style={{ marginRight: 4 }} />
             <Text style={styles.discardButtonText}>Discard</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.submitButton} onPress={() => handleSubmit(item.id)}>
@@ -74,7 +74,7 @@ export default function ReturnsScreen() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <ArrowLeft color="#333" size={24} />
+          <ArrowLeft color="#1F2937" size={24} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Returns</Text>
       </View>
@@ -115,7 +115,7 @@ export default function ReturnsScreen() {
 
         {isLoading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0066cc" />
+            <ActivityIndicator size="large" color="#0F9B8E" />
           </View>
         ) : (
           <FlatList
@@ -150,7 +150,7 @@ export default function ReturnsScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f5f7fa',
+    backgroundColor: '#FAFAFA',
   },
   header: {
     flexDirection: 'row',
@@ -165,9 +165,9 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 20, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
   },
   container: {
     flex: 1,
@@ -186,15 +186,15 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   tabActive: {
-    borderBottomColor: '#0066cc',
+    borderBottomColor: '#0F9B8E',
   },
   tabText: {
-    fontSize: 15,
-    fontWeight: '600',
+    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
     color: '#666',
   },
   tabTextActive: {
-    color: '#0066cc',
+    color: '#0F9B8E',
   },
   subFilterContainer: {
     flexDirection: 'row',
@@ -208,12 +208,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#e6e6e6',
   },
   subFilterActive: {
-    backgroundColor: '#0066cc',
+    backgroundColor: '#0F9B8E',
   },
   subFilterText: {
-    fontSize: 14,
+    fontSize: 14, fontFamily: 'Inter_400Regular',
     color: '#666',
-    fontWeight: '500',
+    fontFamily: 'Inter_500Medium', fontWeight: '500',
   },
   subFilterTextActive: {
     color: '#fff',
@@ -239,25 +239,25 @@ const styles = StyleSheet.create({
     borderBottomColor: '#f9f9f9',
   },
   returnNumber: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
   },
   dateText: {
-    fontSize: 13,
+    fontSize: 13, fontFamily: 'Inter_400Regular',
     color: '#999',
   },
   cardBody: {
     padding: 16,
   },
   distributorName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    color: '#1F2937',
     marginBottom: 4,
   },
   orderRef: {
-    fontSize: 14,
+    fontSize: 14, fontFamily: 'Inter_400Regular',
     color: '#666',
     marginBottom: 12,
   },
@@ -267,9 +267,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   itemsLabel: {
-    fontSize: 14,
-    color: '#333',
-    fontWeight: '500',
+    fontSize: 14, fontFamily: 'Inter_400Regular',
+    color: '#1F2937',
+    fontFamily: 'Inter_500Medium', fontWeight: '500',
   },
   cardFooter: {
     flexDirection: 'row',
@@ -286,12 +286,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#fad2cf',
+    borderColor: '#FECACA',
     backgroundColor: '#fff',
   },
   discardButtonText: {
-    color: '#d93025',
-    fontWeight: '600',
+    color: '#DC2626',
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
   },
   submitButton: {
     flexDirection: 'row',
@@ -299,11 +299,11 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
-    backgroundColor: '#0066cc',
+    backgroundColor: '#0F9B8E',
   },
   submitButtonText: {
     color: '#fff',
-    fontWeight: 'bold',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   loadingContainer: {
     flex: 1,
@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     color: '#999',
-    fontSize: 16,
+    fontSize: 16, fontFamily: 'Inter_400Regular',
   },
   footerContainer: {
     padding: 16,
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#eee',
   },
   fullWidthButton: {
-    backgroundColor: '#0066cc',
+    backgroundColor: '#0F9B8E',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   },
   fullWidthButtonText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
 });

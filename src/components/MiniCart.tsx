@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     bottom: 0, // Should be positioned above bottom tabs if inside Tab layout
     left: 0,
     right: 0,
-    backgroundColor: '#0066cc',
+    backgroundColor: '#0F9B8E',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
@@ -70,8 +70,8 @@ const styles = StyleSheet.create({
   },
   itemCountText: {
     color: '#fff',
-    fontSize: 15,
-    fontWeight: 'bold',
+    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   separator: {
     color: '#fff',
@@ -80,12 +80,12 @@ const styles = StyleSheet.create({
   },
   totalText: {
     color: '#fff',
-    fontSize: 15,
-    fontWeight: 'bold',
+    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   lastAddedText: {
     color: '#fff',
-    fontSize: 12,
+    fontSize: 12, fontFamily: 'Inter_400Regular',
     opacity: 0.8,
   },
   viewCartButton: {
@@ -98,8 +98,8 @@ const styles = StyleSheet.create({
   },
   viewCartText: {
     color: '#fff',
-    fontSize: 14,
-    fontWeight: 'bold',
+    fontSize: 14, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     marginRight: 4,
   },
 });

@@ -18,7 +18,7 @@ export default function TermsScreen() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <ArrowLeft color="#333" size={24} />
+          <ArrowLeft color="#1F2937" size={24} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Terms & Conditions</Text>
       </View>
@@ -26,7 +26,7 @@ export default function TermsScreen() {
       <ScrollView contentContainerStyle={styles.container}>
         {!staticContent.terms ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0066cc" />
+            <ActivityIndicator size="large" color="#0F9B8E" />
           </View>
         ) : (
           <Text style={styles.contentText}>{staticContent.terms}</Text>
@@ -53,9 +53,9 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 20, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
   },
   container: {
     padding: 24,
@@ -65,8 +65,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   contentText: {
-    fontSize: 16,
+    fontSize: 16, fontFamily: 'Inter_400Regular',
     lineHeight: 24,
-    color: '#333',
+    color: '#1F2937',
   },
 });

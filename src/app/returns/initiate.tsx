@@ -67,7 +67,7 @@ export default function InitiateReturnScreen() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => step > 1 ? setStep(step - 1) : router.back()} style={styles.backButton}>
-          <ArrowLeft color="#333" size={24} />
+          <ArrowLeft color="#1F2937" size={24} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Initiate Return</Text>
       </View>
@@ -113,7 +113,7 @@ export default function InitiateReturnScreen() {
               return (
                 <View key={item.id} style={[styles.itemCard, isSelected && styles.itemCardSelected]}>
                   <TouchableOpacity style={styles.itemHeader} onPress={() => toggleItem(item)}>
-                    {isSelected ? <CheckCircle color="#0066cc" size={24} /> : <Circle color="#ccc" size={24} />}
+                    {isSelected ? <CheckCircle color="#0F9B8E" size={24} /> : <Circle color="#ccc" size={24} />}
                     <View style={styles.itemInfo}>
                       <Text style={styles.itemName}>{item.name}</Text>
                       <Text style={styles.itemMeta}>Max Qty: {item.qty}</Text>
@@ -151,7 +151,7 @@ export default function InitiateReturnScreen() {
                 style={[styles.typeCard, selectedType === 'saleable' && styles.typeCardSelected]}
                 onPress={() => setSelectedType('saleable')}
               >
-                <ShoppingCart color={selectedType === 'saleable' ? '#0066cc' : '#666'} size={32} style={styles.typeIcon} />
+                <ShoppingCart color={selectedType === 'saleable' ? '#0F9B8E' : '#666'} size={32} style={styles.typeIcon} />
                 <Text style={[styles.typeText, selectedType === 'saleable' && styles.typeTextSelected]}>Saleable</Text>
                 <Text style={styles.typeDesc}>Products are in good condition and resalable.</Text>
               </TouchableOpacity>
@@ -160,8 +160,8 @@ export default function InitiateReturnScreen() {
                 style={[styles.typeCard, selectedType === 'expiry' && styles.typeCardSelected]}
                 onPress={() => setSelectedType('expiry')}
               >
-                <ShoppingCart color={selectedType === 'expiry' ? '#d93025' : '#666'} size={32} style={styles.typeIcon} />
-                <Text style={[styles.typeText, selectedType === 'expiry' && {color: '#d93025'}]}>Expiry</Text>
+                <ShoppingCart color={selectedType === 'expiry' ? '#DC2626' : '#666'} size={32} style={styles.typeIcon} />
+                <Text style={[styles.typeText, selectedType === 'expiry' && {color: '#DC2626'}]}>Expiry</Text>
                 <Text style={styles.typeDesc}>Products are nearing expiry or expired.</Text>
               </TouchableOpacity>
             </View>
@@ -194,9 +194,9 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 20, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
   },
   container: {
     padding: 24,
@@ -205,8 +205,8 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   stepText: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 14, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
     color: '#666',
     marginBottom: 8,
   },
@@ -218,20 +218,20 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#0066cc',
+    backgroundColor: '#0F9B8E',
     borderRadius: 3,
   },
   stepContent: {
     flex: 1,
   },
   stepTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 24, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
     marginBottom: 8,
   },
   stepSubtitle: {
-    fontSize: 15,
+    fontSize: 15, fontFamily: 'Inter_400Regular',
     color: '#666',
     marginBottom: 24,
   },
@@ -239,9 +239,9 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   label: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#333',
+    fontSize: 14, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_500Medium', fontWeight: '500',
+    color: '#1F2937',
     marginBottom: 8,
   },
   input: {
@@ -249,11 +249,11 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 8,
     padding: 16,
-    fontSize: 16,
+    fontSize: 16, fontFamily: 'Inter_400Regular',
     backgroundColor: '#f9f9f9',
   },
   primaryButton: {
-    backgroundColor: '#0066cc',
+    backgroundColor: '#0F9B8E',
     paddingVertical: 16,
     borderRadius: 8,
     alignItems: 'center',
@@ -261,8 +261,8 @@ const styles = StyleSheet.create({
   },
   primaryButtonText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   itemCard: {
     borderWidth: 1,
@@ -272,8 +272,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   itemCardSelected: {
-    borderColor: '#0066cc',
-    backgroundColor: '#f0f8ff',
+    borderColor: '#0F9B8E',
+    backgroundColor: '#E0F2F1',
   },
   itemHeader: {
     flexDirection: 'row',
@@ -284,13 +284,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    color: '#1F2937',
     marginBottom: 4,
   },
   itemMeta: {
-    fontSize: 13,
+    fontSize: 13, fontFamily: 'Inter_400Regular',
     color: '#666',
   },
   qtyContainer: {
@@ -299,12 +299,12 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: '#e6f2ff',
+    borderTopColor: '#E0F2F1',
     marginLeft: 36,
   },
   qtyLabel: {
-    fontSize: 14,
-    color: '#333',
+    fontSize: 14, fontFamily: 'Inter_400Regular',
+    color: '#1F2937',
     marginRight: 12,
   },
   qtyInput: {
@@ -329,23 +329,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   typeCardSelected: {
-    borderColor: '#0066cc',
-    backgroundColor: '#f0f8ff',
+    borderColor: '#0F9B8E',
+    backgroundColor: '#E0F2F1',
   },
   typeIcon: {
     marginBottom: 12,
   },
   typeText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 18, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
     marginBottom: 8,
   },
   typeTextSelected: {
-    color: '#0066cc',
+    color: '#0F9B8E',
   },
   typeDesc: {
-    fontSize: 13,
+    fontSize: 13, fontFamily: 'Inter_400Regular',
     color: '#666',
     textAlign: 'center',
   },

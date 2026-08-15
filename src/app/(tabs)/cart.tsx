@@ -69,11 +69,11 @@ export default function CartScreen() {
                 <View style={styles.itemActions}>
                   <View style={styles.stepperContainer}>
                     <TouchableOpacity style={styles.stepperButton} onPress={() => updateQuantity(item.id, item.quantity - 1)}>
-                      <Minus color="#0066cc" size={18} />
+                      <Minus color="#0F9B8E" size={18} />
                     </TouchableOpacity>
                     <Text style={styles.stepperValue}>{item.quantity}</Text>
                     <TouchableOpacity style={styles.stepperButton} onPress={() => updateQuantity(item.id, item.quantity + 1)}>
-                      <Plus color="#0066cc" size={18} />
+                      <Plus color="#0F9B8E" size={18} />
                     </TouchableOpacity>
                   </View>
                   <TouchableOpacity style={styles.removeButton} onPress={() => removeItem(item.id)}>
@@ -113,16 +113,16 @@ export default function CartScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f5f7fa',
+    backgroundColor: '#FAFAFA',
   },
   container: {
     padding: 16,
     paddingBottom: 100, // Extra padding for the mini cart at the bottom
   },
   screenTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 24, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
     marginBottom: 24,
   },
   groupContainer: {
@@ -134,9 +134,9 @@ const styles = StyleSheet.create({
     borderColor: '#eee',
   },
   distributorName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#0066cc',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#0F9B8E',
     marginBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
@@ -155,13 +155,13 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   itemName: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    color: '#1F2937',
     marginBottom: 4,
   },
   itemPrice: {
-    fontSize: 13,
+    fontSize: 13, fontFamily: 'Inter_400Regular',
     color: '#666',
   },
   itemActions: {
@@ -171,10 +171,10 @@ const styles = StyleSheet.create({
   stepperContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f0f8ff',
+    backgroundColor: '#E0F2F1',
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#0066cc',
+    borderColor: '#0F9B8E',
     height: 36,
     marginRight: 12,
   },
@@ -185,9 +185,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   stepperValue: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#0066cc',
+    fontSize: 14, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#0F9B8E',
     minWidth: 20,
     textAlign: 'center',
   },
@@ -205,9 +205,9 @@ const styles = StyleSheet.create({
     borderColor: '#eee',
   },
   summaryTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
     marginBottom: 12,
   },
   summaryRow: {
@@ -216,16 +216,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   summaryLabel: {
-    fontSize: 15,
+    fontSize: 15, fontFamily: 'Inter_400Regular',
     color: '#666',
   },
   summaryTotal: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#0066cc',
+    fontSize: 20, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#0F9B8E',
   },
   checkoutButton: {
-    backgroundColor: '#0066cc',
+    backgroundColor: '#0F9B8E',
     height: 56,
     borderRadius: 12,
     justifyContent: 'center',
@@ -237,8 +237,8 @@ const styles = StyleSheet.create({
   },
   checkoutButtonText: {
     color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 18, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   emptyContainer: {
     flex: 1,
@@ -247,14 +247,14 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   emptyText: {
-    fontSize: 16,
+    fontSize: 16, fontFamily: 'Inter_400Regular',
     color: '#666',
     textAlign: 'center',
   },
   successTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1e8e3e',
+    fontSize: 24, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#16A34A',
     marginBottom: 8,
   },
 });

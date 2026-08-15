@@ -43,7 +43,7 @@ export default function SearchScreen() {
   const renderProductItem = ({ item }: { item: any }) => (
     <TouchableOpacity style={styles.resultItem}>
       <View style={styles.resultIcon}>
-        <Pill color="#0066cc" size={24} />
+        <Pill color="#0F9B8E" size={24} />
       </View>
       <View style={styles.resultDetails}>
         <Text style={styles.resultTitle}>{item.name}</Text>
@@ -56,7 +56,7 @@ export default function SearchScreen() {
   const renderDistributorItem = ({ item }: { item: any }) => (
     <TouchableOpacity style={styles.resultItem}>
       <View style={styles.resultIcon}>
-        <Truck color="#0066cc" size={24} />
+        <Truck color="#0F9B8E" size={24} />
       </View>
       <View style={styles.resultDetails}>
         <Text style={styles.resultTitle}>{item.name}</Text>
@@ -115,7 +115,7 @@ export default function SearchScreen() {
 
         {/* Results Info */}
         <View style={styles.resultsInfo}>
-          {isLoading && <ActivityIndicator size="small" color="#0066cc" />}
+          {isLoading && <ActivityIndicator size="small" color="#0F9B8E" />}
           {!isLoading && query.length > 0 && query.length < 3 && (
             <Text style={styles.helperText}>Please enter at least 3 characters to search.</Text>
           )}
@@ -172,12 +172,12 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   toggleText: {
-    fontSize: 14,
+    fontSize: 14, fontFamily: 'Inter_400Regular',
     color: '#666',
-    fontWeight: '600',
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
   },
   toggleTextActive: {
-    color: '#0066cc',
+    color: '#0F9B8E',
   },
   searchInputContainer: {
     flexDirection: 'row',
@@ -196,8 +196,8 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     height: '100%',
-    fontSize: 16,
-    color: '#333',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    color: '#1F2937',
   },
   clearIcon: {
     padding: 4,
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   helperText: {
-    fontSize: 14,
+    fontSize: 14, fontFamily: 'Inter_400Regular',
     color: '#999',
   },
   listContainer: {
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
   resultIcon: {
     width: 48,
     height: 48,
-    backgroundColor: '#f0f8ff',
+    backgroundColor: '#E0F2F1',
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -235,26 +235,26 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   resultTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    color: '#1F2937',
     marginBottom: 4,
   },
   resultSubtitle: {
-    fontSize: 13,
+    fontSize: 13, fontFamily: 'Inter_400Regular',
     color: '#666',
   },
   resultPrice: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#0066cc',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#0F9B8E',
   },
   emptyContainer: {
     paddingTop: 40,
     alignItems: 'center',
   },
   emptyText: {
-    fontSize: 16,
+    fontSize: 16, fontFamily: 'Inter_400Regular',
     color: '#999',
   },
 });

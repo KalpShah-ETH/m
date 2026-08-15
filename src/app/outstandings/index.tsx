@@ -25,7 +25,7 @@ export default function OutstandingsScreen() {
       <View style={styles.cardHeader}>
         <View style={styles.distributorInfo}>
           <View style={styles.iconContainer}>
-            <Receipt color="#0066cc" size={24} />
+            <Receipt color="#0F9B8E" size={24} />
           </View>
           <Text style={styles.distributorName}>{item.distributorName}</Text>
         </View>
@@ -44,7 +44,7 @@ export default function OutstandingsScreen() {
           <View style={styles.statusContainer}>
             {item.isOverdue ? (
               <View style={styles.overdueBadge}>
-                <AlertCircle color="#d93025" size={14} style={{ marginRight: 4 }} />
+                <AlertCircle color="#DC2626" size={14} style={{ marginRight: 4 }} />
                 <Text style={styles.overdueText}>Overdue</Text>
               </View>
             ) : (
@@ -60,7 +60,7 @@ export default function OutstandingsScreen() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.topBar}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <ArrowLeft color="#333" size={24} />
+          <ArrowLeft color="#1F2937" size={24} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Outstandings</Text>
         <View style={{ width: 24 }} />
@@ -85,7 +85,7 @@ export default function OutstandingsScreen() {
 
         {isLoading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0066cc" />
+            <ActivityIndicator size="large" color="#0F9B8E" />
           </View>
         ) : (
           <FlatList
@@ -106,7 +106,7 @@ export default function OutstandingsScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f5f7fa',
+    backgroundColor: '#FAFAFA',
   },
   topBar: {
     flexDirection: 'row',
@@ -122,9 +122,9 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 20, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
   },
   container: {
     flex: 1,
@@ -135,11 +135,11 @@ const styles = StyleSheet.create({
   summaryContainer: {
     marginHorizontal: 16,
     marginBottom: 16,
-    backgroundColor: '#0066cc',
+    backgroundColor: '#0F9B8E',
     borderRadius: 12,
     padding: 20,
     alignItems: 'center',
-    shadowColor: '#0066cc',
+    shadowColor: '#0F9B8E',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
@@ -147,13 +147,13 @@ const styles = StyleSheet.create({
   },
   summaryLabel: {
     color: 'rgba(255, 255, 255, 0.8)',
-    fontSize: 14,
+    fontSize: 14, fontFamily: 'Inter_400Regular',
     marginBottom: 8,
   },
   summaryValue: {
     color: '#fff',
-    fontSize: 28,
-    fontWeight: 'bold',
+    fontSize: 28, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   searchContainer: {
     flexDirection: 'row',
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     height: '100%',
-    fontSize: 15,
+    fontSize: 15, fontFamily: 'Inter_400Regular',
   },
   listContainer: {
     paddingHorizontal: 16,
@@ -205,15 +205,15 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#e6f2ff',
+    backgroundColor: '#E0F2F1',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
   distributorName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    color: '#1F2937',
     flex: 1,
   },
   cardBody: {
@@ -225,37 +225,37 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   amountLabel: {
-    fontSize: 13,
+    fontSize: 13, fontFamily: 'Inter_400Regular',
     color: '#666',
     marginBottom: 4,
   },
   amountValue: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 18, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
   },
   amountValueOverdue: {
-    color: '#d93025',
+    color: '#DC2626',
   },
   statusContainer: {
     alignItems: 'flex-end',
   },
   dueDateText: {
-    fontSize: 13,
+    fontSize: 13, fontFamily: 'Inter_400Regular',
     color: '#666',
   },
   overdueBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fce8e6',
+    backgroundColor: '#FEE2E2',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
   },
   overdueText: {
-    color: '#d93025',
-    fontSize: 12,
-    fontWeight: 'bold',
+    color: '#DC2626',
+    fontSize: 12, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   loadingContainer: {
     flex: 1,
@@ -266,6 +266,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#999',
     marginTop: 40,
-    fontSize: 15,
+    fontSize: 15, fontFamily: 'Inter_400Regular',
   },
 });

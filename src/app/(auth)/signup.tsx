@@ -215,13 +215,13 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#0066cc',
+    fontSize: 28, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#0F9B8E',
     marginBottom: 8,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 16, fontFamily: 'Inter_400Regular',
     color: '#666',
   },
   errorText: {
@@ -251,8 +251,8 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: '100%',
-    color: '#333',
-    fontSize: 16,
+    color: '#1F2937',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
   },
   eyeIcon: {
     padding: 4,
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderWidth: 2,
-    borderColor: '#0066cc',
+    borderColor: '#0F9B8E',
     borderRadius: 4,
     marginRight: 12,
     justifyContent: 'center',
@@ -275,17 +275,17 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   checkboxChecked: {
-    backgroundColor: '#0066cc',
+    backgroundColor: '#0F9B8E',
   },
   checkmark: {
     color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
+    fontSize: 12, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   checkboxText: {
     flex: 1,
     color: '#666',
-    fontSize: 14,
+    fontSize: 14, fontFamily: 'Inter_400Regular',
     lineHeight: 20,
   },
   actionButtons: {
@@ -305,14 +305,14 @@ const styles = StyleSheet.create({
   },
   backButtonText: {
     color: '#666',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   submitButton: {
     flex: 2,
     height: 50,
     borderRadius: 8,
-    backgroundColor: '#0066cc',
+    backgroundColor: '#0F9B8E',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
   },
   submitButtonText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
 });

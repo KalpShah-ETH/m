@@ -60,7 +60,7 @@ export default function GenericProductsScreen() {
         <View style={styles.productHeader}>
           <View style={styles.productInfo}>
             <View style={styles.productNameRow}>
-              <Pill color="#0066cc" size={18} style={{ marginRight: 8 }} />
+              <Pill color="#0F9B8E" size={18} style={{ marginRight: 8 }} />
               <Text style={styles.productName}>{item.name}</Text>
             </View>
             <Text style={styles.packSize}>Pack: {item.packSize}</Text>
@@ -113,7 +113,7 @@ export default function GenericProductsScreen() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <ArrowLeft color="#333" size={24} />
+          <ArrowLeft color="#1F2937" size={24} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Generic Products</Text>
       </View>
@@ -135,7 +135,7 @@ export default function GenericProductsScreen() {
         {/* Categories */}
         <View style={styles.categoriesWrapper}>
           {isLoadingCategories ? (
-            <ActivityIndicator size="small" color="#0066cc" />
+            <ActivityIndicator size="small" color="#0F9B8E" />
           ) : (
             <FlatList
               horizontal
@@ -151,7 +151,7 @@ export default function GenericProductsScreen() {
         {/* Product List */}
         {isLoadingProducts ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0066cc" />
+            <ActivityIndicator size="large" color="#0F9B8E" />
           </View>
         ) : (
           <FlatList
@@ -175,7 +175,7 @@ export default function GenericProductsScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f5f7fa',
+    backgroundColor: '#FAFAFA',
   },
   header: {
     flexDirection: 'row',
@@ -190,9 +190,9 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 20, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
   },
   container: {
     flex: 1,
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     height: '100%',
-    fontSize: 15,
+    fontSize: 15, fontFamily: 'Inter_400Regular',
   },
   categoriesWrapper: {
     backgroundColor: '#fff',
@@ -236,12 +236,12 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   categoryTileSelected: {
-    backgroundColor: '#0066cc',
+    backgroundColor: '#0F9B8E',
   },
   categoryText: {
-    fontSize: 14,
-    color: '#333',
-    fontWeight: '500',
+    fontSize: 14, fontFamily: 'Inter_400Regular',
+    color: '#1F2937',
+    fontFamily: 'Inter_500Medium', fontWeight: '500',
   },
   categoryTextSelected: {
     color: '#fff',
@@ -278,13 +278,13 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   productName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
     flex: 1,
   },
   packSize: {
-    fontSize: 13,
+    fontSize: 13, fontFamily: 'Inter_400Regular',
     color: '#666',
     marginBottom: 8,
   },
@@ -295,18 +295,18 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   stockIn: {
-    backgroundColor: '#e6f4ea',
+    backgroundColor: '#DCFCE7',
   },
   stockOut: {
-    backgroundColor: '#fce8e6',
+    backgroundColor: '#FEE2E2',
   },
   stockText: {
-    fontSize: 10,
-    fontWeight: 'bold',
-    color: '#1e8e3e',
+    fontSize: 10, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#16A34A',
   },
   stockTextOut: {
-    color: '#d93025',
+    color: '#DC2626',
   },
   productDetails: {
     marginTop: 16,
@@ -319,33 +319,33 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   priceLabel: {
-    fontSize: 12,
+    fontSize: 12, fontFamily: 'Inter_400Regular',
     color: '#999',
     marginBottom: 2,
   },
   priceValue: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
   },
   discountValue: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#1e8e3e',
+    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#16A34A',
   },
   actionContainer: {
     marginTop: 16,
   },
   addButton: {
-    backgroundColor: '#0066cc',
+    backgroundColor: '#0F9B8E',
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
   },
   addButtonText: {
     color: '#fff',
-    fontSize: 15,
-    fontWeight: 'bold',
+    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   outOfStockButton: {
     backgroundColor: '#f5f5f5',
@@ -357,8 +357,8 @@ const styles = StyleSheet.create({
   },
   outOfStockText: {
     color: '#999',
-    fontSize: 15,
-    fontWeight: 'bold',
+    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   emptyContainer: {
     padding: 60,
@@ -367,6 +367,6 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     color: '#999',
-    fontSize: 16,
+    fontSize: 16, fontFamily: 'Inter_400Regular',
   },
 });

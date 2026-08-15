@@ -92,7 +92,7 @@ export default function LoginScreen() {
           </View>
 
           <TouchableOpacity style={styles.outlineButton}>
-            <Phone color="#0066cc" size={20} style={styles.buttonIcon} />
+            <Phone color="#0F9B8E" size={20} style={styles.buttonIcon} />
             <Text style={styles.outlineButtonText}>Login with mobile OTP</Text>
           </TouchableOpacity>
 
@@ -131,14 +131,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#0066cc',
+    fontSize: 32, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#0F9B8E',
     marginBottom: 8,
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 18, fontFamily: 'Inter_400Regular',
     color: '#666',
     marginBottom: 32,
     textAlign: 'center',
@@ -165,14 +165,14 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: '100%',
-    color: '#333',
-    fontSize: 16,
+    color: '#1F2937',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
   },
   eyeIcon: {
     padding: 4,
   },
   primaryButton: {
-    backgroundColor: '#0066cc',
+    backgroundColor: '#0F9B8E',
     height: 50,
     borderRadius: 8,
     justifyContent: 'center',
@@ -184,16 +184,16 @@ const styles = StyleSheet.create({
   },
   primaryButtonText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   forgotPassword: {
     alignItems: 'flex-end',
     marginTop: 16,
   },
   forgotPasswordText: {
-    color: '#0066cc',
-    fontSize: 14,
+    color: '#0F9B8E',
+    fontSize: 14, fontFamily: 'Inter_400Regular',
   },
   dividerContainer: {
     flexDirection: 'row',
@@ -208,13 +208,13 @@ const styles = StyleSheet.create({
   dividerText: {
     marginHorizontal: 16,
     color: '#999',
-    fontSize: 14,
+    fontSize: 14, fontFamily: 'Inter_400Regular',
   },
   outlineButton: {
     flexDirection: 'row',
     height: 50,
     borderWidth: 1,
-    borderColor: '#0066cc',
+    borderColor: '#0F9B8E',
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -223,9 +223,9 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   outlineButtonText: {
-    color: '#0066cc',
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: '#0F9B8E',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   signupContainer: {
     flexDirection: 'row',
@@ -234,11 +234,11 @@ const styles = StyleSheet.create({
   },
   signupText: {
     color: '#666',
-    fontSize: 15,
+    fontSize: 15, fontFamily: 'Inter_400Regular',
   },
   signupLink: {
-    color: '#0066cc',
-    fontSize: 15,
-    fontWeight: 'bold',
+    color: '#0F9B8E',
+    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
 });

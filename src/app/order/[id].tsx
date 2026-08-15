@@ -20,12 +20,12 @@ export default function OrderDetailScreen() {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <ArrowLeft color="#333" size={24} />
+            <ArrowLeft color="#1F2937" size={24} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Order Details</Text>
         </View>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#0066cc" />
+          <ActivityIndicator size="large" color="#0F9B8E" />
         </View>
       </SafeAreaView>
     );
@@ -41,7 +41,7 @@ export default function OrderDetailScreen() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <ArrowLeft color="#333" size={24} />
+          <ArrowLeft color="#1F2937" size={24} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Order #{currentOrder.orderNumber}</Text>
       </View>
@@ -52,13 +52,13 @@ export default function OrderDetailScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Distributor</Text>
           <View style={styles.distributorCard}>
-            <Building2 color="#0066cc" size={24} style={{ marginRight: 12 }} />
+            <Building2 color="#0F9B8E" size={24} style={{ marginRight: 12 }} />
             <View style={styles.distributorInfo}>
               <Text style={styles.distributorName}>{currentOrder.distributorName}</Text>
               <Text style={styles.distributorContact}>{currentOrder.distributorContact}</Text>
             </View>
             <TouchableOpacity onPress={handleCall} style={styles.callButton}>
-              <Phone color="#0066cc" size={20} />
+              <Phone color="#0F9B8E" size={20} />
             </TouchableOpacity>
           </View>
         </View>
@@ -71,9 +71,9 @@ export default function OrderDetailScreen() {
               <View key={index} style={styles.timelineItem}>
                 <View style={styles.timelineIconContainer}>
                   {index === currentOrder.timeline!.length - 1 && currentOrder.status === 'delivered' ? (
-                    <CheckCircle color="#1e8e3e" size={20} />
+                    <CheckCircle color="#16A34A" size={20} />
                   ) : index === 0 ? (
-                    <CheckCircle color="#0066cc" size={20} />
+                    <CheckCircle color="#0F9B8E" size={20} />
                   ) : (
                     <Clock color="#f29900" size={20} />
                   )}
@@ -130,7 +130,7 @@ export default function OrderDetailScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f5f7fa',
+    backgroundColor: '#FAFAFA',
   },
   header: {
     flexDirection: 'row',
@@ -145,9 +145,9 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 20, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
   },
   loadingContainer: {
     flex: 1,
@@ -162,9 +162,9 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 18, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
     marginBottom: 12,
   },
   distributorCard: {
@@ -180,18 +180,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   distributorName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
     marginBottom: 4,
   },
   distributorContact: {
-    fontSize: 14,
+    fontSize: 14, fontFamily: 'Inter_400Regular',
     color: '#666',
   },
   callButton: {
     padding: 12,
-    backgroundColor: '#e6f2ff',
+    backgroundColor: '#E0F2F1',
     borderRadius: 8,
   },
   timelineCard: {
@@ -222,13 +222,13 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   timelineStatus: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    color: '#1F2937',
     marginBottom: 4,
   },
   timelineDate: {
-    fontSize: 13,
+    fontSize: 13, fontFamily: 'Inter_400Regular',
     color: '#999',
   },
   itemsCard: {
@@ -253,22 +253,22 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   itemName: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    color: '#1F2937',
     marginBottom: 4,
   },
   itemMeta: {
-    fontSize: 13,
+    fontSize: 13, fontFamily: 'Inter_400Regular',
     color: '#666',
   },
   itemTotal: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
   },
   summaryCard: {
-    backgroundColor: '#0066cc',
+    backgroundColor: '#0F9B8E',
     borderRadius: 12,
     padding: 20,
     marginTop: 8,
@@ -280,12 +280,12 @@ const styles = StyleSheet.create({
   },
   summaryLabel: {
     color: 'rgba(255, 255, 255, 0.8)',
-    fontSize: 14,
+    fontSize: 14, fontFamily: 'Inter_400Regular',
   },
   summaryValue: {
     color: '#fff',
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 14, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_500Medium', fontWeight: '500',
   },
   summaryTotalRow: {
     marginTop: 8,
@@ -296,12 +296,12 @@ const styles = StyleSheet.create({
   },
   summaryTotalLabel: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   summaryTotalValue: {
     color: '#fff',
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 24, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
 });

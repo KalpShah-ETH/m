@@ -119,11 +119,11 @@ export default function DistributorCatalogScreen() {
             ) : item.quantityInCart > 0 ? (
               <View style={styles.stepperContainer}>
                 <TouchableOpacity style={styles.stepperButton} onPress={() => updateProductQuantity(item.id, item.quantityInCart - 1)}>
-                  <Minus color="#0066cc" size={20} />
+                  <Minus color="#0F9B8E" size={20} />
                 </TouchableOpacity>
                 <Text style={styles.stepperValue}>{item.quantityInCart}</Text>
                 <TouchableOpacity style={styles.stepperButton} onPress={() => updateProductQuantity(item.id, item.quantityInCart + 1)}>
-                  <Plus color="#0066cc" size={20} />
+                  <Plus color="#0F9B8E" size={20} />
                 </TouchableOpacity>
               </View>
             ) : (
@@ -155,7 +155,7 @@ export default function DistributorCatalogScreen() {
         {/* Outstanding Banner */}
         {outstandingRecord && outstandingRecord.amountOwed > 0 && (
           <View style={[styles.outstandingBanner, outstandingRecord.isOverdue && styles.outstandingBannerOverdue]}>
-            <AlertCircle color={outstandingRecord.isOverdue ? "#d93025" : "#b06000"} size={20} style={{ marginRight: 8 }} />
+            <AlertCircle color={outstandingRecord.isOverdue ? "#DC2626" : "#F5A623"} size={20} style={{ marginRight: 8 }} />
             <Text style={[styles.outstandingBannerText, outstandingRecord.isOverdue && styles.outstandingBannerTextOverdue]}>
               Outstanding: ₹{outstandingRecord.amountOwed.toFixed(2)} 
               {outstandingRecord.isOverdue ? ' (Overdue)' : ` (Due: ${outstandingRecord.dueDate})`}
@@ -188,7 +188,7 @@ export default function DistributorCatalogScreen() {
             </TouchableOpacity>
           </View>
           {isLoadingCategories ? (
-            <ActivityIndicator size="small" color="#0066cc" style={{ marginVertical: 16 }} />
+            <ActivityIndicator size="small" color="#0F9B8E" style={{ marginVertical: 16 }} />
           ) : (
             <FlatList
               horizontal
@@ -204,7 +204,7 @@ export default function DistributorCatalogScreen() {
         {/* Product List */}
         {isLoadingProducts ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0066cc" />
+            <ActivityIndicator size="large" color="#0F9B8E" />
           </View>
         ) : (
           <FlatList
@@ -227,7 +227,7 @@ export default function DistributorCatalogScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f5f7fa',
+    backgroundColor: '#FAFAFA',
   },
   container: {
     flex: 1,
@@ -235,23 +235,23 @@ const styles = StyleSheet.create({
   outstandingBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fef7e0',
+    backgroundColor: '#FEF3C7',
     padding: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#fce8b2',
+    borderBottomColor: '#FDE68A',
   },
   outstandingBannerOverdue: {
-    backgroundColor: '#fce8e6',
-    borderBottomColor: '#fad2cf',
+    backgroundColor: '#FEE2E2',
+    borderBottomColor: '#FECACA',
   },
   outstandingBannerText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#b06000',
+    fontSize: 14, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#F5A623',
     flex: 1,
   },
   outstandingBannerTextOverdue: {
-    color: '#d93025',
+    color: '#DC2626',
   },
   tabContainer: {
     flexDirection: 'row',
@@ -267,15 +267,15 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   tabActive: {
-    borderBottomColor: '#0066cc',
+    borderBottomColor: '#0F9B8E',
   },
   tabText: {
-    fontSize: 15,
-    fontWeight: '600',
+    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
     color: '#666',
   },
   tabTextActive: {
-    color: '#0066cc',
+    color: '#0F9B8E',
   },
   categoriesWrapper: {
     backgroundColor: '#fff',
@@ -290,9 +290,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   categoriesTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
   },
   categoriesList: {
     paddingHorizontal: 16,
@@ -306,12 +306,12 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   categoryTileSelected: {
-    backgroundColor: '#0066cc',
+    backgroundColor: '#0F9B8E',
   },
   categoryText: {
-    fontSize: 14,
-    color: '#333',
-    fontWeight: '500',
+    fontSize: 14, fontFamily: 'Inter_400Regular',
+    color: '#1F2937',
+    fontFamily: 'Inter_500Medium', fontWeight: '500',
   },
   categoryTextSelected: {
     color: '#fff',
@@ -343,13 +343,13 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   productName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
     marginBottom: 4,
   },
   packSize: {
-    fontSize: 13,
+    fontSize: 13, fontFamily: 'Inter_400Regular',
     color: '#666',
     marginBottom: 8,
   },
@@ -360,18 +360,18 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   stockIn: {
-    backgroundColor: '#e6f4ea',
+    backgroundColor: '#DCFCE7',
   },
   stockOut: {
-    backgroundColor: '#fce8e6',
+    backgroundColor: '#FEE2E2',
   },
   stockText: {
-    fontSize: 10,
-    fontWeight: 'bold',
-    color: '#1e8e3e',
+    fontSize: 10, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#16A34A',
   },
   stockTextOut: {
-    color: '#d93025',
+    color: '#DC2626',
   },
   productDetails: {
     marginTop: 16,
@@ -384,19 +384,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   priceLabel: {
-    fontSize: 12,
+    fontSize: 12, fontFamily: 'Inter_400Regular',
     color: '#999',
     marginBottom: 2,
   },
   priceValue: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#1F2937',
   },
   discountValue: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#1e8e3e',
+    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#16A34A',
   },
   lockedPricing: {
     flexDirection: 'row',
@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   lockedText: {
-    fontSize: 13,
+    fontSize: 13, fontFamily: 'Inter_400Regular',
     color: '#666',
     flex: 1,
   },
@@ -414,15 +414,15 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   addButton: {
-    backgroundColor: '#0066cc',
+    backgroundColor: '#0F9B8E',
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
   },
   addButtonText: {
     color: '#fff',
-    fontSize: 15,
-    fontWeight: 'bold',
+    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   outOfStockButton: {
     backgroundColor: '#f5f5f5',
@@ -434,17 +434,17 @@ const styles = StyleSheet.create({
   },
   outOfStockText: {
     color: '#999',
-    fontSize: 15,
-    fontWeight: 'bold',
+    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   stepperContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#f0f8ff',
+    backgroundColor: '#E0F2F1',
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#0066cc',
+    borderColor: '#0F9B8E',
     height: 44,
   },
   stepperButton: {
@@ -454,14 +454,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   stepperValue: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#0066cc',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#0F9B8E',
   },
   requestButton: {
     backgroundColor: '#fff',
     borderWidth: 1,
-    borderColor: '#0066cc',
+    borderColor: '#0F9B8E',
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -471,9 +471,9 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
   },
   requestButtonText: {
-    color: '#0066cc',
-    fontSize: 15,
-    fontWeight: 'bold',
+    color: '#0F9B8E',
+    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   emptyContainer: {
     padding: 40,
@@ -481,6 +481,6 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     color: '#999',
-    fontSize: 16,
+    fontSize: 16, fontFamily: 'Inter_400Regular',
   },
 });

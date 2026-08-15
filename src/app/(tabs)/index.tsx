@@ -23,7 +23,7 @@ export default function HomeScreen() {
     { id: '1', title: 'Distributors', icon: <Truck color="#0066cc" size={32} />, route: '/distributors' },
     { id: '2', title: 'Outstandings', icon: <Wallet color="#0066cc" size={32} />, route: '/outstandings' },
     { id: '3', title: 'Company Schemes', icon: <Tag color="#0066cc" size={32} /> },
-    { id: '4', title: 'Generic', icon: <Pill color="#0066cc" size={32} /> },
+    { id: '4', title: 'Generic', icon: <Pill color="#0066cc" size={32} />, route: '/generic' },
     { id: '5', title: 'Company Cashback', icon: <Gift color="#0066cc" size={32} /> },
     { id: '6', title: 'Returns', icon: <RotateCcw color="#0066cc" size={32} />, route: '/returns' },
   ];

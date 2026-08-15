@@ -6,6 +6,7 @@ import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { Stack } from 'expo-router';
 import { useAuthStore } from '@/store/authStore';
 import { useEffect } from 'react';
+import { MiniCart } from '@/components/MiniCart';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -26,8 +27,9 @@ export default function RootLayout() {
       {/* <AnimatedSplashOverlay /> */}
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        {/* We will add (tabs) later */}
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
+      <MiniCart />
     </ThemeProvider>
   );
 }

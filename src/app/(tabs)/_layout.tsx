@@ -22,6 +22,13 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, size }) => <Search color={color} size={size} /> 
         }} 
       />
+      <Tabs.Screen 
+        name="cart" 
+        options={{ 
+          title: 'Cart',
+          tabBarIcon: ({ color, size }) => <ShoppingCart color={color} size={size} /> 
+        }} 
+      />
     </Tabs>
   );
 }

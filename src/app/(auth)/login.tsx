@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { User, Lock, Eye, EyeOff, Phone } from 'lucide-react-native';
 import { Link, useRouter } from 'expo-router';
 import { useAuthStore } from '@/store/authStore';
@@ -91,7 +91,10 @@ export default function LoginScreen() {
             <View style={styles.divider} />
           </View>
 
-          <TouchableOpacity style={styles.outlineButton}>
+          <TouchableOpacity 
+            style={styles.outlineButton}
+            onPress={() => Alert.alert('Coming Soon', 'OTP Login is under development. Please login with your username and password.')}
+          >
             <Phone color="#0F9B8E" size={20} style={styles.buttonIcon} />
             <Text style={styles.outlineButtonText}>Login with mobile OTP</Text>
           </TouchableOpacity>

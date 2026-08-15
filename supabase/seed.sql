@@ -180,7 +180,7 @@ BEGIN
     NEW.raw_user_meta_data->>'first_name',
     NEW.raw_user_meta_data->>'last_name',
     NEW.raw_user_meta_data->>'mobile_number',
-    NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'email_address', NEW.email),
     NEW.raw_user_meta_data->>'distributor_code'
   );
   RETURN NEW;

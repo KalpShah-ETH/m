@@ -50,6 +50,13 @@ export default function TabsLayout() {
           tabBarIcon: ({ color, size }) => <ClipboardList color={color} size={size} /> 
         }} 
       />
+      <Tabs.Screen 
+        name="profile" 
+        options={{ 
+          title: 'Profile',
+          tabBarIcon: ({ color, size }) => <User color={color} size={size} /> 
+        }} 
+      />
     </Tabs>
   );
 }

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, SafeAreaView, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Plus, Minus, ChevronDown, Filter, Lock } from 'lucide-react-native';
+import { Plus, Minus, ChevronDown, Filter, Lock, AlertCircle } from 'lucide-react-native';
 import { useCatalogStore, CatalogProduct } from '@/store/catalogStore';
+import { useOutstandingsStore } from '@/store/outstandingsStore';
 
 export default function DistributorCatalogScreen() {
   const { id } = useLocalSearchParams();
@@ -25,6 +26,16 @@ export default function DistributorCatalogScreen() {
   } = useCatalogStore();
 
   const [expandedProductId, setExpandedProductId] = useState<string | null>(null);
+
+  const { records, fetchOutstandings } = useOutstandingsStore();
+
+  useEffect(() => {
+    if (records.length === 0) {
+      fetchOutstandings();
+    }
+  }, []);
+
+  const outstandingRecord = records.find(r => r.distributorId === id);
 
   useEffect(() => {
     if (id) {
@@ -141,6 +152,17 @@ export default function DistributorCatalogScreen() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         
+        {/* Outstanding Banner */}
+        {outstandingRecord && outstandingRecord.amountOwed > 0 && (
+          <View style={[styles.outstandingBanner, outstandingRecord.isOverdue && styles.outstandingBannerOverdue]}>
+            <AlertCircle color={outstandingRecord.isOverdue ? "#d93025" : "#b06000"} size={20} style={{ marginRight: 8 }} />
+            <Text style={[styles.outstandingBannerText, outstandingRecord.isOverdue && styles.outstandingBannerTextOverdue]}>
+              Outstanding: ₹{outstandingRecord.amountOwed.toFixed(2)} 
+              {outstandingRecord.isOverdue ? ' (Overdue)' : ` (Due: ${outstandingRecord.dueDate})`}
+            </Text>
+          </View>
+        )}
+
         {/* Header Tabs (Mapped / Non-Mapped) */}
         <View style={styles.tabContainer}>
           <TouchableOpacity 
@@ -209,6 +231,27 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+  },
+  outstandingBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fef7e0',
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#fce8b2',
+  },
+  outstandingBannerOverdue: {
+    backgroundColor: '#fce8e6',
+    borderBottomColor: '#fad2cf',
+  },
+  outstandingBannerText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#b06000',
+    flex: 1,
+  },
+  outstandingBannerTextOverdue: {
+    color: '#d93025',
   },
   tabContainer: {
     flexDirection: 'row',

@@ -1,8 +1,10 @@
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'expo-router';
-import { CheckCircle, ChevronDown, Eye, EyeOff, Lock, Mail, MapPin, Phone, Store, User, X } from 'lucide-react-native';
+import { CheckCircle, ChevronDown, Eye, EyeOff, Lock, Mail, MapPin, Phone, Store, User, X, Upload, Calendar, Info, Image as ImageIcon, Camera } from 'lucide-react-native';
 import { useEffect, useState, useRef } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function SignupScreen() {
   const router = useRouter();
@@ -49,9 +51,29 @@ export default function SignupScreen() {
   // Password Validation
   const pwdLength = password.length >= 8;
   const pwdMix = /[0-9]/.test(password) && /[A-Z]/.test(password) && /[a-z]/.test(password);
-  const pwdSpecial = /[@\-._,]/.test(password); // Adjusted regex to include these specifically or generic special char
+  const pwdSpecial = /[@\-._,]/.test(password); 
   const pwdNoSpaces = password.length > 0 && !password.startsWith(' ') && !password.endsWith(' ');
   const isPasswordValid = pwdLength && pwdMix && pwdSpecial && pwdNoSpaces;
+
+  // Step 3 State
+  const [license20, setLicense20] = useState('');
+  const [license20Url, setLicense20Url] = useState('');
+  const [license20Expiry, setLicense20Expiry] = useState<Date | null>(null);
+
+  const [license21, setLicense21] = useState('');
+  const [license21Url, setLicense21Url] = useState('');
+  const [license21Expiry, setLicense21Expiry] = useState<Date | null>(null);
+
+  const [gstin, setGstin] = useState('');
+  const [pan, setPan] = useState('');
+  const [referral, setReferral] = useState('');
+
+  const [consentTerms, setConsentTerms] = useState(false);
+  const [whatsappOptIn, setWhatsappOptIn] = useState(false);
+
+  // Step 3 UI State
+  const [showUploadSheet, setShowUploadSheet] = useState<'license20' | 'license21' | null>(null);
+  const [showDatePicker, setShowDatePicker] = useState<'license20' | 'license21' | null>(null);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -116,12 +138,70 @@ export default function SignupScreen() {
       setShowOtpModal(false);
     } else {
       setEmailError('Invalid verification code.');
-      setShowOtpModal(false); // or keep it open and show error inside modal
+      setShowOtpModal(false); 
+    }
+  };
+
+  const pickImage = async (source: 'camera' | 'gallery') => {
+    let result;
+    if (source === 'camera') {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'Camera permission is required.');
+        return;
+      }
+      result = await ImagePicker.launchCameraAsync({ allowsEditing: true, quality: 0.8 });
+    } else {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'Gallery permission is required.');
+        return;
+      }
+      result = await ImagePicker.launchImageLibraryAsync({ allowsEditing: true, quality: 0.8 });
+    }
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      const uri = result.assets[0].uri;
+      if (showUploadSheet === 'license20') setLicense20Url(uri);
+      if (showUploadSheet === 'license21') setLicense21Url(uri);
+    }
+    setShowUploadSheet(null);
+  };
+
+  const handleDateChange = (event: any, selectedDate?: Date) => {
+    const currentTarget = showDatePicker;
+    setShowDatePicker(Platform.OS === 'ios' ? currentTarget : null);
+    if (selectedDate && currentTarget) {
+      if (currentTarget === 'license20') setLicense20Expiry(selectedDate);
+      if (currentTarget === 'license21') setLicense21Expiry(selectedDate);
+    }
+  };
+
+  const handleRegister = async () => {
+    setIsLoading(true);
+    const data = {
+      businessType, shopFirmName, ownerName, shopAddress, pincode, area, city, state: stateName,
+      shopEmail, emailVerified, pharmacistName, pharmacistNumber, password,
+      license20, license20Url, license20Expiry: license20Expiry?.toISOString(),
+      license21, license21Url, license21Expiry: license21Expiry?.toISOString(),
+      gstin, pan, referral, whatsappOptIn
+    };
+
+    const { error } = await signup(data);
+    setIsLoading(false);
+    
+    if (error) {
+      Alert.alert('Registration Failed', error.message);
+    } else {
+      Alert.alert('Registration successful', 'You can log in once your application is approved.', [
+        { text: 'OK', onPress: () => router.replace('/(auth)/login') }
+      ]);
     }
   };
 
   const isStep1Valid = businessType && shopFirmName && ownerName && shopAddress && pincode.length === 6 && area && city && stateName;
   const isStep2Valid = emailVerified && isPasswordValid;
+  const isStep3Valid = license20 && license20Url && license20Expiry && license21 && license21Url && license21Expiry && consentTerms;
 
   const renderStepper = () => (
     <View style={styles.stepperContainer}>
@@ -173,6 +253,7 @@ export default function SignupScreen() {
 
           {currentStep === 1 && (
             <View style={styles.formSection}>
+              {/* Step 1 Fields */}
               <TouchableOpacity style={styles.inputContainer} onPress={() => setShowBusinessModal(true)}>
                 <Store color="#666" size={20} style={styles.icon} />
                 <Text style={[styles.inputText, !businessType && styles.placeholderText]}>
@@ -232,6 +313,7 @@ export default function SignupScreen() {
 
           {currentStep === 2 && (
             <View style={styles.formSection}>
+              {/* Step 2 Fields */}
               <View style={styles.inputContainer}>
                 <Mail color="#666" size={20} style={styles.icon} />
                 <TextInput
@@ -290,20 +372,101 @@ export default function SignupScreen() {
                 </View>
                 <View style={styles.validationRow}>
                   <CheckCircle size={16} color={pwdSpecial ? "#1F5B4E" : "#ccc"} />
-                  <Text style={[styles.validationText, pwdSpecial && styles.validationTextValid]}>At least one special character (For ex: @, -, _, ., ,)</Text>
+                  <Text style={[styles.validationText, pwdSpecial && styles.validationTextValid]}>At least one special character</Text>
                 </View>
                 <View style={styles.validationRow}>
                   <CheckCircle size={16} color={pwdNoSpaces ? "#1F5B4E" : "#ccc"} />
                   <Text style={[styles.validationText, pwdNoSpaces && styles.validationTextValid]}>No space at the start or end</Text>
                 </View>
-                <Text style={styles.validationHelper}>Password example: MedConnect@123, Abhi_1234</Text>
               </View>
             </View>
           )}
 
           {currentStep === 3 && (
             <View style={styles.formSection}>
-              <Text style={styles.subtitle}>License step pending implementation.</Text>
+              <Text style={styles.step3Header}>Upload your Drug license as per below</Text>
+
+              {/* License 20/20B */}
+              <View style={styles.licenseGroup}>
+                <View style={styles.licenseLabelRow}>
+                  <Text style={styles.licenseLabel}>20/20B <Text style={styles.asterisk}>*</Text></Text>
+                  <TouchableOpacity style={styles.infoIcon} onPress={() => Alert.alert('Info', 'This is required to activate your account')}>
+                    <Info size={16} color="#6B7280" />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.inputContainer}>
+                  <TextInput style={styles.input} placeholder="Drug license number" value={license20} onChangeText={setLicense20} placeholderTextColor="#999" />
+                </View>
+                <View style={styles.row}>
+                  <TouchableOpacity style={[styles.uploadBox, styles.flex1, { marginRight: 8 }]} onPress={() => setShowUploadSheet('license20')}>
+                    <Upload size={20} color="#1F5B4E" style={styles.icon} />
+                    <Text style={styles.uploadText} numberOfLines={1}>{license20Url ? 'Uploaded' : 'Upload'}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[styles.inputContainer, styles.flex1, { marginLeft: 8, marginBottom: 0 }]} onPress={() => setShowDatePicker('license20')}>
+                    <Calendar size={20} color="#666" style={styles.icon} />
+                    <Text style={[styles.inputText, !license20Expiry && styles.placeholderText]}>
+                      {license20Expiry ? license20Expiry.toLocaleDateString() : 'Expiry Date'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              {/* License 21/21B */}
+              <View style={styles.licenseGroup}>
+                <View style={styles.licenseLabelRow}>
+                  <Text style={styles.licenseLabel}>21/21B <Text style={styles.asterisk}>*</Text></Text>
+                  <TouchableOpacity style={styles.infoIcon} onPress={() => Alert.alert('Info', 'This is required to activate your account')}>
+                    <Info size={16} color="#6B7280" />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.inputContainer}>
+                  <TextInput style={styles.input} placeholder="Drug license number" value={license21} onChangeText={setLicense21} placeholderTextColor="#999" />
+                </View>
+                <View style={styles.row}>
+                  <TouchableOpacity style={[styles.uploadBox, styles.flex1, { marginRight: 8 }]} onPress={() => setShowUploadSheet('license21')}>
+                    <Upload size={20} color="#1F5B4E" style={styles.icon} />
+                    <Text style={styles.uploadText} numberOfLines={1}>{license21Url ? 'Uploaded' : 'Upload'}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[styles.inputContainer, styles.flex1, { marginLeft: 8, marginBottom: 0 }]} onPress={() => setShowDatePicker('license21')}>
+                    <Calendar size={20} color="#666" style={styles.icon} />
+                    <Text style={[styles.inputText, !license21Expiry && styles.placeholderText]}>
+                      {license21Expiry ? license21Expiry.toLocaleDateString() : 'Expiry Date'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              {/* Other Section */}
+              <Text style={styles.otherHeader}>Other (Optional)</Text>
+              <View style={styles.inputContainer}>
+                <TextInput style={styles.input} placeholder="GSTIN Number" value={gstin} onChangeText={setGstin} placeholderTextColor="#999" />
+              </View>
+              <View style={styles.inputContainer}>
+                <TextInput style={styles.input} placeholder="PAN Number" value={pan} onChangeText={setPan} placeholderTextColor="#999" />
+              </View>
+              <View style={styles.inputContainer}>
+                <TextInput style={styles.input} placeholder="Referral Code" value={referral} onChangeText={setReferral} placeholderTextColor="#999" />
+              </View>
+
+              {/* Consent Checkboxes */}
+              <View style={styles.checkboxContainer}>
+                <TouchableOpacity style={styles.checkbox} onPress={() => setConsentTerms(!consentTerms)}>
+                  {consentTerms && <CheckCircle size={16} color="#fff" fill="#1F5B4E" strokeWidth={0} />}
+                  {!consentTerms && <View style={styles.checkboxUnchecked} />}
+                </TouchableOpacity>
+                <Text style={styles.checkboxText}>
+                  By clicking on Register, you have read and agreed to our <Text style={styles.linkText}>Terms and Conditions</Text> and <Text style={styles.linkText}>Privacy Policy</Text> of MedConnect
+                </Text>
+              </View>
+
+              <View style={styles.checkboxContainer}>
+                <TouchableOpacity style={styles.checkbox} onPress={() => setWhatsappOptIn(!whatsappOptIn)}>
+                  {whatsappOptIn && <CheckCircle size={16} color="#fff" fill="#1F5B4E" strokeWidth={0} />}
+                  {!whatsappOptIn && <View style={styles.checkboxUnchecked} />}
+                </TouchableOpacity>
+                <Text style={styles.checkboxText}>Yes, I would like to receive transactional and promotional updates on WhatsApp</Text>
+              </View>
+
             </View>
           )}
 
@@ -317,19 +480,50 @@ export default function SignupScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.submitButton, ((currentStep === 1 && !isStep1Valid) || (currentStep === 2 && !isStep2Valid) || isLoading) && styles.disabledButton]}
+              style={[styles.submitButton, ((currentStep === 1 && !isStep1Valid) || (currentStep === 2 && !isStep2Valid) || (currentStep === 3 && !isStep3Valid) || isLoading) && styles.disabledButton]}
               onPress={() => {
                 if (currentStep === 1 && isStep1Valid) setCurrentStep(2);
-                if (currentStep === 2 && isStep2Valid) setCurrentStep(3);
-                // Step 3 logic to follow
+                else if (currentStep === 2 && isStep2Valid) setCurrentStep(3);
+                else if (currentStep === 3 && isStep3Valid) handleRegister();
               }}
-              disabled={(currentStep === 1 && !isStep1Valid) || (currentStep === 2 && !isStep2Valid) || isLoading}
+              disabled={(currentStep === 1 && !isStep1Valid) || (currentStep === 2 && !isStep2Valid) || (currentStep === 3 && !isStep3Valid) || isLoading}
             >
-              <Text style={styles.submitButtonText}>{isLoading ? 'Loading...' : 'Next'}</Text>
+              <Text style={styles.submitButtonText}>
+                {isLoading ? 'Loading...' : currentStep === 3 ? 'Register' : 'Next'}
+              </Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {/* Date Picker Modal/Overlay for Android/iOS */}
+      {showDatePicker && (
+        <DateTimePicker
+          value={(showDatePicker === 'license20' ? license20Expiry : license21Expiry) || new Date()}
+          mode="date"
+          display="default"
+          onChange={handleDateChange}
+        />
+      )}
+
+      {/* Upload Bottom Sheet */}
+      <Modal visible={!!showUploadSheet} transparent animationType="slide">
+        <View style={styles.bottomSheetOverlay}>
+          <View style={styles.bottomSheetContent}>
+            <TouchableOpacity style={styles.sheetOption} onPress={() => pickImage('gallery')}>
+              <ImageIcon color="#1F2937" size={24} style={styles.sheetIcon} />
+              <Text style={styles.sheetOptionText}>Photo Gallery</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.sheetOption} onPress={() => pickImage('camera')}>
+              <Camera color="#1F2937" size={24} style={styles.sheetIcon} />
+              <Text style={styles.sheetOptionText}>Camera</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.sheetOptionCancel} onPress={() => setShowUploadSheet(null)}>
+              <Text style={styles.sheetOptionTextCancel}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       {/* Business Type Modal */}
       <Modal visible={showBusinessModal} transparent animationType="slide">
@@ -369,8 +563,8 @@ export default function SignupScreen() {
 
       {/* OTP Verification Modal */}
       <Modal visible={showOtpModal} transparent animationType="fade">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
+        <View style={styles.modalOverlayCenter}>
+          <View style={styles.modalContentCenter}>
             <TouchableOpacity style={styles.modalCloseIcon} onPress={() => setShowOtpModal(false)}><X color="#666" size={24} /></TouchableOpacity>
             <Text style={styles.modalTitleCentered}>Email verification</Text>
             <Text style={styles.modalSubtext}>We have sent a verification code to your email {shopEmail}</Text>
@@ -425,29 +619,28 @@ export default function SignupScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: '#FAFAFA' },
   keyboardView: { flex: 1 },
   scrollContent: { padding: 24, flexGrow: 1 },
   headerRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 24, marginTop: 16 },
   backArrow: { marginRight: 16 },
-  backArrowText: { fontSize: 24, color: '#333' },
+  backArrowText: { fontSize: 24, color: '#1F2937' },
   title: { fontSize: 24, fontFamily: 'Inter_700Bold', color: '#1F2937' },
-  subtitle: { fontSize: 16, fontFamily: 'Inter_400Regular', color: '#666', marginTop: 8 },
   stepperContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 32 },
   stepIndicator: { alignItems: 'center', width: 60 },
-  stepCircle: { width: 24, height: 24, borderRadius: 12, backgroundColor: '#f0f0f0', justifyContent: 'center', alignItems: 'center', marginBottom: 4 },
+  stepCircle: { width: 24, height: 24, borderRadius: 12, backgroundColor: '#DDDDDD', justifyContent: 'center', alignItems: 'center', marginBottom: 4 },
   stepCircleActive: { backgroundColor: '#1F5B4E' },
-  stepText: { fontSize: 12, color: '#999', fontFamily: 'Inter_700Bold' },
+  stepText: { fontSize: 12, color: '#6B7280', fontFamily: 'Inter_700Bold' },
   stepTextActive: { color: '#fff' },
-  stepLabel: { fontSize: 12, color: '#999', fontFamily: 'Inter_400Regular' },
+  stepLabel: { fontSize: 12, color: '#6B7280', fontFamily: 'Inter_400Regular' },
   stepLabelActive: { color: '#1F5B4E', fontFamily: 'Inter_700Bold' },
-  stepLine: { flex: 1, height: 2, backgroundColor: '#f0f0f0', marginHorizontal: 8, marginTop: -16 },
+  stepLine: { flex: 1, height: 2, backgroundColor: '#DDDDDD', marginHorizontal: 8, marginTop: -16 },
   formSection: { flex: 1 },
-  inputContainer: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#ddd', borderRadius: 8, marginBottom: 16, paddingHorizontal: 12, height: 50, backgroundColor: '#fafafa' },
+  inputContainer: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#DDDDDD', borderRadius: 8, marginBottom: 16, paddingHorizontal: 12, height: 50, backgroundColor: '#fff' },
   icon: { marginRight: 10 },
   input: { flex: 1, height: '100%', color: '#1F2937', fontSize: 16, fontFamily: 'Inter_400Regular' },
   inputText: { flex: 1, color: '#1F2937', fontSize: 16, fontFamily: 'Inter_400Regular' },
-  placeholderText: { color: '#999' },
+  placeholderText: { color: '#6B7280' },
   eyeIcon: { padding: 4 },
   row: { flexDirection: 'row' },
   flex1: { flex: 1 },
@@ -455,29 +648,57 @@ const styles = StyleSheet.create({
   errorText: { color: '#DC2626', fontSize: 12, marginTop: -12, marginBottom: 16, fontFamily: 'Inter_400Regular' },
   validationBox: { marginTop: 8, marginBottom: 24 },
   validationRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 6 },
-  validationText: { fontSize: 12, color: '#666', marginLeft: 8, fontFamily: 'Inter_400Regular' },
+  validationText: { fontSize: 12, color: '#6B7280', marginLeft: 8, fontFamily: 'Inter_400Regular' },
   validationTextValid: { color: '#1F5B4E' },
-  validationHelper: { fontSize: 11, color: '#999', marginTop: 4, fontFamily: 'Inter_400Regular' },
+  
+  // Step 3 Styles
+  step3Header: { fontSize: 16, fontFamily: 'Inter_700Bold', color: '#1F2937', marginBottom: 24 },
+  licenseGroup: { marginBottom: 24 },
+  licenseLabelRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
+  licenseLabel: { fontSize: 14, fontFamily: 'Inter_700Bold', color: '#1F2937' },
+  asterisk: { color: '#DC2626' },
+  infoIcon: { marginLeft: 6 },
+  uploadBox: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 50, borderWidth: 1, borderColor: '#1F5B4E', borderStyle: 'dashed', borderRadius: 8, backgroundColor: '#fff', paddingHorizontal: 12 },
+  uploadText: { color: '#1F5B4E', fontSize: 14, fontFamily: 'Inter_700Bold', flex: 1 },
+  otherHeader: { fontSize: 16, fontFamily: 'Inter_700Bold', color: '#1F2937', marginBottom: 16, marginTop: 8 },
+  checkboxContainer: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: 16 },
+  checkbox: { width: 20, height: 20, justifyContent: 'center', alignItems: 'center', marginRight: 10, marginTop: 2 },
+  checkboxUnchecked: { width: 18, height: 18, borderWidth: 1, borderColor: '#DDDDDD', borderRadius: 4, backgroundColor: '#fff' },
+  checkboxText: { flex: 1, fontSize: 14, color: '#6B7280', fontFamily: 'Inter_400Regular', lineHeight: 20 },
+  linkText: { color: '#1F5B4E', fontFamily: 'Inter_700Bold' },
+
   actionButtons: { flexDirection: 'row', gap: 16, marginTop: 32 },
-  backButton: { flex: 1, height: 50, borderRadius: 8, borderWidth: 1, borderColor: '#ccc', justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' },
-  backButtonText: { color: '#666', fontSize: 16, fontFamily: 'Inter_700Bold' },
+  backButton: { flex: 1, height: 50, borderRadius: 8, borderWidth: 1, borderColor: '#DDDDDD', justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' },
+  backButtonText: { color: '#1F2937', fontSize: 16, fontFamily: 'Inter_700Bold' },
   submitButton: { flex: 2, height: 50, borderRadius: 8, backgroundColor: '#1F5B4E', justifyContent: 'center', alignItems: 'center' },
-  disabledButton: { backgroundColor: '#cccccc' },
+  disabledButton: { backgroundColor: '#A8C4BC' },
   submitButtonText: { color: '#fff', fontSize: 16, fontFamily: 'Inter_700Bold' },
 
+  // Bottom Sheet
+  bottomSheetOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
+  bottomSheetContent: { backgroundColor: '#fff', borderTopLeftRadius: 16, borderTopRightRadius: 16, paddingBottom: Platform.OS === 'ios' ? 24 : 0 },
+  sheetOption: { flexDirection: 'row', alignItems: 'center', padding: 20, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
+  sheetIcon: { marginRight: 16 },
+  sheetOptionText: { fontSize: 16, fontFamily: 'Inter_400Regular', color: '#1F2937' },
+  sheetOptionCancel: { padding: 20, alignItems: 'center' },
+  sheetOptionTextCancel: { fontSize: 16, fontFamily: 'Inter_700Bold', color: '#DC2626' },
+
+  // Modals
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   modalContent: { backgroundColor: '#fff', borderTopLeftRadius: 16, borderTopRightRadius: 16, padding: 24, maxHeight: '80%' },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
   modalTitle: { fontSize: 18, fontFamily: 'Inter_700Bold', color: '#1F2937' },
   modalOption: { paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
   modalOptionText: { fontSize: 16, color: '#1F2937', fontFamily: 'Inter_400Regular' },
-
+  
+  modalOverlayCenter: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center' },
+  modalContentCenter: { backgroundColor: '#fff', borderRadius: 16, padding: 24, width: '90%', maxWidth: 400 },
   modalCloseIcon: { alignSelf: 'flex-start', marginBottom: 16 },
   modalTitleCentered: { fontSize: 20, fontFamily: 'Inter_700Bold', color: '#1F2937', textAlign: 'center', marginBottom: 8 },
-  modalSubtext: { fontSize: 14, color: '#666', textAlign: 'center', marginBottom: 24, fontFamily: 'Inter_400Regular' },
+  modalSubtext: { fontSize: 14, color: '#6B7280', textAlign: 'center', marginBottom: 24, fontFamily: 'Inter_400Regular' },
   otpRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 24 },
-  otpInput: { width: 45, height: 55, borderWidth: 1, borderColor: '#ddd', borderRadius: 8, textAlign: 'center', fontSize: 24, fontFamily: 'Inter_700Bold', color: '#1F2937', backgroundColor: '#fafafa' },
-  resendText: { textAlign: 'center', fontSize: 14, color: '#666', marginBottom: 24, fontFamily: 'Inter_400Regular' },
+  otpInput: { width: 45, height: 55, borderWidth: 1, borderColor: '#DDDDDD', borderRadius: 8, textAlign: 'center', fontSize: 24, fontFamily: 'Inter_700Bold', color: '#1F2937', backgroundColor: '#fff' },
+  resendText: { textAlign: 'center', fontSize: 14, color: '#6B7280', marginBottom: 24, fontFamily: 'Inter_400Regular' },
   countdownText: { color: '#1F2937' },
   resendLink: { color: '#1F5B4E', fontFamily: 'Inter_700Bold' },
   primaryButton: { backgroundColor: '#1F5B4E', height: 50, borderRadius: 8, justifyContent: 'center', alignItems: 'center' },

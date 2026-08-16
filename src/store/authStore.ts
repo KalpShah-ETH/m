@@ -11,7 +11,7 @@ interface AuthState {
   setLoading: (isLoading: boolean) => void;
   
   // API Endpoints mapped to store actions
-  login: (email: string, password: string) => Promise<{ error: any }>;
+  login: (email: string, password: string) => Promise<{ error: any; isPending?: boolean }>;
   sendEmailOtp: (email: string) => Promise<{ error: any }>;
   verifyEmailOtp: (email: string, otp: string) => Promise<{ error: any; valid?: boolean }>;
   forgotPassword: (email: string) => Promise<{ error: any }>;
@@ -33,8 +33,31 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       email,
       password,
     });
-    if (data.session) set({ session: data.session, user: data.user });
-    return { error };
+    
+    if (error) return { error };
+
+    if (data.session && data.user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('approval_status')
+        .eq('id', data.user.id)
+        .single();
+
+      if (profile?.approval_status === 'pending') {
+        await supabase.auth.signOut();
+        return { error: null, isPending: true };
+      }
+      
+      if (profile?.approval_status === 'rejected') {
+        await supabase.auth.signOut();
+        return { error: new Error('Your application was rejected.') };
+      }
+
+      set({ session: data.session, user: data.user });
+      return { error: null, isPending: false };
+    }
+    
+    return { error: new Error('Unknown error during login') };
   },
 
   sendEmailOtp: async (email) => {
@@ -76,7 +99,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           email_verified: data.emailVerified, // should be true since we verified it
           pharmacist_name: data.pharmacistName,
           pharmacist_number: data.pharmacistNumber,
-          // License fields will be added here later
+          license_20_20b_number: data.license20,
+          license_20_20b_doc_url: data.license20Url,
+          license_20_20b_expiry: data.license20Expiry,
+          license_21_21b_number: data.license21,
+          license_21_21b_doc_url: data.license21Url,
+          license_21_21b_expiry: data.license21Expiry,
+          gstin_number: data.gstin,
+          pan_number: data.pan,
+          referral_code: data.referral,
+          whatsapp_opt_in: data.whatsappOptIn,
+          approval_status: 'pending',
         },
       },
     });

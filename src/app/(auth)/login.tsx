@@ -23,12 +23,14 @@ export default function LoginScreen() {
     setIsLoading(true);
     setError('');
     
-    const { error: loginError } = await login(email, password);
+    const result = await login(email, password);
     
     setIsLoading(false);
     
-    if (loginError) {
-      setError(loginError.message);
+    if (result.error) {
+      setError(result.error.message);
+    } else if (result.isPending) {
+      router.replace('/(auth)/pending-approval');
     } else {
       router.replace('/'); // Adjust depending on your tab layout route
     }

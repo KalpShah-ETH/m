@@ -1,7 +1,7 @@
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'expo-router';
 import { CheckCircle, ChevronDown, Eye, EyeOff, Lock, Mail, MapPin, Phone, Store, User, X } from 'lucide-react-native';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function SignupScreen() {
@@ -42,6 +42,9 @@ export default function SignupScreen() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [otpCountdown, setOtpCountdown] = useState(30);
   const [emailError, setEmailError] = useState('');
+
+  // OTP Refs
+  const otpRefs = useRef<Array<TextInput | null>>([]);
 
   // Password Validation
   const pwdLength = password.length >= 8;
@@ -376,15 +379,23 @@ export default function SignupScreen() {
               {otp.map((digit, index) => (
                 <TextInput
                   key={index}
+                  ref={(el) => (otpRefs.current[index] = el)}
                   style={styles.otpInput}
                   value={digit}
                   maxLength={1}
                   keyboardType="number-pad"
+                  onKeyPress={({ nativeEvent }) => {
+                    if (nativeEvent.key === 'Backspace' && !digit && index > 0) {
+                      otpRefs.current[index - 1]?.focus();
+                    }
+                  }}
                   onChangeText={(val) => {
                     const newOtp = [...otp];
                     newOtp[index] = val;
                     setOtp(newOtp);
-                    // Focusing next input omitted for brevity, would need refs in full prod app
+                    if (val && index < 5) {
+                      otpRefs.current[index + 1]?.focus();
+                    }
                   }}
                 />
               ))}

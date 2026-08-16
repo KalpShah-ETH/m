@@ -1,18 +1,18 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView, Modal, ActivityIndicator } from 'react-native';
-import { Store, MapPin, Mail, CheckCircle, X, Eye, EyeOff, Lock, User, Phone, ChevronDown } from 'lucide-react-native';
-import { useRouter } from 'expo-router';
 import { useAuthStore } from '@/store/authStore';
+import { useRouter } from 'expo-router';
+import { CheckCircle, ChevronDown, Eye, EyeOff, Lock, Mail, MapPin, Phone, Store, User, X } from 'lucide-react-native';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function SignupScreen() {
   const router = useRouter();
   const signup = useAuthStore((state) => state.signup);
   const sendEmailOtp = useAuthStore((state) => state.sendEmailOtp);
   const verifyEmailOtp = useAuthStore((state) => state.verifyEmailOtp);
-  
+
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // Step 1 State
   const [businessType, setBusinessType] = useState('');
   const [shopFirmName, setShopFirmName] = useState('');
@@ -36,13 +36,13 @@ export default function SignupScreen() {
   const [pharmacistNumber, setPharmacistNumber] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  
+
   // Step 2 UI State
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [otpCountdown, setOtpCountdown] = useState(30);
   const [emailError, setEmailError] = useState('');
-  
+
   // Password Validation
   const pwdLength = password.length >= 8;
   const pwdMix = /[0-9]/.test(password) && /[A-Z]/.test(password) && /[a-z]/.test(password);
@@ -165,7 +165,7 @@ export default function SignupScreen() {
             )}
             <Text style={styles.title}>Create your account</Text>
           </View>
-          
+
           {renderStepper()}
 
           {currentStep === 1 && (
@@ -195,15 +195,15 @@ export default function SignupScreen() {
 
               <View style={styles.inputContainer}>
                 <MapPin color="#666" size={20} style={styles.icon} />
-                <TextInput 
-                  style={styles.input} 
-                  placeholder="Pincode *" 
-                  value={pincode} 
-                  onChangeText={setPincode} 
+                <TextInput
+                  style={styles.input}
+                  placeholder="Pincode *"
+                  value={pincode}
+                  onChangeText={setPincode}
                   onBlur={handlePincodeBlur}
-                  keyboardType="number-pad" 
+                  keyboardType="number-pad"
                   maxLength={6}
-                  placeholderTextColor="#999" 
+                  placeholderTextColor="#999"
                 />
                 {isFetchingPincode && <ActivityIndicator color="#1F5B4E" size="small" />}
               </View>
@@ -231,15 +231,15 @@ export default function SignupScreen() {
             <View style={styles.formSection}>
               <View style={styles.inputContainer}>
                 <Mail color="#666" size={20} style={styles.icon} />
-                <TextInput 
-                  style={[styles.input, emailVerified && { color: '#666' }]} 
-                  placeholder="Shop Email ID *" 
-                  value={shopEmail} 
-                  onChangeText={(text) => { setShopEmail(text); setEmailVerified(false); }} 
+                <TextInput
+                  style={[styles.input, emailVerified && { color: '#666' }]}
+                  placeholder="Shop Email ID *"
+                  value={shopEmail}
+                  onChangeText={(text) => { setShopEmail(text); setEmailVerified(false); }}
                   keyboardType="email-address"
                   autoCapitalize="none"
                   editable={!emailVerified}
-                  placeholderTextColor="#999" 
+                  placeholderTextColor="#999"
                 />
                 {emailVerified ? (
                   <CheckCircle color="#1F5B4E" size={20} />
@@ -305,16 +305,16 @@ export default function SignupScreen() {
           )}
 
           <View style={styles.actionButtons}>
-            <TouchableOpacity 
-              style={styles.backButton} 
+            <TouchableOpacity
+              style={styles.backButton}
               onPress={() => currentStep > 1 ? setCurrentStep(currentStep - 1) : router.back()}
               disabled={isLoading}
             >
               <Text style={styles.backButtonText}>Back</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={[styles.submitButton, ((currentStep === 1 && !isStep1Valid) || (currentStep === 2 && !isStep2Valid) || isLoading) && styles.disabledButton]} 
+            <TouchableOpacity
+              style={[styles.submitButton, ((currentStep === 1 && !isStep1Valid) || (currentStep === 2 && !isStep2Valid) || isLoading) && styles.disabledButton]}
               onPress={() => {
                 if (currentStep === 1 && isStep1Valid) setCurrentStep(2);
                 if (currentStep === 2 && isStep2Valid) setCurrentStep(3);
@@ -371,7 +371,7 @@ export default function SignupScreen() {
             <TouchableOpacity style={styles.modalCloseIcon} onPress={() => setShowOtpModal(false)}><X color="#666" size={24} /></TouchableOpacity>
             <Text style={styles.modalTitleCentered}>Email verification</Text>
             <Text style={styles.modalSubtext}>We have sent a verification code to your email {shopEmail}</Text>
-            
+
             <View style={styles.otpRow}>
               {otp.map((digit, index) => (
                 <TextInput
@@ -389,7 +389,7 @@ export default function SignupScreen() {
                 />
               ))}
             </View>
-            
+
             <Text style={styles.resendText}>
               Didn't get the code?{' '}
               {otpCountdown > 0 ? (
@@ -399,8 +399,8 @@ export default function SignupScreen() {
               )}
             </Text>
 
-            <TouchableOpacity 
-              style={[styles.primaryButton, otp.join('').length < 6 && styles.disabledButton]} 
+            <TouchableOpacity
+              style={[styles.primaryButton, otp.join('').length < 6 && styles.disabledButton]}
               onPress={handleVerifyOtp}
               disabled={otp.join('').length < 6 || isLoading}
             >
@@ -453,14 +453,14 @@ const styles = StyleSheet.create({
   submitButton: { flex: 2, height: 50, borderRadius: 8, backgroundColor: '#1F5B4E', justifyContent: 'center', alignItems: 'center' },
   disabledButton: { backgroundColor: '#cccccc' },
   submitButtonText: { color: '#fff', fontSize: 16, fontFamily: 'Inter_700Bold' },
-  
+
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   modalContent: { backgroundColor: '#fff', borderTopLeftRadius: 16, borderTopRightRadius: 16, padding: 24, maxHeight: '80%' },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
   modalTitle: { fontSize: 18, fontFamily: 'Inter_700Bold', color: '#1F2937' },
   modalOption: { paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
   modalOptionText: { fontSize: 16, color: '#1F2937', fontFamily: 'Inter_400Regular' },
-  
+
   modalCloseIcon: { alignSelf: 'flex-start', marginBottom: 16 },
   modalTitleCentered: { fontSize: 20, fontFamily: 'Inter_700Bold', color: '#1F2937', textAlign: 'center', marginBottom: 8 },
   modalSubtext: { fontSize: 14, color: '#666', textAlign: 'center', marginBottom: 24, fontFamily: 'Inter_400Regular' },

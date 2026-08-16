@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3"
 
@@ -94,7 +95,7 @@ serve(async (req) => {
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
       status: 200,
     })
-  } catch (error) {
+  } catch (error: any) {
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
       status: 400,

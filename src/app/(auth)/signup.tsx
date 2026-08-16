@@ -11,9 +11,11 @@ export default function SignupScreen() {
   const signup = useAuthStore((state) => state.signup);
   const sendEmailOtp = useAuthStore((state) => state.sendEmailOtp);
   const verifyEmailOtp = useAuthStore((state) => state.verifyEmailOtp);
+  const uploadLicense = useAuthStore((state) => state.uploadLicense);
 
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [tempId] = useState(() => Date.now().toString() + Math.random().toString(36).substring(7));
 
   // Step 1 State
   const [businessType, setBusinessType] = useState('');
@@ -74,6 +76,8 @@ export default function SignupScreen() {
   // Step 3 UI State
   const [showUploadSheet, setShowUploadSheet] = useState<'license20' | 'license21' | null>(null);
   const [showDatePicker, setShowDatePicker] = useState<'license20' | 'license21' | null>(null);
+  const [license20UploadError, setLicense20UploadError] = useState(false);
+  const [license21UploadError, setLicense21UploadError] = useState(false);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -162,8 +166,14 @@ export default function SignupScreen() {
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
       const uri = result.assets[0].uri;
-      if (showUploadSheet === 'license20') setLicense20Url(uri);
-      if (showUploadSheet === 'license21') setLicense21Url(uri);
+      if (showUploadSheet === 'license20') {
+        setLicense20Url(uri);
+        setLicense20UploadError(false);
+      }
+      if (showUploadSheet === 'license21') {
+        setLicense21Url(uri);
+        setLicense21UploadError(false);
+      }
     }
     setShowUploadSheet(null);
   };
@@ -179,11 +189,31 @@ export default function SignupScreen() {
 
   const handleRegister = async () => {
     setIsLoading(true);
+    setLicense20UploadError(false);
+    setLicense21UploadError(false);
+
+    let finalLicense20Url = license20Url;
+    let finalLicense21Url = license21Url;
+
+    const { path: p20, error: err20 } = await uploadLicense(tempId, 'license20', license20Url);
+    if (err20) setLicense20UploadError(true);
+    else finalLicense20Url = p20 || '';
+
+    const { path: p21, error: err21 } = await uploadLicense(tempId, 'license21', license21Url);
+    if (err21) setLicense21UploadError(true);
+    else finalLicense21Url = p21 || '';
+
+    if (err20 || err21) {
+      setIsLoading(false);
+      Alert.alert('Upload Failed', 'Document upload failed. Please tap the red fields to retry.');
+      return;
+    }
+
     const data = {
       businessType, shopFirmName, ownerName, shopAddress, pincode, area, city, state: stateName,
       shopEmail, emailVerified, pharmacistName, pharmacistNumber, password,
-      license20, license20Url, license20Expiry: license20Expiry?.toISOString(),
-      license21, license21Url, license21Expiry: license21Expiry?.toISOString(),
+      license20, license20Url: finalLicense20Url, license20Expiry: license20Expiry?.toISOString(),
+      license21, license21Url: finalLicense21Url, license21Expiry: license21Expiry?.toISOString(),
       gstin, pan, referral, whatsappOptIn
     };
 
@@ -398,9 +428,11 @@ export default function SignupScreen() {
                   <TextInput style={styles.input} placeholder="Drug license number" value={license20} onChangeText={setLicense20} placeholderTextColor="#999" />
                 </View>
                 <View style={styles.row}>
-                  <TouchableOpacity style={[styles.uploadBox, styles.flex1, { marginRight: 8 }]} onPress={() => setShowUploadSheet('license20')}>
-                    <Upload size={20} color="#1F5B4E" style={styles.icon} />
-                    <Text style={styles.uploadText} numberOfLines={1}>{license20Url ? 'Uploaded' : 'Upload'}</Text>
+                  <TouchableOpacity style={[styles.uploadBox, styles.flex1, { marginRight: 8 }, license20UploadError && { borderColor: '#DC2626' }]} onPress={() => setShowUploadSheet('license20')}>
+                    <Upload size={20} color={license20UploadError ? "#DC2626" : "#1F5B4E"} style={styles.icon} />
+                    <Text style={[styles.uploadText, license20UploadError && { color: '#DC2626' }]} numberOfLines={1}>
+                      {license20UploadError ? 'Retry Upload' : license20Url ? 'Uploaded' : 'Upload'}
+                    </Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.inputContainer, styles.flex1, { marginLeft: 8, marginBottom: 0 }]} onPress={() => setShowDatePicker('license20')}>
                     <Calendar size={20} color="#666" style={styles.icon} />
@@ -423,9 +455,11 @@ export default function SignupScreen() {
                   <TextInput style={styles.input} placeholder="Drug license number" value={license21} onChangeText={setLicense21} placeholderTextColor="#999" />
                 </View>
                 <View style={styles.row}>
-                  <TouchableOpacity style={[styles.uploadBox, styles.flex1, { marginRight: 8 }]} onPress={() => setShowUploadSheet('license21')}>
-                    <Upload size={20} color="#1F5B4E" style={styles.icon} />
-                    <Text style={styles.uploadText} numberOfLines={1}>{license21Url ? 'Uploaded' : 'Upload'}</Text>
+                  <TouchableOpacity style={[styles.uploadBox, styles.flex1, { marginRight: 8 }, license21UploadError && { borderColor: '#DC2626' }]} onPress={() => setShowUploadSheet('license21')}>
+                    <Upload size={20} color={license21UploadError ? "#DC2626" : "#1F5B4E"} style={styles.icon} />
+                    <Text style={[styles.uploadText, license21UploadError && { color: '#DC2626' }]} numberOfLines={1}>
+                      {license21UploadError ? 'Retry Upload' : license21Url ? 'Uploaded' : 'Upload'}
+                    </Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.inputContainer, styles.flex1, { marginLeft: 8, marginBottom: 0 }]} onPress={() => setShowDatePicker('license21')}>
                     <Calendar size={20} color="#666" style={styles.icon} />

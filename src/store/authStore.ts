@@ -15,6 +15,7 @@ interface AuthState {
   sendEmailOtp: (email: string) => Promise<{ error: any }>;
   verifyEmailOtp: (email: string, otp: string) => Promise<{ error: any; valid?: boolean }>;
   forgotPassword: (email: string) => Promise<{ error: any }>;
+  uploadLicense: (tempId: string, licenseKey: string, localUri: string) => Promise<{ path: string | null; error: any }>;
   signup: (data: any) => Promise<{ error: any }>;
   fetchUser: () => Promise<void>;
   logout: () => Promise<void>;
@@ -100,10 +101,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           pharmacist_name: data.pharmacistName,
           pharmacist_number: data.pharmacistNumber,
           license_20_20b_number: data.license20,
-          license_20_20b_doc_url: data.license20Url,
+          license_20_20b_doc_url: data.license20Url, // Will hold the temp path initially
           license_20_20b_expiry: data.license20Expiry,
           license_21_21b_number: data.license21,
-          license_21_21b_doc_url: data.license21Url,
+          license_21_21b_doc_url: data.license21Url, // Will hold the temp path initially
           license_21_21b_expiry: data.license21Expiry,
           gstin_number: data.gstin,
           pan_number: data.pan,
@@ -120,21 +121,19 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         let finalLicense20Url = data.license20Url;
         let finalLicense21Url = data.license21Url;
         
-        if (data.license20Url && !data.license20Url.startsWith('http')) {
+        // Move files from pending/{tempId}/... to {userId}/...
+        if (data.license20Url && data.license20Url.startsWith('pending/')) {
            const ext = data.license20Url.split('.').pop() || 'jpg';
-           const path = `${userId}/license20.${ext}`;
-           const res = await fetch(data.license20Url);
-           const blob = await res.blob();
-           await supabase.storage.from('licenses').upload(path, blob, { upsert: true });
-           finalLicense20Url = path; 
+           const newPath = `${userId}/license20.${ext}`;
+           const { error } = await supabase.storage.from('licenses').move(data.license20Url, newPath);
+           if (!error) finalLicense20Url = newPath; 
         }
-        if (data.license21Url && !data.license21Url.startsWith('http')) {
+        
+        if (data.license21Url && data.license21Url.startsWith('pending/')) {
            const ext = data.license21Url.split('.').pop() || 'jpg';
-           const path = `${userId}/license21.${ext}`;
-           const res = await fetch(data.license21Url);
-           const blob = await res.blob();
-           await supabase.storage.from('licenses').upload(path, blob, { upsert: true });
-           finalLicense21Url = path; 
+           const newPath = `${userId}/license21.${ext}`;
+           const { error } = await supabase.storage.from('licenses').move(data.license21Url, newPath);
+           if (!error) finalLicense21Url = newPath; 
         }
 
         // Update profiles with actual uploaded paths
@@ -143,7 +142,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           license_21_21b_doc_url: finalLicense21Url
         }).eq('id', userId);
       } catch (e) {
-        console.error("Document upload error:", e);
+        console.error("Document move error:", e);
       }
       
       // Sign out immediately so they cannot bypass the approval gate
@@ -151,6 +150,24 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
     
     return { error };
+  },
+
+  uploadLicense: async (tempId, licenseKey, localUri) => {
+    try {
+      if (!localUri || localUri.startsWith('pending/')) return { path: localUri, error: null };
+      
+      const ext = localUri.split('.').pop() || 'jpg';
+      const path = `pending/${tempId}/${licenseKey}.${ext}`;
+      
+      const res = await fetch(localUri);
+      const blob = await res.blob();
+      const { data, error } = await supabase.storage.from('licenses').upload(path, blob, { upsert: true });
+      
+      if (error) return { path: null, error };
+      return { path: data.path, error: null };
+    } catch (e) {
+      return { path: null, error: e };
+    }
   },
 
   fetchUser: async () => {

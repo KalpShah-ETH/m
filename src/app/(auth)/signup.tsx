@@ -379,7 +379,7 @@ export default function SignupScreen() {
               {otp.map((digit, index) => (
                 <TextInput
                   key={index}
-                  ref={(el) => (otpRefs.current[index] = el)}
+                  ref={(el) => { otpRefs.current[index] = el; }}
                   style={styles.otpInput}
                   value={digit}
                   maxLength={1}

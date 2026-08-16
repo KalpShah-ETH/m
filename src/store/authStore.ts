@@ -11,10 +11,10 @@ interface AuthState {
   setLoading: (isLoading: boolean) => void;
   
   // API Endpoints mapped to store actions
-  login: (username: string, password: string) => Promise<{ error: any }>;
-  sendOtp: (mobileNumber: string) => Promise<{ error: any }>;
-  verifyOtp: (mobileNumber: string, otp: string) => Promise<{ error: any }>;
-  forgotPassword: (identifier: string) => Promise<{ error: any }>;
+  login: (email: string, password: string) => Promise<{ error: any }>;
+  sendEmailOtp: (email: string) => Promise<{ error: any }>;
+  verifyEmailOtp: (email: string, otp: string) => Promise<{ error: any; valid?: boolean }>;
+  forgotPassword: (email: string) => Promise<{ error: any }>;
   signup: (data: any) => Promise<{ error: any }>;
   fetchUser: () => Promise<void>;
   logout: () => Promise<void>;
@@ -28,58 +28,55 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setSession: (session) => set({ session }),
   setLoading: (isLoading) => set({ isLoading }),
 
-  login: async (username, password) => {
-    // Note: Assuming username is mapped to email in Supabase, 
-    // or using a custom Supabase setup that accepts username.
-    // For now, we will treat 'username' as the identifier.
-    // If username is not an email, you might append a domain e.g., `${username}@medconnect.local`
-    const identifier = username.includes('@') ? username : `${username}@medconnect.local`;
-    
+  login: async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({
-      email: identifier,
+      email,
       password,
     });
     if (data.session) set({ session: data.session, user: data.user });
     return { error };
   },
 
-  sendOtp: async (mobileNumber) => {
-    const { error } = await supabase.auth.signInWithOtp({
-      phone: mobileNumber,
+  sendEmailOtp: async (email) => {
+    // Calling the custom edge function to send OTP via external provider
+    const { error } = await supabase.functions.invoke('send-email-otp', {
+      body: { email }
     });
     return { error };
   },
 
-  verifyOtp: async (mobileNumber, otp) => {
-    const { data, error } = await supabase.auth.verifyOtp({
-      phone: mobileNumber,
-      token: otp,
-      type: 'sms',
+  verifyEmailOtp: async (email, otp) => {
+    // Calling the custom edge function to verify OTP
+    const { data, error } = await supabase.functions.invoke('verify-email-otp', {
+      body: { email, otp }
     });
-    if (data.session) set({ session: data.session, user: data.user });
-    return { error };
+    return { error, valid: data?.valid };
   },
 
-  forgotPassword: async (identifier) => {
-    const isEmail = identifier.includes('@');
-    const { error } = await supabase.auth.resetPasswordForEmail(
-      isEmail ? identifier : `${identifier}@medconnect.local`
-    );
+  forgotPassword: async (email) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
     return { error };
   },
 
   signup: async (data) => {
-    const identifier = data.username.includes('@') ? data.username : `${data.username}@medconnect.local`;
+    // We expect data to contain all fields from Step 1, 2, and 3
     const { data: authData, error } = await supabase.auth.signUp({
-      email: identifier,
+      email: data.shopEmail,
       password: data.password,
       options: {
         data: {
-          first_name: data.firstName,
-          last_name: data.lastName,
-          mobile_number: data.mobileNumber,
-          email_address: data.email, // Store the real email in user metadata
-          distributor_code: data.distributorCode,
+          business_type: data.businessType,
+          shop_firm_name: data.shopFirmName,
+          owner_name: data.ownerName,
+          shop_address: data.shopAddress,
+          pincode: data.pincode,
+          area: data.area,
+          city: data.city,
+          state: data.state,
+          email_verified: data.emailVerified, // should be true since we verified it
+          pharmacist_name: data.pharmacistName,
+          pharmacist_number: data.pharmacistNumber,
+          // License fields will be added here later
         },
       },
     });

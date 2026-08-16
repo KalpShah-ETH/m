@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
-import { User, Lock, Eye, EyeOff, Phone } from 'lucide-react-native';
+import { Mail, Lock, Eye, EyeOff, Phone } from 'lucide-react-native';
 import { Link, useRouter } from 'expo-router';
 import { useAuthStore } from '@/store/authStore';
 
@@ -8,22 +8,22 @@ export default function LoginScreen() {
   const router = useRouter();
   const login = useAuthStore((state) => state.login);
   
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleLogin = async () => {
-    if (!username || !password) {
-      setError('Please enter both username and password.');
+    if (!email || !password) {
+      setError('Please enter both email and password.');
       return;
     }
     
     setIsLoading(true);
     setError('');
     
-    const { error: loginError } = await login(username, password);
+    const { error: loginError } = await login(email, password);
     
     setIsLoading(false);
     
@@ -47,13 +47,14 @@ export default function LoginScreen() {
           {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
           <View style={styles.inputContainer}>
-            <User color="#666" size={20} style={styles.icon} />
+            <Mail color="#666" size={20} style={styles.icon} />
             <TextInput
               style={styles.input}
-              placeholder="Username"
-              value={username}
-              onChangeText={setUsername}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
               autoCapitalize="none"
+              keyboardType="email-address"
               placeholderTextColor="#999"
             />
           </View>
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   forgotPassword: {
-    alignItems: 'flex-end',
+    alignItems: 'center',
     marginTop: 16,
   },
   forgotPasswordText: {

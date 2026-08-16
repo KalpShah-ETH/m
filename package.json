@@ -37,7 +37,9 @@
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
-    "typescript": "~6.0.3"
+    "dotenv": "^17.4.2",
+    "typescript": "~6.0.3",
+    "ws": "^8.21.3"
   },
   "scripts": {
     "start": "expo start",

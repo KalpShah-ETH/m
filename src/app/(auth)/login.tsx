@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 32, fontFamily: 'Inter_400Regular',
+    fontSize: 32,
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F5B4E',
     marginBottom: 8,
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   },
   primaryButtonText: {
     color: '#fff',
-    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontSize: 16,
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   forgotPassword: {
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
   },
   outlineButtonText: {
     color: '#1F5B4E',
-    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontSize: 16,
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   signupContainer: {
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   },
   signupLink: {
     color: '#1F5B4E',
-    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontSize: 15,
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
 });

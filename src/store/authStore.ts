@@ -113,13 +113,65 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         },
       },
     });
-    if (authData.session) set({ session: authData.session, user: authData.user });
+    
+    if (authData.user && authData.session) {
+      try {
+        const userId = authData.user.id;
+        let finalLicense20Url = data.license20Url;
+        let finalLicense21Url = data.license21Url;
+        
+        if (data.license20Url && !data.license20Url.startsWith('http')) {
+           const ext = data.license20Url.split('.').pop() || 'jpg';
+           const path = `${userId}/license20.${ext}`;
+           const res = await fetch(data.license20Url);
+           const blob = await res.blob();
+           await supabase.storage.from('licenses').upload(path, blob, { upsert: true });
+           finalLicense20Url = path; 
+        }
+        if (data.license21Url && !data.license21Url.startsWith('http')) {
+           const ext = data.license21Url.split('.').pop() || 'jpg';
+           const path = `${userId}/license21.${ext}`;
+           const res = await fetch(data.license21Url);
+           const blob = await res.blob();
+           await supabase.storage.from('licenses').upload(path, blob, { upsert: true });
+           finalLicense21Url = path; 
+        }
+
+        // Update profiles with actual uploaded paths
+        await supabase.from('profiles').update({
+          license_20_20b_doc_url: finalLicense20Url,
+          license_21_21b_doc_url: finalLicense21Url
+        }).eq('id', userId);
+      } catch (e) {
+        console.error("Document upload error:", e);
+      }
+      
+      // Sign out immediately so they cannot bypass the approval gate
+      await supabase.auth.signOut();
+    }
+    
     return { error };
   },
 
   fetchUser: async () => {
     set({ isLoading: true });
     const { data: { session } } = await supabase.auth.getSession();
+    
+    if (session && session.user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('approval_status')
+        .eq('id', session.user.id)
+        .single();
+        
+      if (profile?.approval_status === 'pending') {
+        // They should not be able to bypass the login check
+        await supabase.auth.signOut();
+        set({ session: null, user: null, isLoading: false });
+        return;
+      }
+    }
+    
     set({ session, user: session?.user ?? null, isLoading: false });
   },
 

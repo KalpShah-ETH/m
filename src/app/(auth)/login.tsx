@@ -98,8 +98,8 @@ export default function LoginScreen() {
           <Animated.View style={bigImageStyle}>
             <Image 
               source={require('@/assets/images/hero.png')} 
-              style={{ width: '100%', height: '100%', marginTop: 40 }} 
-              contentFit="contain" 
+              style={{ width: '100%', height: '100%' }} 
+              contentFit="cover" 
             />
           </Animated.View>
           <Animated.View style={[smallLogoStyle, { position: 'absolute' }]}>
@@ -124,7 +124,6 @@ export default function LoginScreen() {
             leftIcon={<Mail color="#666" size={20} />}
             autoCapitalize="none"
             keyboardType="email-address"
-            errorText={email.length === 0 ? "Please enter email" : ""}
           />
 
           <FloatingLabelInput
@@ -135,7 +134,6 @@ export default function LoginScreen() {
             rightIcon={showPassword ? <EyeOff color="#666" size={20} /> : <Eye color="#666" size={20} />}
             onRightIconPress={() => setShowPassword(!showPassword)}
             isPassword={!showPassword}
-            errorText={password.length === 0 ? "Please enter password" : ""}
           />
 
           <TouchableOpacity 
@@ -192,7 +190,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontSize: 16, 
+    fontFamily: 'Inter_700Bold', 
+    fontWeight: 'bold',
     color: '#999',
     marginBottom: 32,
     textAlign: 'center',
@@ -227,7 +227,9 @@ const styles = StyleSheet.create({
   },
   forgotPasswordText: {
     color: '#1F2937',
-    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontSize: 15, 
+    fontFamily: 'Inter_700Bold', 
+    fontWeight: 'bold',
   },
   dividerContainer: {
     flexDirection: 'row',
@@ -247,7 +249,9 @@ const styles = StyleSheet.create({
   },
   signupText: {
     color: '#666',
-    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontSize: 15, 
+    fontFamily: 'Inter_700Bold', 
+    fontWeight: 'bold',
   },
   signupLink: {
     color: '#5076cf',

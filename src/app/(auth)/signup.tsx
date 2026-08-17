@@ -107,8 +107,22 @@ export default function SignupScreen() {
     }
   };
 
+  const handlePincodeChange = (text: string) => {
+    const numericText = text.replace(/[^0-9]/g, '');
+    setPincode(numericText);
+    
+    if (numericText.length === 6) {
+      fetchPincodeDetails(numericText);
+    } else {
+      // Clear data if pincode is invalid or deleted
+      setAreaOptions([]);
+      setCity('');
+      setStateName('');
+    }
+  };
+
   const handlePincodeBlur = () => {
-    if (pincode.length === 6) {
+    if (pincode.length === 6 && !city) {
       fetchPincodeDetails(pincode);
     }
   };
@@ -127,7 +141,7 @@ export default function SignupScreen() {
       setShowOtpModal(true);
       setOtpCountdown(30);
     } else {
-      setEmailError('Failed to send verification code.');
+      setEmailError(error.message || 'Failed to send verification code.');
     }
   };
 
@@ -313,7 +327,7 @@ export default function SignupScreen() {
                   style={styles.input}
                   placeholder="Pincode *"
                   value={pincode}
-                  onChangeText={setPincode}
+                  onChangeText={handlePincodeChange}
                   onBlur={handlePincodeBlur}
                   keyboardType="number-pad"
                   maxLength={6}

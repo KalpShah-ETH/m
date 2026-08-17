@@ -122,15 +122,13 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   headerTitle: {
-    fontSize: 20, fontFamily: 'Inter_400Regular',
+    fontSize: 20,
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
   },
   container: {
     flex: 1,
     paddingTop: 16,
-  },
-    marginBottom: 16,
   },
   summaryContainer: {
     marginHorizontal: 16,
@@ -147,12 +145,12 @@ const styles = StyleSheet.create({
   },
   summaryLabel: {
     color: 'rgba(255, 255, 255, 0.8)',
-    fontSize: 14, fontFamily: 'Inter_400Regular',
+    fontSize: 14,
     marginBottom: 8,
   },
   summaryValue: {
     color: '#fff',
-    fontSize: 28, fontFamily: 'Inter_400Regular',
+    fontSize: 28,
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   searchContainer: {
@@ -173,7 +171,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     height: '100%',
-    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontSize: 15,
   },
   listContainer: {
     paddingHorizontal: 16,
@@ -211,7 +209,7 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   distributorName: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontSize: 16,
     fontFamily: 'Inter_600SemiBold', fontWeight: '600',
     color: '#1F2937',
     flex: 1,
@@ -225,12 +223,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   amountLabel: {
-    fontSize: 13, fontFamily: 'Inter_400Regular',
+    fontSize: 13,
     color: '#666',
     marginBottom: 4,
   },
   amountValue: {
-    fontSize: 18, fontFamily: 'Inter_400Regular',
+    fontSize: 18,
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
   },
@@ -241,7 +239,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   dueDateText: {
-    fontSize: 13, fontFamily: 'Inter_400Regular',
+    fontSize: 13,
     color: '#666',
   },
   overdueBadge: {
@@ -254,7 +252,7 @@ const styles = StyleSheet.create({
   },
   overdueText: {
     color: '#DC2626',
-    fontSize: 12, fontFamily: 'Inter_400Regular',
+    fontSize: 12,
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   loadingContainer: {
@@ -266,6 +264,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#999',
     marginTop: 40,
-    fontSize: 15, fontFamily: 'Inter_400Regular',
+    fontSize: 15,
   },
 });

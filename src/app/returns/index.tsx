@@ -165,8 +165,7 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   headerTitle: {
-    fontSize: 20, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 20, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
   },
   container: {
@@ -189,8 +188,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#1F5B4E',
   },
   tabText: {
-    fontSize: 15, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    fontSize: 15, fontFamily: 'Inter_600SemiBold', fontWeight: '600',
     color: '#666',
   },
   tabTextActive: {
@@ -239,8 +237,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#f9f9f9',
   },
   returnNumber: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
   },
   dateText: {
@@ -251,8 +248,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   distributorName: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    fontSize: 16, fontFamily: 'Inter_600SemiBold', fontWeight: '600',
     color: '#1F2937',
     marginBottom: 4,
   },
@@ -335,7 +331,6 @@ const styles = StyleSheet.create({
   },
   fullWidthButtonText: {
     color: '#fff',
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
 });

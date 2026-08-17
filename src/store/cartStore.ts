@@ -1,21 +1,23 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { MMKV } from 'react-native-mmkv';
+import { Platform } from 'react-native';
 import { supabase } from '@/lib/supabase';
 import { useAuthStore } from './authStore';
 
-const storage = new MMKV({ id: 'cart-storage' });
+const storage = Platform.OS !== 'web' ? new MMKV({ id: 'cart-storage' }) : null;
 
 const zustandStorage = {
   getItem: (name: string) => {
+    if (!storage) return null;
     const value = storage.getString(name);
     return value ?? null;
   },
   setItem: (name: string, value: string) => {
-    storage.set(name, value);
+    if (storage) storage.set(name, value);
   },
   removeItem: (name: string) => {
-    storage.delete(name);
+    if (storage) storage.delete(name);
   },
 };
 

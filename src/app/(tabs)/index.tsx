@@ -161,8 +161,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#eee',
   },
   greetingText: {
-    fontSize: 18, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 18, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
   },
   subGreetingText: {
@@ -190,8 +189,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   bannerTitle: {
-    fontSize: 20, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 20, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F5B4E',
     marginBottom: 4,
   },
@@ -251,8 +249,7 @@ const styles = StyleSheet.create({
     color: '#1F2937',
   },
   sectionTitle: {
-    fontSize: 18, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 18, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
     marginBottom: 16,
   },
@@ -307,8 +304,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   summaryValue: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
   },
   distributorsContainer: {

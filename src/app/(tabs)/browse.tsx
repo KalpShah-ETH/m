@@ -255,8 +255,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   distributorNameText: {
-    fontSize: 18, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 18, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
   },
   container: {
@@ -275,8 +274,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#FECACA',
   },
   outstandingBannerText: {
-    fontSize: 14, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 14, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F5B4E',
     flex: 1,
   },
@@ -300,8 +298,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#1F5B4E',
   },
   tabText: {
-    fontSize: 15, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    fontSize: 15, fontFamily: 'Inter_600SemiBold', fontWeight: '600',
     color: '#666',
   },
   tabTextActive: {
@@ -320,8 +317,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   categoriesTitle: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
   },
   categoriesList: {
@@ -373,8 +369,7 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   productName: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
     marginBottom: 4,
   },
@@ -396,8 +391,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FEE2E2',
   },
   stockText: {
-    fontSize: 10, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 10, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F5B4E',
   },
   stockTextOut: {
@@ -419,13 +413,11 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   priceValue: {
-    fontSize: 15, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 15, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
   },
   discountValue: {
-    fontSize: 15, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 15, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F5B4E',
   },
   lockedPricing: {
@@ -451,8 +443,7 @@ const styles = StyleSheet.create({
   },
   addButtonText: {
     color: '#fff',
-    fontSize: 15, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 15, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   outOfStockButton: {
     backgroundColor: '#f5f5f5',
@@ -464,8 +455,7 @@ const styles = StyleSheet.create({
   },
   outOfStockText: {
     color: '#999',
-    fontSize: 15, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 15, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   stepperContainer: {
     flexDirection: 'row',
@@ -484,8 +474,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   stepperValue: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F5B4E',
   },
   requestButton: {
@@ -502,8 +491,7 @@ const styles = StyleSheet.create({
   },
   requestButtonText: {
     color: '#1F5B4E',
-    fontSize: 15, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 15, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   emptyContainer: {
     padding: 40,

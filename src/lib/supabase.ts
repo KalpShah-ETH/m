@@ -1,20 +1,22 @@
 import 'react-native-url-polyfill/auto';
 import { createClient } from '@supabase/supabase-js';
 import { MMKV } from 'react-native-mmkv';
+import { Platform } from 'react-native';
 
-// Initialize MMKV instance for Supabase Auth
-const supabaseStorage = new MMKV({ id: 'supabase-auth' });
+// Initialize MMKV instance for Supabase Auth (Native only)
+const supabaseStorage = Platform.OS !== 'web' ? new MMKV({ id: 'supabase-auth' }) : null;
 
 const customStorageAdapter = {
   getItem: (key: string) => {
+    if (!supabaseStorage) return null;
     const value = supabaseStorage.getString(key);
     return value ?? null;
   },
   setItem: (key: string, value: string) => {
-    supabaseStorage.set(key, value);
+    if (supabaseStorage) supabaseStorage.set(key, value);
   },
   removeItem: (key: string) => {
-    supabaseStorage.delete(key);
+    if (supabaseStorage) supabaseStorage.delete(key);
   },
 };
 

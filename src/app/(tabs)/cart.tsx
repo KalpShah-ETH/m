@@ -120,8 +120,7 @@ const styles = StyleSheet.create({
     paddingBottom: 100, // Extra padding for the mini cart at the bottom
   },
   screenTitle: {
-    fontSize: 24, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 24, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
     marginBottom: 24,
   },
@@ -134,8 +133,7 @@ const styles = StyleSheet.create({
     borderColor: '#eee',
   },
   distributorName: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F5B4E',
     marginBottom: 12,
     borderBottomWidth: 1,
@@ -155,8 +153,7 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   itemName: {
-    fontSize: 15, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    fontSize: 15, fontFamily: 'Inter_600SemiBold', fontWeight: '600',
     color: '#1F2937',
     marginBottom: 4,
   },
@@ -185,8 +182,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   stepperValue: {
-    fontSize: 14, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 14, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F5B4E',
     minWidth: 20,
     textAlign: 'center',
@@ -205,8 +201,7 @@ const styles = StyleSheet.create({
     borderColor: '#eee',
   },
   summaryTitle: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
     marginBottom: 12,
   },
@@ -220,8 +215,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   summaryTotal: {
-    fontSize: 20, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 20, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F5B4E',
   },
   checkoutButton: {
@@ -237,8 +231,7 @@ const styles = StyleSheet.create({
   },
   checkoutButtonText: {
     color: '#fff',
-    fontSize: 18, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 18, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   emptyContainer: {
     flex: 1,
@@ -252,8 +245,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   successTitle: {
-    fontSize: 24, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 24, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F5B4E',
     marginBottom: 8,
   },

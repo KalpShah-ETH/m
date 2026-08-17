@@ -235,8 +235,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   resultTitle: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    fontSize: 16, fontFamily: 'Inter_600SemiBold', fontWeight: '600',
     color: '#1F2937',
     marginBottom: 4,
   },
@@ -245,8 +244,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   resultPrice: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F5B4E',
   },
   emptyContainer: {

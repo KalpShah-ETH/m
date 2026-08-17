@@ -53,8 +53,7 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   headerTitle: {
-    fontSize: 20, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 20, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
   },
   container: {

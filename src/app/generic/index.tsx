@@ -190,8 +190,7 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   headerTitle: {
-    fontSize: 20, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 20, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
   },
   container: {
@@ -278,8 +277,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   productName: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
     flex: 1,
   },
@@ -301,8 +299,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FEE2E2',
   },
   stockText: {
-    fontSize: 10, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 10, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F5B4E',
   },
   stockTextOut: {
@@ -324,13 +321,11 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   priceValue: {
-    fontSize: 15, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 15, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
   },
   discountValue: {
-    fontSize: 15, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 15, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F5B4E',
   },
   actionContainer: {
@@ -344,8 +339,7 @@ const styles = StyleSheet.create({
   },
   addButtonText: {
     color: '#fff',
-    fontSize: 15, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 15, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   outOfStockButton: {
     backgroundColor: '#f5f5f5',
@@ -357,8 +351,7 @@ const styles = StyleSheet.create({
   },
   outOfStockText: {
     color: '#999',
-    fontSize: 15, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 15, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   emptyContainer: {
     padding: 60,

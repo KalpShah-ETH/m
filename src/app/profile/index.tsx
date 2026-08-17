@@ -181,8 +181,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#eee',
   },
   headerTitle: {
-    fontSize: 24, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 24, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
   },
   container: {
@@ -215,8 +214,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   profileName: {
-    fontSize: 20, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 20, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
     marginBottom: 4,
   },
@@ -231,8 +229,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   sectionTitle: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#666',
     marginBottom: 8,
     textTransform: 'uppercase',
@@ -266,8 +263,7 @@ const styles = StyleSheet.create({
   },
   menuItemTitle: {
     flex: 1,
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_500Medium', fontWeight: '500',
+    fontSize: 16, fontFamily: 'Inter_500Medium', fontWeight: '500',
     color: '#1F2937',
   },
   logoutButton: {
@@ -280,8 +276,7 @@ const styles = StyleSheet.create({
   },
   logoutButtonText: {
     color: '#DC2626',
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   modalOverlay: {
     flex: 1,
@@ -302,8 +297,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   modalTitle: {
-    fontSize: 20, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 20, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
   },
   inputGroup: {
@@ -332,7 +326,6 @@ const styles = StyleSheet.create({
   },
   primaryButtonText: {
     color: '#fff',
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
 });

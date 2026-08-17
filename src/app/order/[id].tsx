@@ -145,8 +145,7 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   headerTitle: {
-    fontSize: 20, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 20, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
   },
   loadingContainer: {
@@ -162,8 +161,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   sectionTitle: {
-    fontSize: 18, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 18, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
     marginBottom: 12,
   },
@@ -180,8 +178,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   distributorName: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
     marginBottom: 4,
   },
@@ -222,8 +219,7 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   timelineStatus: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    fontSize: 16, fontFamily: 'Inter_600SemiBold', fontWeight: '600',
     color: '#1F2937',
     marginBottom: 4,
   },
@@ -253,8 +249,7 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   itemName: {
-    fontSize: 15, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    fontSize: 15, fontFamily: 'Inter_600SemiBold', fontWeight: '600',
     color: '#1F2937',
     marginBottom: 4,
   },
@@ -263,8 +258,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   itemTotal: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
   },
   summaryCard: {
@@ -284,8 +278,7 @@ const styles = StyleSheet.create({
   },
   summaryValue: {
     color: '#fff',
-    fontSize: 14, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_500Medium', fontWeight: '500',
+    fontSize: 14, fontFamily: 'Inter_500Medium', fontWeight: '500',
   },
   summaryTotalRow: {
     marginTop: 8,
@@ -296,12 +289,10 @@ const styles = StyleSheet.create({
   },
   summaryTotalLabel: {
     color: '#fff',
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   summaryTotalValue: {
     color: '#fff',
-    fontSize: 24, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 24, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
 });

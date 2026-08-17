@@ -70,8 +70,7 @@ const styles = StyleSheet.create({
   },
   itemCountText: {
     color: '#fff',
-    fontSize: 15, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 15, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   separator: {
     color: '#fff',
@@ -80,8 +79,7 @@ const styles = StyleSheet.create({
   },
   totalText: {
     color: '#fff',
-    fontSize: 15, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 15, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   lastAddedText: {
     color: '#fff',
@@ -98,8 +96,7 @@ const styles = StyleSheet.create({
   },
   viewCartText: {
     color: '#fff',
-    fontSize: 14, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 14, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     marginRight: 4,
   },
 });

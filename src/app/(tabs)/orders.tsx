@@ -168,8 +168,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#eee',
   },
   headerTitle: {
-    fontSize: 24, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 24, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
     marginBottom: 16,
   },
@@ -196,8 +195,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter_600SemiBold', fontWeight: '600',
   },
   summaryValue: {
-    fontSize: 20, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 20, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#004c99',
   },
   tabContainer: {
@@ -218,8 +216,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#1F5B4E',
   },
   tabText: {
-    fontSize: 14, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    fontSize: 14, fontFamily: 'Inter_600SemiBold', fontWeight: '600',
     color: '#666',
   },
   tabTextActive: {
@@ -280,8 +277,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#f0f0f0',
   },
   orderNumber: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
   },
   statusBadge: {
@@ -298,8 +294,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E8F0EE',
   },
   statusText: {
-    fontSize: 12, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 12, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   statusTextPending: {
     color: '#1F5B4E',
@@ -317,8 +312,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   distributorName: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    fontSize: 16, fontFamily: 'Inter_600SemiBold', fontWeight: '600',
     color: '#1F2937',
     flex: 1,
   },
@@ -334,8 +328,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   totalValue: {
-    fontSize: 18, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    fontSize: 18, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F5B4E',
   },
   cardFooter: {
@@ -349,8 +342,7 @@ const styles = StyleSheet.create({
   },
   viewDetailsText: {
     color: '#1F5B4E',
-    fontSize: 14, fontFamily: 'Inter_400Regular',
-    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    fontSize: 14, fontFamily: 'Inter_600SemiBold', fontWeight: '600',
   },
   loadingContainer: {
     flex: 1,

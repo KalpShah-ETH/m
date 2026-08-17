@@ -258,20 +258,18 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   headerTitle: {
-    fontSize: 20, fontFamily: 'Inter_400Regular',
+    fontSize: 20,
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
   },
   resetLink: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontSize: 16,
     color: '#1F5B4E',
     fontFamily: 'Inter_500Medium', fontWeight: '500',
   },
   container: {
     flex: 1,
     paddingTop: 16,
-  },
-    marginBottom: 16,
   },
   tabContainer: {
     flexDirection: 'row',
@@ -291,7 +289,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#1F5B4E',
   },
   tabText: {
-    fontSize: 14, fontFamily: 'Inter_400Regular',
+    fontSize: 14,
     fontFamily: 'Inter_600SemiBold', fontWeight: '600',
     color: '#666',
   },
@@ -344,13 +342,13 @@ const styles = StyleSheet.create({
   numberText: {
     color: '#1F5B4E',
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    fontSize: 14, fontFamily: 'Inter_400Regular',
+    fontSize: 14,
   },
   itemDetails: {
     flex: 1,
   },
   itemName: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontSize: 16,
     fontFamily: 'Inter_600SemiBold', fontWeight: '600',
     color: '#1F2937',
     marginBottom: 4,
@@ -377,7 +375,7 @@ const styles = StyleSheet.create({
   connectButtonText: {
     color: '#1F5B4E',
     fontFamily: 'Inter_600SemiBold', fontWeight: '600',
-    fontSize: 14, fontFamily: 'Inter_400Regular',
+    fontSize: 14,
   },
   loadingContainer: {
     flex: 1,
@@ -394,7 +392,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   referTitle: {
-    fontSize: 20, fontFamily: 'Inter_400Regular',
+    fontSize: 20,
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
     marginBottom: 8,
@@ -408,7 +406,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   label: {
-    fontSize: 14, fontFamily: 'Inter_400Regular',
+    fontSize: 14,
     color: '#1F2937',
     marginBottom: 8,
     fontFamily: 'Inter_500Medium', fontWeight: '500',
@@ -432,7 +430,7 @@ const styles = StyleSheet.create({
   },
   submitButtonText: {
     color: '#fff',
-    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontSize: 16,
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   dividerContainer: {
@@ -460,7 +458,7 @@ const styles = StyleSheet.create({
   },
   shareButtonText: {
     color: '#fff',
-    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontSize: 16,
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
 });

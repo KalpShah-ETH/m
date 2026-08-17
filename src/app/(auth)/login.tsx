@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
-import { Mail, Lock, Eye, EyeOff, Phone } from 'lucide-react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing, interpolate } from 'react-native-reanimated';
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
 import { Link, useRouter } from 'expo-router';
 import { useAuthStore } from '@/store/authStore';
+import FloatingLabelInput from '@/components/FloatingLabelInput';
+import { Image } from 'expo-image';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -12,29 +15,78 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [apiError, setApiError] = useState('');
+
+  // Keyboard animation state
+  const isKeyboardOpen = useSharedValue(0);
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      () => {
+        isKeyboardOpen.value = withTiming(1, { duration: 300, easing: Easing.out(Easing.ease) });
+      }
+    );
+    const hideSubscription = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => {
+        isKeyboardOpen.value = withTiming(0, { duration: 300, easing: Easing.out(Easing.ease) });
+      }
+    );
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
+  const headerStyle = useAnimatedStyle(() => {
+    return {
+      height: interpolate(isKeyboardOpen.value, [0, 1], [300, 100]),
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#f8f9fa',
+      overflow: 'hidden',
+    };
+  });
+
+  const bigImageStyle = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(isKeyboardOpen.value, [0, 1], [1, 0]),
+      height: interpolate(isKeyboardOpen.value, [0, 1], [250, 0]),
+      width: '100%',
+    };
+  });
+
+  const smallLogoStyle = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(isKeyboardOpen.value, [0, 1], [0, 1]),
+      height: interpolate(isKeyboardOpen.value, [0, 1], [0, 60]),
+      width: interpolate(isKeyboardOpen.value, [0, 1], [0, 60]),
+      marginTop: interpolate(isKeyboardOpen.value, [0, 1], [0, 30]),
+    };
+  });
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      setError('Please enter both email and password.');
-      return;
-    }
+    if (!email || !password) return;
     
     setIsLoading(true);
-    setError('');
+    setApiError('');
     
     const result = await login(email, password);
     
     setIsLoading(false);
     
     if (result.error) {
-      setError(result.error.message);
+      setApiError(result.error.message);
     } else if (result.isPending) {
       router.replace('/(auth)/pending-approval');
     } else {
-      router.replace('/'); // Adjust depending on your tab layout route
+      router.replace('/'); 
     }
   };
+
+  const isButtonEnabled = email.length > 0 && password.length > 0;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -42,77 +94,73 @@ export default function LoginScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
       >
+        <Animated.View style={headerStyle}>
+          <Animated.View style={bigImageStyle}>
+            <Image 
+              source={require('@/assets/images/wordmark-horizontal.png')} 
+              style={{ width: '100%', height: '100%', marginTop: 40 }} 
+              contentFit="contain" 
+            />
+          </Animated.View>
+          <Animated.View style={[smallLogoStyle, { position: 'absolute' }]}>
+            <Image 
+              source={require('@/assets/images/logo-1-nodal-cross.png')} 
+              style={{ width: '100%', height: '100%' }} 
+              contentFit="contain" 
+            />
+          </Animated.View>
+        </Animated.View>
+
         <View style={styles.formContainer}>
-          <Text style={styles.title}>MedConnect</Text>
-          <Text style={styles.subtitle}>Welcome back</Text>
+          <Text style={styles.title}>Login</Text>
+          <Text style={styles.subtitle}>Enter your credentials to access account</Text>
 
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+          {apiError ? <Text style={styles.errorText}>{apiError}</Text> : null}
 
-          <View style={styles.inputContainer}>
-            <Mail color="#666" size={20} style={styles.icon} />
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              value={email}
-              onChangeText={setEmail}
-              autoCapitalize="none"
-              keyboardType="email-address"
-              placeholderTextColor="#999"
-            />
-          </View>
+          <FloatingLabelInput
+            label="Email"
+            value={email}
+            onChangeText={setEmail}
+            leftIcon={<Mail color="#666" size={20} />}
+            autoCapitalize="none"
+            keyboardType="email-address"
+            errorText={email.length === 0 ? "Please enter email" : ""}
+          />
 
-          <View style={styles.inputContainer}>
-            <Lock color="#666" size={20} style={styles.icon} />
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!showPassword}
-              placeholderTextColor="#999"
-            />
-            <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-              {showPassword ? <EyeOff color="#666" size={20} /> : <Eye color="#666" size={20} />}
-            </TouchableOpacity>
-          </View>
+          <FloatingLabelInput
+            label="Password"
+            value={password}
+            onChangeText={setPassword}
+            leftIcon={<Lock color="#666" size={20} />}
+            rightIcon={showPassword ? <EyeOff color="#666" size={20} /> : <Eye color="#666" size={20} />}
+            onRightIconPress={() => setShowPassword(!showPassword)}
+            isPassword={!showPassword}
+            errorText={password.length === 0 ? "Please enter password" : ""}
+          />
 
           <TouchableOpacity 
-            style={[styles.primaryButton, isLoading && styles.disabledButton]} 
+            style={[styles.primaryButton, !isButtonEnabled && styles.disabledButton]} 
             onPress={handleLogin}
-            disabled={isLoading}
+            disabled={!isButtonEnabled || isLoading}
           >
-            <Text style={styles.primaryButtonText}>{isLoading ? 'Logging in...' : 'Login'}</Text>
+            <Text style={[styles.primaryButtonText, !isButtonEnabled && styles.disabledButtonText]}>
+              {isLoading ? 'Logging in...' : 'Login'}
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.forgotPassword}>
-            <Text style={styles.forgotPasswordText}>Forgot Username/Password?</Text>
+            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
 
           <View style={styles.dividerContainer}>
-            <View style={styles.divider} />
             <Text style={styles.dividerText}>Or</Text>
-            <View style={styles.divider} />
-          </View>
-
-          <TouchableOpacity 
-            style={styles.outlineButton}
-            onPress={() => Alert.alert('Coming Soon', 'OTP Login is under development. Please login with your username and password.')}
-          >
-            <Phone color="#1F5B4E" size={20} style={styles.buttonIcon} />
-            <Text style={styles.outlineButtonText}>Login with mobile OTP</Text>
-          </TouchableOpacity>
-
-          <View style={styles.dividerContainer}>
-            <View style={styles.divider} />
-            <Text style={styles.dividerText}>Or</Text>
-            <View style={styles.divider} />
           </View>
 
           <View style={styles.signupContainer}>
             <Text style={styles.signupText}>Are you a new user? </Text>
             <Link href="/(auth)/signup" asChild>
               <TouchableOpacity>
-                <Text style={styles.signupLink}>Sign Up</Text>
+                <Text style={styles.signupLink}>Register</Text>
               </TouchableOpacity>
             </Link>
           </View>
@@ -134,18 +182,18 @@ const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
     padding: 24,
-    justifyContent: 'center',
+    paddingTop: 10,
   },
   title: {
     fontSize: 32,
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#1F5B4E',
+    color: '#1F2937',
     marginBottom: 8,
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 18, fontFamily: 'Inter_400Regular',
-    color: '#666',
+    fontSize: 16, fontFamily: 'Inter_400Regular',
+    color: '#999',
     marginBottom: 32,
     textAlign: 'center',
   },
@@ -154,31 +202,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     textAlign: 'center',
   },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    marginBottom: 16,
-    paddingHorizontal: 12,
-    height: 50,
-    backgroundColor: '#fafafa',
-  },
-  icon: {
-    marginRight: 10,
-  },
-  input: {
-    flex: 1,
-    height: '100%',
-    color: '#1F2937',
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-  },
-  eyeIcon: {
-    padding: 4,
-  },
   primaryButton: {
-    backgroundColor: '#1F5B4E',
+    backgroundColor: '#5076cf',
     height: 50,
     borderRadius: 8,
     justifyContent: 'center',
@@ -186,52 +211,34 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   disabledButton: {
-    backgroundColor: '#99c2ff',
+    backgroundColor: '#e0e0e0',
   },
   primaryButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+  },
+  disabledButtonText: {
+    color: '#999',
   },
   forgotPassword: {
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: 24,
   },
   forgotPasswordText: {
-    color: '#1F5B4E',
-    fontSize: 14, fontFamily: 'Inter_400Regular',
+    color: '#1F2937',
+    fontSize: 15, fontFamily: 'Inter_400Regular',
   },
   dividerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     marginVertical: 24,
-  },
-  divider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#eee',
   },
   dividerText: {
     marginHorizontal: 16,
     color: '#999',
     fontSize: 14, fontFamily: 'Inter_400Regular',
-  },
-  outlineButton: {
-    flexDirection: 'row',
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#1F5B4E',
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonIcon: {
-    marginRight: 8,
-  },
-  outlineButtonText: {
-    color: '#1F5B4E',
-    fontSize: 16,
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
   signupContainer: {
     flexDirection: 'row',
@@ -243,7 +250,7 @@ const styles = StyleSheet.create({
     fontSize: 15, fontFamily: 'Inter_400Regular',
   },
   signupLink: {
-    color: '#1F5B4E',
+    color: '#5076cf',
     fontSize: 15,
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },

@@ -58,11 +58,9 @@ export default function FloatingLabelInput({
     };
   });
 
-  const borderColor = errorText 
-    ? '#e74c3c' 
-    : isFocused 
-      ? '#1F2937' 
-      : '#ddd';
+  const borderColor = isFocused 
+    ? '#1F2937' 
+    : '#ddd';
 
   return (
     <View style={styles.container}>

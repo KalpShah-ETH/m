@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
-import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing, interpolate } from 'react-native-reanimated';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing, interpolate, interpolateColor } from 'react-native-reanimated';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
 import { Link, useRouter } from 'expo-router';
 import { useAuthStore } from '@/store/authStore';
@@ -42,10 +42,10 @@ export default function LoginScreen() {
 
   const headerStyle = useAnimatedStyle(() => {
     return {
-      height: interpolate(isKeyboardOpen.value, [0, 1], [300, 100]),
+      height: interpolate(isKeyboardOpen.value, [0, 1], [300, 120]),
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: '#f8f9fa',
+      backgroundColor: 'transparent',
       overflow: 'hidden',
     };
   });
@@ -61,8 +61,8 @@ export default function LoginScreen() {
   const smallLogoStyle = useAnimatedStyle(() => {
     return {
       opacity: interpolate(isKeyboardOpen.value, [0, 1], [0, 1]),
-      height: interpolate(isKeyboardOpen.value, [0, 1], [0, 60]),
-      width: interpolate(isKeyboardOpen.value, [0, 1], [0, 60]),
+      height: interpolate(isKeyboardOpen.value, [0, 1], [0, 80]),
+      width: interpolate(isKeyboardOpen.value, [0, 1], [0, 200]),
       marginTop: interpolate(isKeyboardOpen.value, [0, 1], [0, 30]),
     };
   });
@@ -97,7 +97,7 @@ export default function LoginScreen() {
         <Animated.View style={headerStyle}>
           <Animated.View style={bigImageStyle}>
             <Image 
-              source={require('@/assets/images/wordmark-horizontal.png')} 
+              source={require('@/assets/images/hero.png')} 
               style={{ width: '100%', height: '100%', marginTop: 40 }} 
               contentFit="contain" 
             />

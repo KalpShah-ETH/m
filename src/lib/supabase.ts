@@ -16,7 +16,7 @@ const customStorageAdapter = {
     if (supabaseStorage) supabaseStorage.set(key, value);
   },
   removeItem: (key: string) => {
-    if (supabaseStorage) supabaseStorage.delete(key);
+    if (supabaseStorage) supabaseStorage.remove(key);
   },
 };
 

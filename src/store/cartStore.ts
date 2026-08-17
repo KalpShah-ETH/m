@@ -17,7 +17,7 @@ const zustandStorage = {
     if (storage) storage.set(name, value);
   },
   removeItem: (name: string) => {
-    if (storage) storage.delete(name);
+    if (storage) storage.remove(name);
   },
 };
 

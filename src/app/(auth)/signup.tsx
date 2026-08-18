@@ -175,7 +175,7 @@ export default function SignupScreen() {
         Alert.alert('Permission Denied', 'Gallery permission is required.');
         return;
       }
-      result = await ImagePicker.launchImageLibraryAsync({ allowsEditing: true, quality: 0.8 });
+      result = await ImagePicker.launchImageLibraryAsync({ allowsEditing: false, quality: 0.8 });
     }
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
@@ -562,12 +562,9 @@ export default function SignupScreen() {
               <ImageIcon color="#1F2937" size={24} style={styles.sheetIcon} />
               <Text style={styles.sheetOptionText}>Photo Gallery</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.sheetOption} onPress={() => pickImage('camera')}>
-              <Camera color="#1F2937" size={24} style={styles.sheetIcon} />
-              <Text style={styles.sheetOptionText}>Camera</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.sheetOptionCancel} onPress={() => setShowUploadSheet(null)}>
-              <Text style={styles.sheetOptionTextCancel}>Cancel</Text>
+            <TouchableOpacity style={styles.sheetOption} onPress={() => setShowUploadSheet(null)}>
+              <X color="#DC2626" size={24} style={styles.sheetIcon} />
+              <Text style={[styles.sheetOptionText, { color: '#DC2626', fontFamily: 'Inter_700Bold' }]}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -724,7 +721,7 @@ const styles = StyleSheet.create({
 
   // Bottom Sheet
   bottomSheetOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
-  bottomSheetContent: { backgroundColor: '#fff', borderTopLeftRadius: 16, borderTopRightRadius: 16, paddingBottom: Platform.OS === 'ios' ? 24 : 0 },
+  bottomSheetContent: { backgroundColor: '#fff', borderTopLeftRadius: 16, borderTopRightRadius: 16, paddingBottom: Platform.OS === 'ios' ? 34 : 20 },
   sheetOption: { flexDirection: 'row', alignItems: 'center', padding: 20, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
   sheetIcon: { marginRight: 16 },
   sheetOptionText: { fontSize: 16, fontFamily: 'Inter_400Regular', color: '#1F2937' },

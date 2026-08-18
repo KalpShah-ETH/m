@@ -45,9 +45,10 @@ export default function LoginScreen() {
       height: interpolate(isKeyboardOpen.value, [0, 1], [300, 120]),
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: '#1E3E34', // Forest green to match the theme
-      borderBottomLeftRadius: interpolate(isKeyboardOpen.value, [0, 1], [100, 0]),
-      borderBottomRightRadius: interpolate(isKeyboardOpen.value, [0, 1], [100, 0]),
+      backgroundColor: interpolateColor(isKeyboardOpen.value, [0, 1], ['#1E3E34', 'transparent']),
+      borderBottomLeftRadius: interpolate(isKeyboardOpen.value, [0, 1], [40, 0]),
+      borderBottomRightRadius: interpolate(isKeyboardOpen.value, [0, 1], [40, 0]),
+      overflow: 'hidden',
       zIndex: 10,
     };
   });
@@ -94,7 +95,7 @@ export default function LoginScreen() {
   const isButtonEnabled = email.length > 0 && password.length > 0;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
@@ -104,7 +105,7 @@ export default function LoginScreen() {
             <Image 
               source={require('@/assets/images/hero.png')} 
               style={{ width: '100%', height: '100%' }} 
-              contentFit="contain" // Contain so it doesn't clip off the sides during the overlap
+              contentFit="cover" // Cover so it doesn't leave empty gaps on the sides
             />
           </Animated.View>
           <Animated.View style={[smallLogoStyle, { position: 'absolute' }]}>
@@ -170,7 +171,7 @@ export default function LoginScreen() {
 
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 }
 

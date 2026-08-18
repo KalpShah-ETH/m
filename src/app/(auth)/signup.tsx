@@ -23,6 +23,7 @@ export default function SignupScreen() {
   const [ownerName, setOwnerName] = useState('');
   const [shopAddress, setShopAddress] = useState('');
   const [pincode, setPincode] = useState('');
+  const [pincodeError, setPincodeError] = useState(false);
   const [area, setArea] = useState('');
   const [city, setCity] = useState('');
   const [stateName, setStateName] = useState('');
@@ -94,11 +95,15 @@ export default function SignupScreen() {
       const response = await fetch(`https://api.postalpincode.in/pincode/${code}`);
       const data = await response.json();
       if (data && data[0]?.Status === 'Success') {
+        setPincodeError(false);
         setAreaOptions(data[0].PostOffice);
         setCity(data[0].PostOffice[0].District);
         setStateName(data[0].PostOffice[0].State);
       } else {
+        setPincodeError(true);
         setAreaOptions([]);
+        setCity('');
+        setStateName('');
       }
     } catch (e) {
       console.log(e);
@@ -114,6 +119,7 @@ export default function SignupScreen() {
     if (numericText.length === 6) {
       fetchPincodeDetails(numericText);
     } else {
+      setPincodeError(false);
       // Clear data if pincode is invalid or deleted
       setAreaOptions([]);
       setCity('');
@@ -335,6 +341,7 @@ export default function SignupScreen() {
                 />
                 {isFetchingPincode && <ActivityIndicator color="#1F5B4E" size="small" />}
               </View>
+              {pincodeError && <Text style={{ color: '#DC2626', fontSize: 12, marginTop: -8, marginBottom: 8, marginLeft: 4, fontFamily: 'Inter_500Medium' }}>Please enter a valid pincode</Text>}
 
               <TouchableOpacity style={styles.inputContainer} onPress={() => setShowAreaModal(true)} disabled={areaOptions.length === 0}>
                 <MapPin color="#666" size={20} style={styles.icon} />
@@ -442,12 +449,21 @@ export default function SignupScreen() {
                   <TextInput style={styles.input} placeholder="Drug license number" value={license20} onChangeText={setLicense20} placeholderTextColor="#999" />
                 </View>
                 <View style={styles.row}>
-                  <TouchableOpacity style={[styles.uploadBox, styles.flex1, { marginRight: 8 }, license20UploadError && { borderColor: '#DC2626' }]} onPress={() => setShowUploadSheet('license20')}>
-                    <Upload size={20} color={license20UploadError ? "#DC2626" : "#1F5B4E"} style={styles.icon} />
-                    <Text style={[styles.uploadText, license20UploadError && { color: '#DC2626' }]} numberOfLines={1}>
-                      {license20UploadError ? 'Retry Upload' : license20Url ? 'Uploaded' : 'Upload'}
-                    </Text>
-                  </TouchableOpacity>
+                  {license20Url ? (
+                    <View style={[styles.uploadBox, styles.flex1, { marginRight: 8, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 16, borderColor: '#1F5B4E' }]}>
+                      <Text style={{ fontSize: 16, fontFamily: 'Inter_500Medium', color: '#1F5B4E' }}>Uploaded</Text>
+                      <TouchableOpacity onPress={() => { setLicense20Url(''); }} style={{ padding: 4, borderRadius: 12, backgroundColor: '#f3f4f6' }}>
+                        <X size={16} color="#6B7280" />
+                      </TouchableOpacity>
+                    </View>
+                  ) : (
+                    <TouchableOpacity style={[styles.uploadBox, styles.flex1, { marginRight: 8 }, license20UploadError && { borderColor: '#DC2626' }]} onPress={() => setShowUploadSheet('license20')}>
+                      <Upload size={20} color={license20UploadError ? "#DC2626" : "#1F5B4E"} style={styles.icon} />
+                      <Text style={[styles.uploadText, license20UploadError && { color: '#DC2626' }]} numberOfLines={1}>
+                        {license20UploadError ? 'Retry Upload' : 'Upload  '}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
                   <TouchableOpacity style={[styles.inputContainer, styles.flex1, { marginLeft: 8, marginBottom: 0 }]} onPress={() => setShowDatePicker('license20')}>
                     <Calendar size={20} color="#666" style={styles.icon} />
                     <Text style={[styles.inputText, !license20Expiry && styles.placeholderText]}>
@@ -469,12 +485,21 @@ export default function SignupScreen() {
                   <TextInput style={styles.input} placeholder="Drug license number" value={license21} onChangeText={setLicense21} placeholderTextColor="#999" />
                 </View>
                 <View style={styles.row}>
-                  <TouchableOpacity style={[styles.uploadBox, styles.flex1, { marginRight: 8 }, license21UploadError && { borderColor: '#DC2626' }]} onPress={() => setShowUploadSheet('license21')}>
-                    <Upload size={20} color={license21UploadError ? "#DC2626" : "#1F5B4E"} style={styles.icon} />
-                    <Text style={[styles.uploadText, license21UploadError && { color: '#DC2626' }]} numberOfLines={1}>
-                      {license21UploadError ? 'Retry Upload' : license21Url ? 'Uploaded' : 'Upload'}
-                    </Text>
-                  </TouchableOpacity>
+                  {license21Url ? (
+                    <View style={[styles.uploadBox, styles.flex1, { marginRight: 8, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 16, borderColor: '#1F5B4E' }]}>
+                      <Text style={{ fontSize: 16, fontFamily: 'Inter_500Medium', color: '#1F5B4E' }}>Uploaded</Text>
+                      <TouchableOpacity onPress={() => { setLicense21Url(''); }} style={{ padding: 4, borderRadius: 12, backgroundColor: '#f3f4f6' }}>
+                        <X size={16} color="#6B7280" />
+                      </TouchableOpacity>
+                    </View>
+                  ) : (
+                    <TouchableOpacity style={[styles.uploadBox, styles.flex1, { marginRight: 8 }, license21UploadError && { borderColor: '#DC2626' }]} onPress={() => setShowUploadSheet('license21')}>
+                      <Upload size={20} color={license21UploadError ? "#DC2626" : "#1F5B4E"} style={styles.icon} />
+                      <Text style={[styles.uploadText, license21UploadError && { color: '#DC2626' }]} numberOfLines={1}>
+                        {license21UploadError ? 'Retry Upload' : 'Upload  '}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
                   <TouchableOpacity style={[styles.inputContainer, styles.flex1, { marginLeft: 8, marginBottom: 0 }]} onPress={() => setShowDatePicker('license21')}>
                     <Calendar size={20} color="#666" style={styles.icon} />
                     <Text style={[styles.inputText, !license21Expiry && styles.placeholderText]}>

@@ -39,7 +39,10 @@ serve(async (req) => {
       .single()
 
     if (recentOtp) {
-      return new Response(JSON.stringify({ error: 'Please wait 60 seconds before requesting a new code' }), { status: 429 })
+      return new Response(JSON.stringify({ error: 'Please wait 60 seconds before requesting a new code' }), { 
+        status: 429,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      })
     }
 
     // Delete/invalidate previous unverified OTPs
@@ -61,7 +64,10 @@ serve(async (req) => {
 
     if (dbError) {
       console.error('Database Error:', dbError)
-      return new Response(JSON.stringify({ error: 'Failed to store OTP in database' }), { status: 500 })
+      return new Response(JSON.stringify({ error: 'Failed to store OTP in database: ' + dbError.message }), { 
+        status: 500,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      })
     }
 
     // Dispatch email via Resend
@@ -83,7 +89,10 @@ serve(async (req) => {
       if (!res.ok) {
         const resText = await res.text()
         console.error('Resend Error:', resText)
-        return new Response(JSON.stringify({ error: 'Failed to dispatch email' }), { status: 500 })
+        return new Response(JSON.stringify({ error: 'Resend Error: ' + resText }), { 
+          status: 500,
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        })
       }
     } else {
       console.warn('EMAIL_PROVIDER_API_KEY is not set. Email was not actually dispatched.')

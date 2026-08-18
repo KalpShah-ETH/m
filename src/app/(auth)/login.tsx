@@ -45,16 +45,21 @@ export default function LoginScreen() {
       height: interpolate(isKeyboardOpen.value, [0, 1], [300, 120]),
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: 'transparent',
-      overflow: 'hidden',
+      backgroundColor: '#1E3E34', // Forest green to match the theme
+      borderBottomLeftRadius: interpolate(isKeyboardOpen.value, [0, 1], [100, 0]),
+      borderBottomRightRadius: interpolate(isKeyboardOpen.value, [0, 1], [100, 0]),
+      zIndex: 10,
     };
   });
 
   const bigImageStyle = useAnimatedStyle(() => {
     return {
       opacity: interpolate(isKeyboardOpen.value, [0, 1], [1, 0]),
-      height: interpolate(isKeyboardOpen.value, [0, 1], [250, 0]),
+      height: interpolate(isKeyboardOpen.value, [0, 1], [300, 0]),
       width: '100%',
+      position: 'absolute',
+      bottom: interpolate(isKeyboardOpen.value, [0, 1], [-40, 0]), // Shift downwards to overlap the curve
+      zIndex: 15,
     };
   });
 
@@ -99,7 +104,7 @@ export default function LoginScreen() {
             <Image 
               source={require('@/assets/images/hero.png')} 
               style={{ width: '100%', height: '100%' }} 
-              contentFit="cover" 
+              contentFit="contain" // Contain so it doesn't clip off the sides during the overlap
             />
           </Animated.View>
           <Animated.View style={[smallLogoStyle, { position: 'absolute' }]}>
@@ -180,7 +185,7 @@ const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
     padding: 24,
-    paddingTop: 10,
+    paddingTop: 50, // Added extra padding so the overlapping image doesn't block the text
   },
   title: {
     fontSize: 32,

@@ -20,8 +20,8 @@ const customStorageAdapter = {
   },
 };
 
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || 'https://placeholder-url.supabase.co';
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
+const supabaseUrl = 'https://srrzoywtgkpvodfbpjqz.supabase.co';
+const supabaseAnonKey = 'sb_publishable_DsM75EGKRPrMP_76r8N7Zg_AmCTMSnu';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {

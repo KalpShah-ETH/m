@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { supabase } from '@/lib/supabase';
 import { Session, User } from '@supabase/supabase-js';
+import { Alert } from 'react-native';
 
 interface AuthState {
   user: User | null;
@@ -62,11 +63,41 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   sendEmailOtp: async (email) => {
-    // Calling the custom edge function to send OTP via external provider
-    const { error } = await supabase.functions.invoke('send-email-otp', {
-      body: { email }
-    });
-    return { error };
+    // DEBUG: First try direct fetch to test network connectivity
+    try {
+      Alert.alert('DEBUG', 'Starting direct fetch test...');
+      const directRes = await fetch('https://srrzoywtgkpvodfbpjqz.supabase.co/functions/v1/send-email-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': 'sb_publishable_DsM75EGKRPrMP_76r8N7Zg_AmCTMSnu',
+          'Authorization': 'Bearer sb_publishable_DsM75EGKRPrMP_76r8N7Zg_AmCTMSnu',
+        },
+        body: JSON.stringify({ email }),
+      });
+      const directBody = await directRes.text();
+      Alert.alert('Direct Fetch Result', `Status: ${directRes.status}\nBody: ${directBody}`);
+      if (directRes.ok) {
+        return { error: null };
+      }
+      return { error: new Error(directBody) };
+    } catch (fetchErr: any) {
+      Alert.alert('Direct Fetch FAILED', `Error: ${fetchErr?.message}\n\nStack: ${fetchErr?.stack?.substring(0, 300)}`);
+    }
+
+    // Fallback: try supabase.functions.invoke
+    try {
+      const { data, error } = await supabase.functions.invoke('send-email-otp', {
+        body: { email }
+      });
+      if (error) {
+        Alert.alert('Invoke Error', `Name: ${error?.name}\nMsg: ${error?.message}\nContext: ${JSON.stringify(error?.context || 'none')}`);
+      }
+      return { error };
+    } catch (e: any) {
+      Alert.alert('Invoke Exception', e?.message);
+      return { error: e };
+    }
   },
 
   verifyEmailOtp: async (email, otp) => {

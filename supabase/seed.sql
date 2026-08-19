@@ -5,114 +5,215 @@
 -- Enable UUID extension if not exists
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- 1. PROFILES (Extends auth.users)
-CREATE TABLE public.profiles (
-  id uuid references auth.users(id) on delete cascade not null primary key,
-  username text unique,
-  first_name text,
-  last_name text,
-  mobile_number text unique,
-  email text unique,
-  distributor_code_used text,
-  created_at timestamptz default now()
+-- 1. PROFILES
+create table public.profiles (
+  id uuid not null,
+  username text null,
+  first_name text null,
+  last_name text null,
+  mobile_number text null,
+  email text null,
+  distributor_code_used text null,
+  created_at timestamp with time zone null default now(),
+  constraint profiles_pkey primary key (id),
+  constraint profiles_email_key unique (email),
+  constraint profiles_mobile_number_key unique (mobile_number),
+  constraint profiles_username_key unique (username),
+  constraint profiles_id_fkey foreign KEY (id) references auth.users (id) on delete CASCADE
 );
 
 -- 2. DISTRIBUTORS
-CREATE TABLE public.distributors (
-  id uuid default uuid_generate_v4() primary key,
+create table public.distributors (
+  id uuid not null default extensions.uuid_generate_v4 (),
   name text not null,
-  code text unique,
+  code text null,
   address text not null,
   phone text not null,
-  email text,
-  gstin text,
-  owner_name text,
-  status boolean default true,
-  user_id uuid REFERENCES auth.users(id),
-  minimum_order_value numeric default 0,
-  max_debt_amount numeric default 0,
-  created_at timestamptz default now()
+  created_at timestamp with time zone null default now(),
+  email text null,
+  gstin text null,
+  owner_name text null,
+  status boolean null default true,
+  user_id uuid null,
+  minimum_order_value numeric null default 0,
+  max_debt_amount numeric null default 0,
+  constraint distributors_pkey primary key (id),
+  constraint distributors_code_key unique (code),
+  constraint distributors_user_id_fkey foreign KEY (user_id) references auth.users (id)
 );
 
--- 3. RETAILER_DISTRIBUTOR_MAP
-CREATE TABLE public.retailer_distributor_map (
-  id uuid default uuid_generate_v4() primary key,
-  retailer_id uuid references public.profiles(id) on delete cascade not null,
-  distributor_id uuid references public.distributors(id) on delete cascade not null,
-  status text not null check (status in ('mapped', 'non_mapped')),
-  priority int default 0,
-  outstanding_amount numeric default 0,
-  created_at timestamptz default now(),
-  unique (retailer_id, distributor_id)
+-- 3. USER ROLES
+create table public.user_roles (
+  user_id uuid not null,
+  role text not null,
+  distributor_id uuid null,
+  constraint user_roles_pkey primary key (user_id),
+  constraint user_roles_distributor_id_fkey foreign KEY (distributor_id) references distributors (id),
+  constraint user_roles_user_id_fkey foreign KEY (user_id) references auth.users (id),
+  constraint user_roles_role_check check (
+    (
+      role = any (array['admin'::text, 'distributor'::text])
+    )
+  )
 );
 
--- 4. CATEGORIES
-CREATE TABLE public.categories (
-  id uuid default uuid_generate_v4() primary key,
+-- 4. RETAILER_DISTRIBUTOR_MAP
+create table public.retailer_distributor_map (
+  id uuid not null default extensions.uuid_generate_v4 (),
+  retailer_id uuid not null,
+  distributor_id uuid not null,
+  status text not null,
+  priority integer null default 0,
+  outstanding_amount numeric null default 0,
+  created_at timestamp with time zone null default now(),
+  constraint retailer_distributor_map_pkey primary key (id),
+  constraint retailer_distributor_map_retailer_id_distributor_id_key unique (retailer_id, distributor_id),
+  constraint retailer_distributor_map_distributor_id_fkey foreign KEY (distributor_id) references distributors (id) on delete CASCADE,
+  constraint retailer_distributor_map_retailer_id_fkey foreign KEY (retailer_id) references profiles (id) on delete CASCADE,
+  constraint status_check check (
+    (
+      status = any (
+        array[
+          'pending'::text,
+          'approved'::text,
+          'rejected'::text
+        ]
+      )
+    )
+  )
+);
+
+-- 5. CATEGORIES
+create table public.categories (
+  id uuid not null default extensions.uuid_generate_v4 (),
   name text not null,
   icon_key text not null,
-  created_at timestamptz default now()
+  created_at timestamp with time zone null default now(),
+  constraint categories_pkey primary key (id)
 );
 
--- 5. PRODUCTS
-CREATE TABLE public.products (
-  id uuid default uuid_generate_v4() primary key,
-  distributor_id uuid references public.distributors(id) on delete cascade not null,
-  category_id uuid references public.categories(id) on delete set null,
+-- 6. PRODUCTS
+create table public.products (
+  id uuid not null default extensions.uuid_generate_v4 (),
+  distributor_id uuid not null,
+  category_id uuid null,
   name text not null,
-  strength text,
-  pack_size text,
+  strength text null,
+  pack_size text null,
   ptr numeric not null,
   mrp numeric not null,
-  stock_status text check (stock_status in ('high', 'low', 'out-of-stock')) not null,
-  discount_percent numeric,
-  is_generic boolean default false,
-  created_at timestamptz default now()
+  stock_status text not null,
+  discount_percent numeric null,
+  is_generic boolean null default false,
+  created_at timestamp with time zone null default now(),
+  constraint products_pkey primary key (id),
+  constraint products_category_id_fkey foreign KEY (category_id) references categories (id) on delete set null,
+  constraint products_distributor_id_fkey foreign KEY (distributor_id) references distributors (id) on delete CASCADE,
+  constraint products_stock_status_check check (
+    (
+      stock_status = any (
+        array['high'::text, 'low'::text, 'out-of-stock'::text]
+      )
+    )
+  )
 );
 
--- 6. CART_ITEMS
-CREATE TABLE public.cart_items (
-  id uuid default uuid_generate_v4() primary key,
-  retailer_id uuid references public.profiles(id) on delete cascade not null,
-  product_id uuid references public.products(id) on delete cascade not null,
-  distributor_id uuid references public.distributors(id) on delete cascade not null,
-  quantity int not null check (quantity > 0),
-  created_at timestamptz default now(),
-  unique (retailer_id, product_id)
+-- 7. CART_ITEMS
+create table public.cart_items (
+  id uuid not null default extensions.uuid_generate_v4 (),
+  retailer_id uuid not null,
+  product_id uuid not null,
+  distributor_id uuid not null,
+  quantity integer not null,
+  created_at timestamp with time zone null default now(),
+  constraint cart_items_pkey primary key (id),
+  constraint cart_items_retailer_id_product_id_key unique (retailer_id, product_id),
+  constraint cart_items_distributor_id_fkey foreign KEY (distributor_id) references distributors (id) on delete CASCADE,
+  constraint cart_items_product_id_fkey foreign KEY (product_id) references products (id) on delete CASCADE,
+  constraint cart_items_retailer_id_fkey foreign KEY (retailer_id) references profiles (id) on delete CASCADE,
+  constraint cart_items_quantity_check check ((quantity > 0))
 );
 
--- 7. ORDERS
-CREATE TABLE public.orders (
-  id uuid default uuid_generate_v4() primary key,
-  order_number text unique not null,
-  retailer_id uuid references public.profiles(id) on delete cascade not null,
-  distributor_id uuid references public.distributors(id) on delete cascade not null,
-  status text not null check (status in ('placed', 'processed', 'confirmed')),
+-- 8. ORDERS
+create table public.orders (
+  id uuid not null default extensions.uuid_generate_v4 (),
+  order_number text not null,
+  retailer_id uuid not null,
+  distributor_id uuid not null,
+  status text not null,
   total_amount numeric not null,
-  created_at timestamptz default now()
+  created_at timestamp with time zone null default now(),
+  constraint orders_pkey primary key (id),
+  constraint orders_order_number_key unique (order_number),
+  constraint orders_distributor_id_fkey foreign KEY (distributor_id) references distributors (id) on delete CASCADE,
+  constraint orders_retailer_id_fkey foreign KEY (retailer_id) references profiles (id) on delete CASCADE,
+  constraint orders_status_check check (
+    (
+      status = any (
+        array[
+          'placed'::text,
+          'processed'::text,
+          'confirmed'::text
+        ]
+      )
+    )
+  )
 );
 
--- 8. ORDER_ITEMS
-CREATE TABLE public.order_items (
-  id uuid default uuid_generate_v4() primary key,
-  order_id uuid references public.orders(id) on delete cascade not null,
-  product_id uuid references public.products(id) on delete restrict not null,
-  quantity int not null check (quantity > 0),
+-- 9. ORDER_ITEMS
+create table public.order_items (
+  id uuid not null default extensions.uuid_generate_v4 (),
+  order_id uuid not null,
+  product_id uuid not null,
+  quantity integer not null,
   ptr_at_order numeric not null,
-  created_at timestamptz default now()
+  created_at timestamp with time zone null default now(),
+  constraint order_items_pkey primary key (id),
+  constraint order_items_order_id_fkey foreign KEY (order_id) references orders (id) on delete CASCADE,
+  constraint order_items_product_id_fkey foreign KEY (product_id) references products (id) on delete RESTRICT,
+  constraint order_items_quantity_check check ((quantity > 0))
 );
 
--- 9. RETURNS
-CREATE TABLE public.returns (
-  id uuid default uuid_generate_v4() primary key,
-  retailer_id uuid references public.profiles(id) on delete cascade not null,
-  order_id uuid references public.orders(id) on delete set null,
-  product_id uuid references public.products(id) on delete restrict not null,
-  quantity int not null check (quantity > 0),
-  return_type text not null check (return_type in ('saleable', 'expiry')),
-  status text not null check (status in ('draft', 'submitted')),
-  created_at timestamptz default now()
+-- 10. RETURNS
+create table public.returns (
+  id uuid not null default extensions.uuid_generate_v4 (),
+  retailer_id uuid not null,
+  order_id uuid null,
+  product_id uuid not null,
+  quantity integer not null,
+  return_type text not null,
+  status text not null,
+  created_at timestamp with time zone null default now(),
+  constraint returns_pkey primary key (id),
+  constraint returns_retailer_id_fkey foreign KEY (retailer_id) references profiles (id) on delete CASCADE,
+  constraint returns_product_id_fkey foreign KEY (product_id) references products (id) on delete RESTRICT,
+  constraint returns_order_id_fkey foreign KEY (order_id) references orders (id) on delete set null,
+  constraint returns_quantity_check check ((quantity > 0)),
+  constraint returns_return_type_check check (
+    (
+      return_type = any (array['saleable'::text, 'expiry'::text])
+    )
+  ),
+  constraint returns_status_check check (
+    (
+      status = any (array['draft'::text, 'submitted'::text])
+    )
+  )
 );
+
+-- 11. OTPS
+create table public.otps (
+  id uuid not null default gen_random_uuid (),
+  email text not null,
+  otp_hash text not null,
+  attempts integer null default 0,
+  expires_at timestamp with time zone not null,
+  verified boolean null default false,
+  created_at timestamp with time zone null default now(),
+  constraint otps_pkey primary key (id)
+);
+create index IF not exists idx_otps_email on public.otps using btree (email);
+
 
 -- ============================================
 -- ROW LEVEL SECURITY (RLS) POLICIES

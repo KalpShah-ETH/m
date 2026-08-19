@@ -13,9 +13,6 @@ export default function HomeScreen() {
   const summary = useHomeStore((state) => state.summary);
   const distributors = useHomeStore((state) => state.distributors);
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchType, setSearchType] = useState<'medicines' | 'distributor'>('medicines');
-
   useEffect(() => {
     fetchSummary();
     fetchDistributors();
@@ -23,19 +20,21 @@ export default function HomeScreen() {
   }, []);
 
   const gridItems = [
-    { id: '1', title: 'Distributors', icon: <Truck color="#1F5B4E" size={32} />, route: '/distributors' },
-    { id: '2', title: 'Outstandings', icon: <Wallet color="#1F5B4E" size={32} />, route: '/outstandings' },
-    { id: '3', title: 'Company Schemes', icon: <Tag color="#1F5B4E" size={32} /> },
-    { id: '4', title: 'Generic', icon: <Pill color="#1F5B4E" size={32} />, route: '/generic' },
-    { id: '5', title: 'Company Cashback', icon: <Gift color="#1F5B4E" size={32} /> },
-    { id: '6', title: 'Returns', icon: <RotateCcw color="#1F5B4E" size={32} />, route: '/returns' },
+    { id: '1', title: 'Distributors', icon: <Truck color="#1F5B4E" size={26} />, route: '/distributors' },
+    { id: '2', title: 'Outstandings', icon: <Wallet color="#1F5B4E" size={26} />, route: '/outstandings' },
+    { id: '3', title: 'Company Schemes', icon: <Tag color="#1F5B4E" size={26} /> },
+    { id: '4', title: 'Generic', icon: <Pill color="#1F5B4E" size={26} />, route: '/generic' },
+    { id: '5', title: 'Company Cashback', icon: <Gift color="#1F5B4E" size={26} /> },
+    { id: '6', title: 'Returns', icon: <RotateCcw color="#1F5B4E" size={26} />, route: '/returns' },
   ];
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.topBar}>
-        <View>
-          <Text style={styles.greetingText}>Hello, {profile?.name ? profile.name.split(' ')[0] : 'User'}</Text>
+        <View style={styles.greetingContainer}>
+          <Text style={styles.greetingText} numberOfLines={1} ellipsizeMode="tail">
+            Hello, {profile?.name ? profile.name.split(' ')[0] : 'User'}
+          </Text>
           <Text style={styles.subGreetingText}>Welcome back</Text>
         </View>
         <View style={styles.topBarIcons}>
@@ -56,38 +55,6 @@ export default function HomeScreen() {
           <Text style={styles.bannerSubtitle}>Your dedicated B2B Pharma Ordering Platform</Text>
         </View>
 
-        {/* Search Bar with Toggle */}
-        <View style={styles.searchSection}>
-          <View style={styles.searchToggleContainer}>
-            <TouchableOpacity 
-              style={[styles.toggleButton, searchType === 'medicines' && styles.toggleActive]}
-              onPress={() => setSearchType('medicines')}
-            >
-              <Text style={[styles.toggleText, searchType === 'medicines' && styles.toggleTextActive]}>
-                Medicines
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={[styles.toggleButton, searchType === 'distributor' && styles.toggleActive]}
-              onPress={() => setSearchType('distributor')}
-            >
-              <Text style={[styles.toggleText, searchType === 'distributor' && styles.toggleTextActive]}>
-                Distributor
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.searchInputContainer}>
-            <Search color="#999" size={20} style={styles.searchIcon} />
-            <TextInput
-              style={styles.searchInput}
-              placeholder={`Search for ${searchType}...`}
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              placeholderTextColor="#999"
-            />
-          </View>
-        </View>
 
         {/* Explore Grid */}
         <Text style={styles.sectionTitle}>Explore</Text>
@@ -112,12 +79,12 @@ export default function HomeScreen() {
             <Text style={styles.sectionTitle}>Dashboard Summary</Text>
             <View style={styles.summaryCard}>
               <View style={styles.summaryRow}>
-                <Text style={styles.summaryLabel}>Outstanding Total:</Text>
-                <Text style={styles.summaryValue}>₹{summary.outstandingTotal ?? 0}</Text>
+                <Text style={styles.summaryLabel} numberOfLines={1} ellipsizeMode="tail">Outstanding Total:</Text>
+                <Text style={styles.summaryValue} numberOfLines={1} ellipsizeMode="tail">₹{summary.outstandingTotal ?? 0}</Text>
               </View>
               <View style={styles.summaryRow}>
-                <Text style={styles.summaryLabel}>Items in Cart:</Text>
-                <Text style={styles.summaryValue}>{summary.cartCount ?? 0}</Text>
+                <Text style={styles.summaryLabel} numberOfLines={1} ellipsizeMode="tail">Items in Cart:</Text>
+                <Text style={styles.summaryValue} numberOfLines={1} ellipsizeMode="tail">{summary.cartCount ?? 0}</Text>
               </View>
             </View>
           </View>
@@ -160,6 +127,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
+  greetingContainer: {
+    flex: 1,
+    marginRight: 16,
+  },
   greetingText: {
     fontSize: 18, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
@@ -184,9 +155,12 @@ const styles = StyleSheet.create({
   },
   banner: {
     backgroundColor: '#E8F0EE',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 32, // increased vertical padding to make it bigger
     borderRadius: 12,
     marginBottom: 24,
+    minHeight: 140, // Ensure it has a good size for future ads
+    justifyContent: 'center',
   },
   bannerTitle: {
     fontSize: 20, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
@@ -270,10 +244,10 @@ const styles = StyleSheet.create({
     borderColor: '#eee',
   },
   iconContainer: {
-    width: 48,
-    height: 48,
+    width: 44,
+    height: 44,
     backgroundColor: '#E8F0EE',
-    borderRadius: 24,
+    borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
@@ -297,15 +271,19 @@ const styles = StyleSheet.create({
   summaryRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 8,
   },
   summaryLabel: {
     fontSize: 14, fontFamily: 'Inter_400Regular',
     color: '#666',
+    flexShrink: 1,
+    marginRight: 8,
   },
   summaryValue: {
     fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
+    flexShrink: 0,
   },
   distributorsContainer: {
     marginBottom: 24,

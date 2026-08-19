@@ -187,41 +187,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 6,
   },
-  toggleActive: {
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  toggleText: {
-    fontSize: 14, fontFamily: 'Inter_400Regular',
-    color: '#666',
-    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
-  },
-  toggleTextActive: {
-    color: '#1F5B4E',
-  },
-  searchInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f9f9f9',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    height: 50,
-  },
-  searchIcon: {
-    marginRight: 8,
-  },
-  searchInput: {
-    flex: 1,
-    height: '100%',
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    color: '#1F2937',
-  },
   sectionTitle: {
     fontSize: 18, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
@@ -253,7 +218,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   gridItemText: {
-    fontSize: 12, fontFamily: 'Inter_400Regular',
+    fontSize: 12, 
     color: '#1F2937',
     textAlign: 'center',
     fontFamily: 'Inter_500Medium', fontWeight: '500',
@@ -299,7 +264,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   distributorName: {
-    fontSize: 16, fontFamily: 'Inter_400Regular',
+    fontSize: 16, 
     color: '#1F2937',
     fontFamily: 'Inter_500Medium', fontWeight: '500',
   },

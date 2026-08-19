@@ -21,9 +21,13 @@ CREATE TABLE public.profiles (
 CREATE TABLE public.distributors (
   id uuid default uuid_generate_v4() primary key,
   name text not null,
-  code text unique not null,
-  address text,
-  phone text,
+  code text unique,
+  address text not null,
+  phone text not null,
+  email text,
+  gstin text,
+  owner_name text,
+  status boolean default true,
   created_at timestamptz default now()
 );
 

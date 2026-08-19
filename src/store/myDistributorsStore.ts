@@ -13,6 +13,7 @@ export interface MyDistributor {
 interface MyDistributorsState {
   mappedDistributors: MyDistributor[];
   nonMappedDistributors: MyDistributor[];
+  pendingIds: string[];
   isLoading: boolean;
   
   fetchMapped: () => Promise<void>;
@@ -27,6 +28,7 @@ interface MyDistributorsState {
 export const useMyDistributorsStore = create<MyDistributorsState>((set, get) => ({
   mappedDistributors: [],
   nonMappedDistributors: [],
+  pendingIds: [],
   isLoading: false,
 
   setMappedLocally: (distributors) => set({ mappedDistributors: distributors }),
@@ -43,7 +45,7 @@ export const useMyDistributorsStore = create<MyDistributorsState>((set, get) => 
       .from('retailer_distributor_map')
       .select('priority, distributors(id, name, phone, address)')
       .eq('retailer_id', user.id)
-      .eq('status', 'mapped')
+      .eq('status', 'approved')
       .order('priority', { ascending: true });
 
     if (error || !data) {
@@ -69,12 +71,14 @@ export const useMyDistributorsStore = create<MyDistributorsState>((set, get) => 
     }
 
     // Get all distributors that are NOT mapped for this retailer
+    // Get all distributors that are mapped or pending for this retailer
     const { data: mappedMaps } = await supabase
       .from('retailer_distributor_map')
-      .select('distributor_id')
+      .select('distributor_id, status')
       .eq('retailer_id', user.id);
       
-    const mappedIds = mappedMaps?.map(m => m.distributor_id) || [];
+    const mappedIds = mappedMaps?.filter(m => m.status === 'approved').map(m => m.distributor_id) || [];
+    const pendingIds = mappedMaps?.filter(m => m.status === 'pending').map(m => m.distributor_id) || [];
 
     let query = supabase.from('distributors').select('id, name, phone, address');
     
@@ -83,14 +87,15 @@ export const useMyDistributorsStore = create<MyDistributorsState>((set, get) => 
     if (error || !data) {
       set({ nonMappedDistributors: [], isLoading: false });
     } else {
-      // Filter out mapped locally if postgrest doesn't support 'not in' easily in JS client
+      // Filter out approved locally if postgrest doesn't support 'not in' easily in JS client
+      // Note: We DO NOT filter out pendingIds, so they stay in the non-mapped list UI!
       const nonMapped = data.filter(d => !mappedIds.includes(d.id)).map(item => ({
         id: item.id,
         name: item.name,
         contact: item.phone,
         address: item.address
       }));
-      set({ nonMappedDistributors: nonMapped, isLoading: false });
+      set({ nonMappedDistributors: nonMapped, pendingIds, isLoading: false });
     }
   },
 
@@ -109,7 +114,7 @@ export const useMyDistributorsStore = create<MyDistributorsState>((set, get) => 
 
     if (!error && data?.success) {
       set((state) => ({
-        nonMappedDistributors: state.nonMappedDistributors.filter(d => d.id !== distributorId)
+        pendingIds: [...state.pendingIds, distributorId]
       }));
       return { success: true };
     }

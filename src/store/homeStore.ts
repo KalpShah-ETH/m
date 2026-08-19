@@ -60,14 +60,14 @@ export const useHomeStore = create<HomeState>((set) => ({
       .from('retailer_distributor_map')
       .select('distributor_id, distributors ( id, name )')
       .eq('retailer_id', user.id)
-      .eq('status', 'mapped')
+      .eq('status', 'approved')
       .order('priority', { ascending: true })
       .limit(5);
       
     if (error || !data) {
       set({ distributors: [], error: error?.message, isLoading: false });
     } else {
-      const mapped = data.map(item => ({
+      const mapped = data.map((item: any) => ({
         id: item.distributors.id,
         name: item.distributors.name
       }));

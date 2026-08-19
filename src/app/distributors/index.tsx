@@ -6,21 +6,18 @@ import { useMyDistributorsStore, MyDistributor } from '@/store/myDistributorsSto
 
 export default function MyDistributorsScreen() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'mapped' | 'non-mapped' | 'refer'>('mapped');
+  const [activeTab, setActiveTab] = useState<'mapped' | 'non-mapped'>('mapped');
   const [searchQuery, setSearchQuery] = useState('');
-  
-  const [referralName, setReferralName] = useState('');
-  const [referralPhone, setReferralPhone] = useState('');
 
   const {
     mappedDistributors,
     nonMappedDistributors,
+    pendingIds,
     isLoading,
     fetchMapped,
     fetchNonMapped,
     reorderMapped,
     requestConnection,
-    referDistributor,
     setMappedLocally
   } = useMyDistributorsStore();
 
@@ -56,29 +53,6 @@ export default function MyDistributorsScreen() {
     }
   };
 
-  const handleRefer = async () => {
-    if (!referralName || !referralPhone) {
-      Alert.alert('Error', 'Please fill in both fields');
-      return;
-    }
-    const { success } = await referDistributor({ name: referralName, phone: referralPhone });
-    if (success) {
-      Alert.alert('Success', 'Referral submitted!');
-      setReferralName('');
-      setReferralPhone('');
-    }
-  };
-
-  const handleShareApp = async () => {
-    try {
-      await RNShare.share({
-        message: 'Join MedConnect to streamline your pharma distribution network! Download the app here: https://medconnect.app',
-      });
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  };
-
   const renderMappedItem = ({ item, index }: { item: MyDistributor, index: number }) => (
     <View style={styles.listItem}>
       <View style={styles.numberContainer}>
@@ -100,17 +74,28 @@ export default function MyDistributorsScreen() {
     </View>
   );
 
-  const renderNonMappedItem = ({ item }: { item: MyDistributor }) => (
-    <View style={styles.listItem}>
-      <View style={styles.itemDetails}>
-        <Text style={styles.itemName}>{item.name}</Text>
+  const renderNonMappedItem = ({ item }: { item: MyDistributor }) => {
+    const isPending = pendingIds.includes(item.id);
+    
+    return (
+      <View style={styles.listItem}>
+        <View style={styles.itemDetails}>
+          <Text style={styles.itemName}>{item.name}</Text>
+        </View>
+        
+        {isPending ? (
+          <View style={[styles.connectButton, { backgroundColor: '#e5e7eb' }]}>
+            <Text style={[styles.connectButtonText, { color: '#6b7280' }]}>Pending</Text>
+          </View>
+        ) : (
+          <TouchableOpacity style={styles.connectButton} onPress={() => handleConnect(item.id)}>
+            <Plus color="#1F5B4E" size={16} style={{ marginRight: 4 }} />
+            <Text style={styles.connectButtonText}>Connect</Text>
+          </TouchableOpacity>
+        )}
       </View>
-      <TouchableOpacity style={styles.connectButton} onPress={() => handleConnect(item.id)}>
-        <Plus color="#1F5B4E" size={16} style={{ marginRight: 4 }} />
-        <Text style={styles.connectButtonText}>Connect</Text>
-      </TouchableOpacity>
-    </View>
-  );
+    );
+  };
 
   const filteredMapped = mappedDistributors.filter(d => d.name.toLowerCase().includes(searchQuery.toLowerCase()));
   const filteredNonMapped = nonMappedDistributors.filter(d => d.name.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -142,17 +127,10 @@ export default function MyDistributorsScreen() {
           >
             <Text style={[styles.tabText, activeTab === 'non-mapped' && styles.tabTextActive]}>Non-Mapped</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={[styles.tab, activeTab === 'refer' && styles.tabActive]}
-            onPress={() => setActiveTab('refer')}
-          >
-            <Text style={[styles.tabText, activeTab === 'refer' && styles.tabTextActive]}>Refer</Text>
-          </TouchableOpacity>
         </View>
 
-        {/* Search Bar (Hide on Refer Tab) */}
-        {activeTab !== 'refer' && (
-          <View style={styles.searchContainer}>
+        {/* Search Bar */}
+        <View style={styles.searchContainer}>
             <Search color="#999" size={20} style={styles.searchIcon} />
             <TextInput
               style={styles.searchInput}
@@ -162,7 +140,6 @@ export default function MyDistributorsScreen() {
               placeholderTextColor="#999"
             />
           </View>
-        )}
 
         {isLoading ? (
           <View style={styles.loadingContainer}>
@@ -188,49 +165,6 @@ export default function MyDistributorsScreen() {
                 contentContainerStyle={styles.listContainer}
                 ListEmptyComponent={<Text style={styles.emptyText}>No non-mapped distributors found.</Text>}
               />
-            )}
-
-            {activeTab === 'refer' && (
-              <View style={styles.referContainer}>
-                <Text style={styles.referTitle}>Refer a Distributor</Text>
-                <Text style={styles.referSubtitle}>Can't find your distributor? Invite them to MedConnect.</Text>
-                
-                <View style={styles.formGroup}>
-                  <Text style={styles.label}>Distributor / Contact Name *</Text>
-                  <TextInput
-                    style={styles.input}
-                    value={referralName}
-                    onChangeText={setReferralName}
-                    placeholder="Enter name"
-                  />
-                </View>
-
-                <View style={styles.formGroup}>
-                  <Text style={styles.label}>Mobile Number *</Text>
-                  <TextInput
-                    style={styles.input}
-                    value={referralPhone}
-                    onChangeText={setReferralPhone}
-                    keyboardType="phone-pad"
-                    placeholder="Enter 10-digit number"
-                  />
-                </View>
-
-                <TouchableOpacity style={styles.submitButton} onPress={handleRefer}>
-                  <Text style={styles.submitButtonText}>Submit Referral</Text>
-                </TouchableOpacity>
-
-                <View style={styles.dividerContainer}>
-                  <View style={styles.divider} />
-                  <Text style={styles.dividerText}>OR</Text>
-                  <View style={styles.divider} />
-                </View>
-
-                <TouchableOpacity style={styles.shareButton} onPress={handleShareApp}>
-                  <Share color="#fff" size={20} style={{ marginRight: 8 }} />
-                  <Text style={styles.shareButtonText}>Share Invite Link</Text>
-                </TouchableOpacity>
-              </View>
             )}
           </>
         )}

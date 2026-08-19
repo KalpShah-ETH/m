@@ -62,7 +62,7 @@ export const useOrdersStore = create<OrdersState>((set) => ({
       .select('*, distributors(name, phone), retailer_distributor_map!inner(status)')
       .eq('retailer_id', user.id)
       .eq('retailer_distributor_map.retailer_id', user.id)
-      .eq('retailer_distributor_map.status', tab)
+      .eq('retailer_distributor_map.status', tab === 'mapped' ? 'approved' : 'pending')
       .gte('created_at', from)
       .lte('created_at', to);
       

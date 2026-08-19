@@ -6,7 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -30,33 +30,35 @@ serve(async (req) => {
     // Check if map already exists
     const { data: existing, error: checkError } = await supabaseClient
       .from('retailer_distributor_map')
-      .select('id')
+      .select('id, status')
       .eq('retailer_id', user.id)
       .eq('distributor_id', distributor_id)
       .maybeSingle()
 
-    if (existing) {
-      throw new Error('Connection request already exists or is already mapped')
+    if (existing && existing.status !== 'rejected') {
+      throw new Error('Connection request already exists or is already approved')
     }
 
-    // Insert new map as non_mapped
-    const { data: newMap, error: insertError } = await supabaseClient
+    // Upsert the map as pending
+    const { data: newMap, error: upsertError } = await supabaseClient
       .from('retailer_distributor_map')
-      .insert({
+      .upsert({
+        id: existing ? existing.id : undefined,
         retailer_id: user.id,
         distributor_id,
-        status: 'non_mapped'
-      })
+        status: 'pending',
+        decided_at: null
+      }, { onConflict: 'retailer_id,distributor_id' })
       .select()
       .single()
 
-    if (insertError) throw insertError
+    if (upsertError) throw upsertError
 
     return new Response(JSON.stringify({ success: true, data: newMap }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     })
-  } catch (error) {
+  } catch (error: any) {
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,

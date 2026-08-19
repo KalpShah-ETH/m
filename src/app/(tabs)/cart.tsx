@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
 import { Trash, Plus, Minus } from 'lucide-react-native';
+import { useFocusEffect } from 'expo-router';
 import { useCartStore, CartItem } from '@/store/cartStore';
 
 export default function CartScreen() {
@@ -11,13 +12,49 @@ export default function CartScreen() {
     getGroupedByDistributor, 
     getCartTotal, 
     placeOrder, 
-    isLoading 
+    isLoading,
+    distributorLimits,
+    fetchLimits
   } = useCartStore();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchLimits();
+    }, [])
+  );
 
   const [orderStatus, setOrderStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const groupedItems = useMemo(() => getGroupedByDistributor(), [items]);
   const cartTotal = useMemo(() => getCartTotal(), [items]);
+
+  const validation = useMemo(() => {
+    const errors: Record<string, string[]> = {};
+    let hasAnyError = false;
+
+    Object.entries(groupedItems).forEach(([distributorId, group]) => {
+      const limits = distributorLimits[distributorId];
+      if (!limits) return;
+
+      const groupTotal = group.items.reduce((total, item) => total + (item.ptr * item.quantity), 0);
+      const groupErrors = [];
+
+      if (limits.minOrderValue > 0 && groupTotal < limits.minOrderValue) {
+        groupErrors.push(`Minimum order is ₹${limits.minOrderValue.toFixed(2)}`);
+      }
+      
+      if (limits.maxDebtAmount > 0 && (limits.outstandingAmount + groupTotal) > limits.maxDebtAmount) {
+        groupErrors.push(`Exceeds max debt of ₹${limits.maxDebtAmount.toFixed(2)} (Current debt: ₹${limits.outstandingAmount.toFixed(2)})`);
+      }
+
+      if (groupErrors.length > 0) {
+        errors[distributorId] = groupErrors;
+        hasAnyError = true;
+      }
+    });
+
+    return { errors, hasAnyError };
+  }, [groupedItems, distributorLimits]);
 
   const handlePlaceOrder = async () => {
     setOrderStatus('idle');
@@ -55,8 +92,10 @@ export default function CartScreen() {
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.screenTitle}>Your Cart</Text>
 
-        {Object.entries(groupedItems).map(([distributorId, group]) => (
-          <View key={distributorId} style={styles.groupContainer}>
+        {Object.entries(groupedItems).map(([distributorId, group]) => {
+          const groupErrors = validation.errors[distributorId];
+          return (
+          <View key={distributorId} style={[styles.groupContainer, groupErrors && styles.groupContainerError]}>
             <Text style={styles.distributorName}>{group.distributorName}</Text>
             
             {group.items.map((item: CartItem) => (
@@ -82,8 +121,16 @@ export default function CartScreen() {
                 </View>
               </View>
             ))}
+
+            {groupErrors && groupErrors.length > 0 && (
+              <View style={styles.errorContainer}>
+                {groupErrors.map((err, idx) => (
+                  <Text key={idx} style={styles.errorText}>• {err}</Text>
+                ))}
+              </View>
+            )}
           </View>
-        ))}
+        )})}
 
         <View style={styles.summaryContainer}>
           <Text style={styles.summaryTitle}>Order Summary</Text>
@@ -94,9 +141,9 @@ export default function CartScreen() {
         </View>
 
         <TouchableOpacity 
-          style={[styles.checkoutButton, isLoading && styles.disabledButton]} 
+          style={[styles.checkoutButton, (isLoading || validation.hasAnyError) && styles.disabledButton]} 
           onPress={handlePlaceOrder}
-          disabled={isLoading}
+          disabled={isLoading || validation.hasAnyError}
         >
           {isLoading ? (
              <ActivityIndicator size="small" color="#fff" />
@@ -132,6 +179,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#eee',
   },
+  groupContainerError: {
+    borderColor: '#ef4444',
+    backgroundColor: '#fef2f2',
+  },
   distributorName: {
     fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F5B4E',
@@ -164,6 +215,17 @@ const styles = StyleSheet.create({
   itemActions: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  errorContainer: {
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#fecaca',
+  },
+  errorText: {
+    fontSize: 13, fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    color: '#ef4444',
+    marginBottom: 4,
   },
   stepperContainer: {
     flexDirection: 'row',

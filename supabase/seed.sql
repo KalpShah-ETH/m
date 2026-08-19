@@ -28,6 +28,9 @@ CREATE TABLE public.distributors (
   gstin text,
   owner_name text,
   status boolean default true,
+  user_id uuid REFERENCES auth.users(id),
+  minimum_order_value numeric default 0,
+  max_debt_amount numeric default 0,
   created_at timestamptz default now()
 );
 

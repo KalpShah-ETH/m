@@ -33,17 +33,25 @@ export interface CartItem {
   isPendingSync?: boolean; // Track if it needs to be uploaded to Supabase
 }
 
+export interface DistributorLimit {
+  minOrderValue: number;
+  maxDebtAmount: number;
+  outstandingAmount: number;
+}
+
 interface CartState {
   items: CartItem[];
   isLoading: boolean;
   isSyncing: boolean;
   lastAddedItem: string | null;
+  distributorLimits: Record<string, DistributorLimit>;
   
   getCartTotal: () => number;
   getItemCount: () => number;
   getGroupedByDistributor: () => Record<string, { distributorName: string; items: CartItem[] }>;
   
   fetchCart: () => Promise<void>;
+  fetchLimits: () => Promise<void>;
   addToCart: (item: Omit<CartItem, 'id'>) => Promise<void>;
   updateQuantity: (id: string, quantity: number) => Promise<void>;
   removeItem: (id: string) => Promise<void>;
@@ -57,6 +65,7 @@ export const useCartStore = create<CartState>()(
       isLoading: false,
       isSyncing: false,
       lastAddedItem: null,
+      distributorLimits: {},
 
       getCartTotal: () => {
         return get().items.reduce((total, item) => total + (item.ptr * item.quantity), 0);
@@ -111,10 +120,52 @@ export const useCartStore = create<CartState>()(
           // For now, we merge them into the UI state so they aren't lost.
           
           set({ items: [...mappedItems, ...pendingLocalItems] });
+          get().fetchLimits();
         }
         // If error (e.g. offline), we do nothing and keep the locally persisted items!
         
         set({ isSyncing: false });
+      },
+
+      fetchLimits: async () => {
+        const user = useAuthStore.getState().user;
+        if (!user) return;
+
+        const cartItems = get().items;
+        if (cartItems.length === 0) {
+          set({ distributorLimits: {} });
+          return;
+        }
+
+        const uniqueDistributorIds = Array.from(new Set(cartItems.map(i => i.distributorId)));
+
+        // 1. Fetch min order and max debt from distributors table
+        const { data: distData } = await supabase
+          .from('distributors')
+          .select('id, minimum_order_value, max_debt_amount')
+          .in('id', uniqueDistributorIds);
+
+        // 2. Fetch outstanding amount from retailer_distributor_map
+        const { data: mapData } = await supabase
+          .from('retailer_distributor_map')
+          .select('distributor_id, outstanding_amount')
+          .eq('retailer_id', user.id)
+          .in('distributor_id', uniqueDistributorIds);
+
+        const newLimits: Record<string, DistributorLimit> = {};
+
+        uniqueDistributorIds.forEach(dId => {
+          const distInfo = distData?.find((d: any) => d.id === dId);
+          const mapInfo = mapData?.find((m: any) => m.distributor_id === dId);
+          
+          newLimits[dId] = {
+            minOrderValue: distInfo ? Number(distInfo.minimum_order_value) : 0,
+            maxDebtAmount: distInfo ? Number(distInfo.max_debt_amount) : 0,
+            outstandingAmount: mapInfo ? Number(mapInfo.outstanding_amount) : 0
+          };
+        });
+
+        set({ distributorLimits: newLimits });
       },
 
       addToCart: async (item) => {
@@ -157,6 +208,8 @@ export const useCartStore = create<CartState>()(
             items: state.items.map(i => i.id === tempId ? { ...i, id: data.id, isPendingSync: false } : i)
           }));
         }
+        
+        get().fetchLimits();
       },
 
       updateQuantity: async (id, quantity) => {
@@ -184,6 +237,8 @@ export const useCartStore = create<CartState>()(
         if (!id.startsWith('temp_')) {
           await supabase.from('cart_items').delete().eq('id', id);
         }
+        
+        get().fetchLimits();
       },
 
       placeOrder: async () => {

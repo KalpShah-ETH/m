@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Toast from 'react-native-toast-message';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing, interpolate, interpolateColor } from 'react-native-reanimated';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
 import { Link, useRouter } from 'expo-router';
@@ -87,6 +88,7 @@ export default function LoginScreen() {
     if (result.error) {
       setApiError(result.error.message);
     } else {
+      Toast.show({ type: 'success', text1: 'Welcome back!', text2: 'Successfully logged in.' });
       router.replace('/'); 
     }
   };

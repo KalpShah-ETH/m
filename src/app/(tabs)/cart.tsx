@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Trash, Plus, Minus } from 'lucide-react-native';
 import { useFocusEffect } from 'expo-router';
+import Toast from 'react-native-toast-message';
 import { useCartStore, CartItem } from '@/store/cartStore';
 
 export default function CartScreen() {
@@ -61,6 +62,7 @@ export default function CartScreen() {
     setOrderStatus('idle');
     const { success, error } = await placeOrder();
     if (success) {
+      Toast.show({ type: 'success', text1: 'Order Placed', text2: 'Your order was placed successfully!' });
       setOrderStatus('success');
     } else {
       setOrderStatus('error');

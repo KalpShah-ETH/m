@@ -4,6 +4,7 @@ import { CheckCircle, ChevronDown, Eye, EyeOff, Lock, Mail, MapPin, Phone, Store
 import { useEffect, useState, useRef } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Toast from 'react-native-toast-message';
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -244,6 +245,7 @@ export default function SignupScreen() {
     if (error) {
       Alert.alert('Registration Failed', error.message);
     } else {
+      Toast.show({ type: 'success', text1: 'Welcome!', text2: 'Registration successful!' });
       router.replace('/');
     }
   };

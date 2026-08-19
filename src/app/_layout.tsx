@@ -8,6 +8,8 @@ import { useAuthStore } from '@/store/authStore';
 import { useEffect } from 'react';
 import { MiniCart } from '@/components/MiniCart';
 import { useFonts, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
+import Toast from 'react-native-toast-message';
+import { toastConfig } from '@/components/CustomToast';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -43,6 +45,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
       <MiniCart />
+      <Toast config={toastConfig} />
     </ThemeProvider>
   );
 }

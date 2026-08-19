@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, ActivityIndicator, Alert, Share as RNShare } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import Toast from 'react-native-toast-message';
 import { Search, GripVertical, Plus, Share, ChevronUp, ChevronDown, ArrowLeft } from 'lucide-react-native';
 import { useMyDistributorsStore, MyDistributor } from '@/store/myDistributorsStore';
 
@@ -50,7 +51,7 @@ export default function MyDistributorsScreen() {
   const handleConnect = async (distributorId: string) => {
     const { success, error } = await requestConnection(distributorId);
     if (success) {
-      Alert.alert('Success', 'Connection request sent successfully!');
+      Toast.show({ type: 'success', text1: 'Request Sent', text2: 'Connection request sent successfully!' });
     } else {
       Alert.alert('Error', error || 'Failed to send request');
     }

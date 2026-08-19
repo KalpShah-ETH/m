@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Alert, Modal, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import Toast from 'react-native-toast-message';
 import { User, Edit2, Clock, Truck, Wallet, Lock, Phone, FileText, ChevronRight, X } from 'lucide-react-native';
 import { useAccountStore } from '@/store/accountStore';
 
@@ -118,7 +119,10 @@ export default function ProfileScreen() {
         </View>
 
         {/* Logout Button */}
-        <TouchableOpacity style={styles.logoutButton} onPress={() => router.replace('/login')}>
+        <TouchableOpacity style={styles.logoutButton} onPress={() => {
+          Toast.show({ type: 'success', text1: 'Logged Out', text2: 'You have successfully logged out.' });
+          router.replace('/login');
+        }}>
           <Text style={styles.logoutButtonText}>Log Out</Text>
         </TouchableOpacity>
 

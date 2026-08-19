@@ -47,9 +47,11 @@ export default function MyDistributorsScreen() {
   };
 
   const handleConnect = async (distributorId: string) => {
-    const { success } = await requestConnection(distributorId);
+    const { success, error } = await requestConnection(distributorId);
     if (success) {
       Alert.alert('Success', 'Connection request sent successfully!');
+    } else {
+      Alert.alert('Error', error || 'Failed to send request');
     }
   };
 

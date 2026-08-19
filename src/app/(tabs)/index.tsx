@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
-import { Truck, Wallet, Tag, Pill, Gift, RotateCcw, Search, Bell, User } from 'lucide-react-native';
-import { useRouter } from 'expo-router';
-import { useHomeStore } from '@/store/homeStore';
 import { useAccountStore } from '@/store/accountStore';
+import { useHomeStore } from '@/store/homeStore';
+import { useRouter } from 'expo-router';
+import { Bell, Gift, Pill, RotateCcw, Tag, Truck, User, Wallet } from 'lucide-react-native';
+import { useEffect } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -20,12 +21,12 @@ export default function HomeScreen() {
   }, []);
 
   const gridItems = [
-    { id: '1', title: 'Distributors', icon: <Truck color="#1F5B4E" size={26} />, route: '/distributors' },
-    { id: '2', title: 'Outstandings', icon: <Wallet color="#1F5B4E" size={26} />, route: '/outstandings' },
-    { id: '3', title: 'Company Schemes', icon: <Tag color="#1F5B4E" size={26} /> },
-    { id: '4', title: 'Generic', icon: <Pill color="#1F5B4E" size={26} />, route: '/generic' },
-    { id: '5', title: 'Company Cashback', icon: <Gift color="#1F5B4E" size={26} /> },
-    { id: '6', title: 'Returns', icon: <RotateCcw color="#1F5B4E" size={26} />, route: '/returns' },
+    { id: '1', title: 'Distributors', icon: <Truck color="#1F5B4E" size={20} />, route: '/distributors' },
+    { id: '2', title: 'Outstandings', icon: <Wallet color="#1F5B4E" size={20} />, route: '/outstandings' },
+    { id: '3', title: 'Company Schemes', icon: <Tag color="#1F5B4E" size={20} /> },
+    { id: '4', title: 'Generic', icon: <Pill color="#1F5B4E" size={20} />, route: '/generic' },
+    { id: '5', title: 'Company Cashback', icon: <Gift color="#1F5B4E" size={20} /> },
+    { id: '6', title: 'Returns', icon: <RotateCcw color="#1F5B4E" size={20} />, route: '/returns' },
   ];
 
   return (
@@ -48,7 +49,7 @@ export default function HomeScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.container}>
-        
+
         {/* Banner */}
         <View style={styles.banner}>
           <Text style={styles.bannerTitle}>MedConnect</Text>
@@ -60,8 +61,8 @@ export default function HomeScreen() {
         <Text style={styles.sectionTitle}>Explore</Text>
         <View style={styles.gridContainer}>
           {gridItems.map((item) => (
-            <TouchableOpacity 
-              key={item.id} 
+            <TouchableOpacity
+              key={item.id}
               style={styles.gridItem}
               onPress={() => item.route && router.push(item.route as any)}
             >
@@ -130,6 +131,7 @@ const styles = StyleSheet.create({
   greetingContainer: {
     flex: 1,
     marginRight: 16,
+    maxWidth: '70%',
   },
   greetingText: {
     fontSize: 18, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
@@ -171,22 +173,6 @@ const styles = StyleSheet.create({
     fontSize: 14, fontFamily: 'Inter_400Regular',
     color: '#1F2937',
   },
-  searchSection: {
-    marginBottom: 24,
-  },
-  searchToggleContainer: {
-    flexDirection: 'row',
-    marginBottom: 12,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    padding: 4,
-  },
-  toggleButton: {
-    flex: 1,
-    paddingVertical: 8,
-    alignItems: 'center',
-    borderRadius: 6,
-  },
   sectionTitle: {
     fontSize: 18, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
@@ -199,7 +185,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   gridItem: {
-    width: '31%',
+    width: '30%',
     backgroundColor: '#f9f9f9',
     borderRadius: 12,
     padding: 12,
@@ -209,16 +195,16 @@ const styles = StyleSheet.create({
     borderColor: '#eee',
   },
   iconContainer: {
-    width: 44,
-    height: 44,
+    width: 36,
+    height: 36,
     backgroundColor: '#E8F0EE',
-    borderRadius: 22,
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
   },
   gridItemText: {
-    fontSize: 12, 
+    fontSize: 12,
     color: '#1F2937',
     textAlign: 'center',
     fontFamily: 'Inter_500Medium', fontWeight: '500',
@@ -234,21 +220,18 @@ const styles = StyleSheet.create({
     borderColor: '#eee',
   },
   summaryRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    marginBottom: 12,
   },
   summaryLabel: {
     fontSize: 14, fontFamily: 'Inter_400Regular',
     color: '#666',
-    flexShrink: 1,
-    marginRight: 8,
+    marginBottom: 4,
   },
   summaryValue: {
     fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
-    flexShrink: 0,
   },
   distributorsContainer: {
     marginBottom: 24,
@@ -264,7 +247,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   distributorName: {
-    fontSize: 16, 
+    fontSize: 16,
     color: '#1F2937',
     fontFamily: 'Inter_500Medium', fontWeight: '500',
   },

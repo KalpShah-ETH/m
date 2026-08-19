@@ -19,7 +19,7 @@ interface MyDistributorsState {
   fetchMapped: () => Promise<void>;
   fetchNonMapped: () => Promise<void>;
   reorderMapped: (newOrder: string[]) => Promise<void>;
-  requestConnection: (distributorId: string) => Promise<{ success: boolean }>;
+  requestConnection: (distributorId: string) => Promise<{ success: boolean; error?: string }>;
   referDistributor: (data: any) => Promise<{ success: boolean }>;
   
   setMappedLocally: (distributors: MyDistributor[]) => void;
@@ -112,13 +112,19 @@ export const useMyDistributorsStore = create<MyDistributorsState>((set, get) => 
       body: { distributor_id: distributorId }
     });
 
-    if (!error && data?.success) {
+    if (error) {
+      console.error('Edge Function Error:', error);
+      return { success: false, error: error.message || 'Function failed' };
+    }
+
+    if (data?.success) {
       set((state) => ({
         pendingIds: [...state.pendingIds, distributorId]
       }));
       return { success: true };
     }
-    return { success: false };
+    
+    return { success: false, error: data?.error || 'Unknown error occurred' };
   },
 
   referDistributor: async (data) => {

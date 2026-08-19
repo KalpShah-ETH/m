@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing, interpolate, interpolateColor } from 'react-native-reanimated';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
 import { Link, useRouter } from 'expo-router';

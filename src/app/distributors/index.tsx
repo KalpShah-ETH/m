@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, SafeAreaView, ActivityIndicator, Alert, Share as RNShare } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, ActivityIndicator, Alert, Share as RNShare } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Search, GripVertical, Plus, Share, ChevronUp, ChevronDown, ArrowLeft } from 'lucide-react-native';
 import { useMyDistributorsStore, MyDistributor } from '@/store/myDistributorsStore';

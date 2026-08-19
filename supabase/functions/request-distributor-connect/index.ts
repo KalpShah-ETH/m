@@ -39,29 +39,45 @@ serve(async (req: Request) => {
       throw new Error('Connection request already exists or is already approved')
     }
 
-    // Upsert the map as pending
-    const { data: newMap, error: upsertError } = await supabaseClient
-      .from('retailer_distributor_map')
-      .upsert({
-        id: existing ? existing.id : undefined,
-        retailer_id: user.id,
-        distributor_id,
-        status: 'pending',
-        decided_at: null
-      }, { onConflict: 'retailer_id,distributor_id' })
-      .select()
-      .single()
-
-    if (upsertError) throw upsertError
+    let newMap;
+    if (existing) {
+      // It's already in the DB but rejected, so we just update it to pending
+      const { data, error: updateError } = await supabaseClient
+        .from('retailer_distributor_map')
+        .update({ status: 'pending' })
+        .eq('id', existing.id)
+        .select()
+        .single()
+      if (updateError) throw updateError
+      newMap = data
+    } else {
+      // It's not in the DB, so we safely insert a brand new row
+      const { data, error: insertError } = await supabaseClient
+        .from('retailer_distributor_map')
+        .insert({
+          retailer_id: user.id,
+          distributor_id,
+          status: 'pending'
+        })
+        .select()
+        .single()
+      if (insertError) throw insertError
+      newMap = data
+    }
 
     return new Response(JSON.stringify({ success: true, data: newMap }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     })
   } catch (error: any) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 400,
+    console.error('Edge Function Error:', error.message)
+    return new Response(JSON.stringify({ success: false, error: error.message }), {
+      headers: { 
+        ...corsHeaders, 
+        'Content-Type': 'application/json',
+        'X-Debug-Error': error.message // Injecting into header so it shows in Supabase HTTP logs
+      },
+      status: 200,
     })
   }
 })

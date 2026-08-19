@@ -2,7 +2,8 @@ import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'expo-router';
 import { CheckCircle, ChevronDown, Eye, EyeOff, Lock, Mail, MapPin, Phone, Store, User, X, Upload, Calendar, Info, Image as ImageIcon, Camera } from 'lucide-react-native';
 import { useEffect, useState, useRef } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 

@@ -45,11 +45,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         .eq('id', data.user.id)
         .single();
 
-      if (profile?.approval_status === 'pending') {
-        await supabase.auth.signOut();
-        return { error: null, isPending: true };
-      }
-      
       if (profile?.approval_status === 'rejected') {
         await supabase.auth.signOut();
         return { error: new Error('Your application was rejected.') };
@@ -175,9 +170,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       } catch (e) {
         console.error("Document move error:", e);
       }
-      
-      // Sign out immediately so they cannot bypass the approval gate
-      await supabase.auth.signOut();
+      // Instantly log the user in to the app (Single Sign-On model)
+      set({ session: authData.session, user: authData.user });
     }
     
     return { error };
@@ -212,12 +206,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         .eq('id', session.user.id)
         .single();
         
-      if (profile?.approval_status === 'pending') {
-        // They should not be able to bypass the login check
-        await supabase.auth.signOut();
-        set({ session: null, user: null, isLoading: false });
-        return;
-      }
+      // Removed global block to allow users to surf immediately
     }
     
     set({ session, user: session?.user ?? null, isLoading: false });

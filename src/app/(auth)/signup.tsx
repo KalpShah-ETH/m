@@ -243,9 +243,7 @@ export default function SignupScreen() {
     if (error) {
       Alert.alert('Registration Failed', error.message);
     } else {
-      Alert.alert('Registration successful', 'You can log in once your application is approved.', [
-        { text: 'OK', onPress: () => router.replace('/(auth)/login') }
-      ]);
+      router.replace('/');
     }
   };
 

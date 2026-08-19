@@ -85,8 +85,6 @@ export default function LoginScreen() {
     
     if (result.error) {
       setApiError(result.error.message);
-    } else if (result.isPending) {
-      router.replace('/(auth)/pending-approval');
     } else {
       router.replace('/'); 
     }

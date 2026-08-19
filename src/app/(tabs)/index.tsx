@@ -3,7 +3,7 @@ import { useHomeStore } from '@/store/homeStore';
 import { useRouter } from 'expo-router';
 import { Bell, Gift, Pill, RotateCcw, Tag, Truck, User, Wallet } from 'lucide-react-native';
 import { useEffect } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Platform, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
@@ -115,6 +115,7 @@ const Building2Icon = () => <Building2 color="#666" size={24} style={{ marginRig
 
 const styles = StyleSheet.create({
   safeArea: {
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     flex: 1,
     backgroundColor: '#fff',
   },

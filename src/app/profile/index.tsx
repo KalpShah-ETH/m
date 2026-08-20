@@ -196,11 +196,9 @@ export default function ProfileScreen() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-        
-        {/* HERO CARD */}
-        <View style={styles.heroCard}>
-          <TouchableOpacity style={styles.editIconBtn} onPress={handleEditOpen}>
+      {/* HERO CARD */}
+      <View style={[styles.heroCard, { marginHorizontal: 16 }]}>
+        <TouchableOpacity style={styles.editIconBtn} onPress={handleEditOpen}>
             <Feather name="edit-2" color={colors.white} size={20} strokeWidth={1.6} />
           </TouchableOpacity>
           
@@ -220,13 +218,8 @@ export default function ProfileScreen() {
           </View>
 
           <View style={styles.heroBottomRow}>
-            <View style={styles.planBadge}>
-              <Feather name="star" color={colors.forestDark} size={12} style={{ marginRight: 4 }} />
-              <Text style={styles.badgeText}>Silver Plan</Text>
-            </View>
-            
-            <View style={styles.statChipsRow}>
-              <View style={styles.statChip}>
+            <View style={[styles.statChipsRow, { marginLeft: 0 }]}>
+              <View style={[styles.statChip, { marginLeft: 0 }]}>
                 <Text style={styles.statNumber}>{mockOutstanding}</Text>
                 <Text style={styles.statLabel}>OUTSTANDING</Text>
               </View>
@@ -238,6 +231,7 @@ export default function ProfileScreen() {
           </View>
         </View>
 
+      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         {/* YOUR SECTION */}
         <Text style={styles.sectionLabel}>YOUR</Text>
         <View style={styles.listContainer}>
@@ -437,7 +431,7 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   safeArea: {
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    
     flex: 1,
     backgroundColor: colors.backgroundOffWhite,
   },

@@ -51,6 +51,7 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="profile/index" options={{ headerShown: false, animation: 'slide_from_right' }} />
       </Stack>
       <MiniCart />
       <Toast config={toastConfig} />

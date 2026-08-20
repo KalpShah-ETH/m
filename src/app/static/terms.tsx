@@ -39,7 +39,7 @@ export default function TermsScreen() {
 
 const styles = StyleSheet.create({
   safeArea: {
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    
     flex: 1,
     backgroundColor: '#fff',
   },

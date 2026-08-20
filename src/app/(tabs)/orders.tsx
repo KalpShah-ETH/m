@@ -87,7 +87,12 @@ export default function OrdersScreen() {
         
         {/* Header Summary */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Orders</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
+            <TouchableOpacity onPress={() => router.replace('/')} style={{ marginRight: 12 }}>
+              <ArrowLeft color="#1F2937" size={22} strokeWidth={1.6} />
+            </TouchableOpacity>
+            <Text style={[styles.headerTitle, { marginBottom: 0 }]}>Orders</Text>
+          </View>
           <View style={styles.summaryContainer}>
             <View style={styles.summaryBox}>
               <Text style={styles.summaryLabel}>Total Orders</Text>
@@ -156,7 +161,7 @@ export default function OrdersScreen() {
 
 const styles = StyleSheet.create({
   safeArea: {
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    
     flex: 1,
     backgroundColor: '#FAFAFA',
   },
@@ -190,7 +195,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   summaryLabel: {
-    fontSize: 12, fontFamily: 'Inter_400Regular',
+    fontSize: 12,
     color: '#1F5B4E',
     marginBottom: 4,
     textTransform: 'uppercase',

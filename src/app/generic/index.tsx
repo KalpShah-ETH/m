@@ -175,7 +175,7 @@ export default function GenericProductsScreen() {
 
 const styles = StyleSheet.create({
   safeArea: {
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    
     flex: 1,
     backgroundColor: '#FAFAFA',
   },

@@ -153,10 +153,15 @@ export default function BrowseScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.topBar}>
-        <TouchableOpacity style={styles.distributorSelector}>
-          <Text style={styles.distributorNameText}>{distributorName}</Text>
-          <ChevronDown color="#1F2937" size={20} style={{ marginLeft: 4 }} />
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => router.replace('/')} style={{ marginRight: 12 }}>
+            <ArrowLeft color="#1F2937" size={22} strokeWidth={1.6} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.distributorSelector}>
+            <Text style={styles.distributorNameText}>{distributorName}</Text>
+            <ChevronDown color="#1F2937" size={20} style={{ marginLeft: 4 }} />
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity>
           <Search color="#1F2937" size={24} />
         </TouchableOpacity>
@@ -238,7 +243,7 @@ export default function BrowseScreen() {
 
 const styles = StyleSheet.create({
   safeArea: {
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    
     flex: 1,
     backgroundColor: '#FAFAFA',
   },
@@ -337,7 +342,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1F5B4E',
   },
   categoryText: {
-    fontSize: 14, fontFamily: 'Inter_400Regular',
+    fontSize: 14,
     color: '#1F2937',
     fontFamily: 'Inter_500Medium', fontWeight: '500',
   },

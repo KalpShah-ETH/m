@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Activity
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Search, X, Pill, Truck, ArrowLeft } from 'lucide-react-native';
 import { useSearchStore } from '@/store/searchStore';
+import { useRouter } from 'expo-router';
 
 export default function SearchScreen() {
   const router = useRouter();
@@ -145,7 +146,6 @@ export default function SearchScreen() {
 
 const styles = StyleSheet.create({
   safeArea: {
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     flex: 1,
     backgroundColor: '#fff',
   },
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   toggleText: {
-    fontSize: 14, fontFamily: 'Inter_400Regular',
+    fontSize: 14,
     color: '#666',
     fontFamily: 'Inter_600SemiBold', fontWeight: '600',
   },

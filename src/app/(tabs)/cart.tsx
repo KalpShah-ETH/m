@@ -73,6 +73,14 @@ export default function CartScreen() {
   if (orderStatus === 'success') {
     return (
       <SafeAreaView style={styles.safeArea}>
+        <View style={styles.header}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => router.replace('/')} style={{ marginRight: 12 }}>
+              <ArrowLeft color="#1F2937" size={22} strokeWidth={1.6} />
+            </TouchableOpacity>
+            <Text style={styles.screenTitle}>My Cart</Text>
+          </View>
+        </View>
         <View style={styles.emptyContainer}>
           <Text style={styles.successTitle}>Order Placed Successfully!</Text>
           <Text style={styles.emptyText}>Your items will be dispatched soon.</Text>
@@ -84,6 +92,14 @@ export default function CartScreen() {
   if (items.length === 0) {
     return (
       <SafeAreaView style={styles.safeArea}>
+        <View style={styles.header}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => router.replace('/')} style={{ marginRight: 12 }}>
+              <ArrowLeft color="#1F2937" size={22} strokeWidth={1.6} />
+            </TouchableOpacity>
+            <Text style={styles.screenTitle}>My Cart</Text>
+          </View>
+        </View>
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyText}>Your cart is empty.</Text>
         </View>
@@ -93,13 +109,15 @@ export default function CartScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 24 }}>
+      <View style={styles.header}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <TouchableOpacity onPress={() => router.replace('/')} style={{ marginRight: 12 }}>
-            <ArrowLeft color="#1F2937" size={24} />
+            <ArrowLeft color="#1F2937" size={22} strokeWidth={1.6} />
           </TouchableOpacity>
-          <Text style={[styles.screenTitle, { marginBottom: 0 }]}>Your Cart</Text>
+          <Text style={styles.screenTitle}>My Cart</Text>
         </View>
+      </View>
+      <ScrollView contentContainerStyle={styles.container}>
 
         {Object.entries(groupedItems).map(([distributorId, group]) => {
           const groupErrors = validation.errors[distributorId];
@@ -168,9 +186,14 @@ export default function CartScreen() {
 
 const styles = StyleSheet.create({
   safeArea: {
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     flex: 1,
     backgroundColor: '#FAFAFA',
+  },
+  header: {
+    padding: 16,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
   },
   container: {
     padding: 16,
@@ -179,7 +202,6 @@ const styles = StyleSheet.create({
   screenTitle: {
     fontSize: 24, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
     color: '#1F2937',
-    marginBottom: 24,
   },
   groupContainer: {
     backgroundColor: '#fff',

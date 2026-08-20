@@ -117,7 +117,6 @@ const Building2Icon = () => <Building2 color="#666" size={24} style={{ marginRig
 
 const styles = StyleSheet.create({
   safeArea: {
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     flex: 1,
     backgroundColor: '#fff',
   },

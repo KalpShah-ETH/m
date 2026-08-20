@@ -59,7 +59,7 @@ export default function InitiateReturnScreen() {
     });
     if (success) {
       Alert.alert('Success', 'Return draft created successfully', [
-        { text: 'OK', onPress: () => router.back() }
+        { text: 'OK', onPress: () => router.replace('/') }
       ]);
     }
   };
@@ -67,7 +67,7 @@ export default function InitiateReturnScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => step > 1 ? setStep(step - 1) : router.back()} style={styles.backButton}>
+        <TouchableOpacity onPress={() => step > 1 ? setStep(step - 1) : router.replace('/')} style={styles.backButton}>
           <ArrowLeft color="#1F2937" size={24} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Initiate Return</Text>

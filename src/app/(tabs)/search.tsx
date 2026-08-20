@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, ActivityIndicator, Platform, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Search, X, Pill, Truck } from 'lucide-react-native';
+import { Search, X, Pill, Truck, ArrowLeft } from 'lucide-react-native';
 import { useSearchStore } from '@/store/searchStore';
 
 export default function SearchScreen() {
+  const router = useRouter();
   const [query, setQuery] = useState('');
   const [searchType, setSearchType] = useState<'medicines' | 'distributor'>('medicines');
   

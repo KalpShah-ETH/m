@@ -32,18 +32,20 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.topBar}>
-        <View style={styles.greetingContainer}>
-          <Text style={styles.greetingText} numberOfLines={1} ellipsizeMode="tail">
-            Hello, {profile?.name ? profile.name.split(' ')[0] : 'User'}
-          </Text>
-          <Text style={styles.subGreetingText}>Welcome back</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+          <TouchableOpacity style={[styles.iconButton, { marginLeft: 0, marginRight: 12 }]} onPress={() => router.push('/profile')}>
+            <User color="#1F5B4E" size={24} />
+          </TouchableOpacity>
+          <View style={styles.greetingContainer}>
+            <Text style={styles.subGreetingText}>Welcome to</Text>
+            <Text style={styles.greetingText} numberOfLines={1} ellipsizeMode="tail">
+              MedConnect
+            </Text>
+          </View>
         </View>
         <View style={styles.topBarIcons}>
           <TouchableOpacity style={styles.iconButton}>
             <Bell color="#1F2937" size={24} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton} onPress={() => router.push('/profile')}>
-            <User color="#1F5B4E" size={24} />
           </TouchableOpacity>
         </View>
       </View>

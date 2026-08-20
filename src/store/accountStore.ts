@@ -7,6 +7,12 @@ export interface UserProfile {
   name: string;
   phone: string;
   email: string;
+  shopFirmName?: string;
+  shopAddress?: string;
+  license20?: string;
+  license21?: string;
+  license20Url?: string;
+  license21Url?: string;
 }
 
 interface AccountState {
@@ -48,7 +54,13 @@ export const useAccountStore = create<AccountState>((set, get) => ({
           id: data.id,
           name: `${data.first_name || ''} ${data.last_name || ''}`.trim(),
           phone: data.mobile_number,
-          email: data.email
+          email: data.email,
+          shopFirmName: data.shop_firm_name,
+          shopAddress: data.shop_address,
+          license20: data.license_20_20b_number,
+          license21: data.license_21_21b_number,
+          license20Url: data.license_20_20b_doc_url,
+          license21Url: data.license_21_21b_doc_url,
         }, 
         isLoading: false 
       });
@@ -68,6 +80,10 @@ export const useAccountStore = create<AccountState>((set, get) => ({
     }
     if (updates.phone) dbUpdates.mobile_number = updates.phone;
     if (updates.email) dbUpdates.email = updates.email;
+    if (updates.license20) dbUpdates.license_20_20b_number = updates.license20;
+    if (updates.license21) dbUpdates.license_21_21b_number = updates.license21;
+    if (updates.license20Url) dbUpdates.license_20_20b_doc_url = updates.license20Url;
+    if (updates.license21Url) dbUpdates.license_21_21b_doc_url = updates.license21Url;
 
     const { error } = await supabase
       .from('profiles')

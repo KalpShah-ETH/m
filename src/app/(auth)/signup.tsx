@@ -29,6 +29,10 @@ export default function SignupScreen() {
   const [area, setArea] = useState('');
   const [city, setCity] = useState('');
   const [stateName, setStateName] = useState('');
+  
+  const [shopFirmNameError, setShopFirmNameError] = useState(false);
+  const [ownerNameError, setOwnerNameError] = useState(false);
+  const [shopAddressError, setShopAddressError] = useState(false);
 
   // Step 1 UI State
   const [showBusinessModal, setShowBusinessModal] = useState(false);
@@ -250,7 +254,7 @@ export default function SignupScreen() {
     }
   };
 
-  const isStep1Valid = businessType && shopFirmName && ownerName && shopAddress && pincode.length === 6 && area && city && stateName;
+  const isStep1Valid = businessType && shopFirmName.trim().length >= 3 && ownerName.trim().length >= 3 && shopAddress.trim().length >= 3 && pincode.length === 6 && area && city && stateName;
   const isStep2Valid = emailVerified && isPasswordValid;
   const isStep3Valid = license20 && license20Url && license20Expiry && license21 && license21Url && license21Expiry && consentTerms;
 
@@ -313,20 +317,23 @@ export default function SignupScreen() {
                 <ChevronDown color="#666" size={20} />
               </TouchableOpacity>
 
-              <View style={styles.inputContainer}>
+              <View style={[styles.inputContainer, shopFirmNameError && { borderColor: '#DC2626', borderWidth: 1 }]}>
                 <Store color="#666" size={20} style={styles.icon} />
-                <TextInput style={styles.input} placeholder="Name of the Shop/Firm *" value={shopFirmName} onChangeText={setShopFirmName} placeholderTextColor="#999" />
+                <TextInput style={styles.input} placeholder="Name of the Shop/Firm *" value={shopFirmName} onChangeText={(t) => { setShopFirmName(t); if (shopFirmNameError && t.trim().length >= 3) setShopFirmNameError(false); }} onBlur={() => setShopFirmNameError(shopFirmName.trim().length > 0 && shopFirmName.trim().length < 3)} placeholderTextColor="#999" />
               </View>
+              {shopFirmNameError && <Text style={{ color: '#DC2626', fontSize: 12, marginTop: -8, marginBottom: 8, marginLeft: 4, fontFamily: 'Inter_500Medium' }}>Must be at least 3 characters</Text>}
 
-              <View style={styles.inputContainer}>
+              <View style={[styles.inputContainer, ownerNameError && { borderColor: '#DC2626', borderWidth: 1 }]}>
                 <User color="#666" size={20} style={styles.icon} />
-                <TextInput style={styles.input} placeholder="Name of the Owner *" value={ownerName} onChangeText={setOwnerName} placeholderTextColor="#999" />
+                <TextInput style={styles.input} placeholder="Name of the Owner *" value={ownerName} onChangeText={(t) => { setOwnerName(t); if (ownerNameError && t.trim().length >= 3) setOwnerNameError(false); }} onBlur={() => setOwnerNameError(ownerName.trim().length > 0 && ownerName.trim().length < 3)} placeholderTextColor="#999" />
               </View>
+              {ownerNameError && <Text style={{ color: '#DC2626', fontSize: 12, marginTop: -8, marginBottom: 8, marginLeft: 4, fontFamily: 'Inter_500Medium' }}>Must be at least 3 characters</Text>}
 
-              <View style={styles.inputContainer}>
+              <View style={[styles.inputContainer, shopAddressError && { borderColor: '#DC2626', borderWidth: 1 }]}>
                 <MapPin color="#666" size={20} style={styles.icon} />
-                <TextInput style={styles.input} placeholder="Shop Address *" value={shopAddress} onChangeText={setShopAddress} placeholderTextColor="#999" />
+                <TextInput style={styles.input} placeholder="Shop Address *" value={shopAddress} onChangeText={(t) => { setShopAddress(t); if (shopAddressError && t.trim().length >= 3) setShopAddressError(false); }} onBlur={() => setShopAddressError(shopAddress.trim().length > 0 && shopAddress.trim().length < 3)} placeholderTextColor="#999" />
               </View>
+              {shopAddressError && <Text style={{ color: '#DC2626', fontSize: 12, marginTop: -8, marginBottom: 8, marginLeft: 4, fontFamily: 'Inter_500Medium' }}>Must be at least 3 characters</Text>}
 
               <View style={styles.inputContainer}>
                 <MapPin color="#666" size={20} style={styles.icon} />
@@ -547,7 +554,7 @@ export default function SignupScreen() {
           <View style={styles.actionButtons}>
             <TouchableOpacity
               style={styles.backButton}
-              onPress={() => currentStep > 1 ? setCurrentStep(currentStep - 1) : router.back()}
+              onPress={() => currentStep > 1 ? setCurrentStep(currentStep - 1) : router.replace('/')}
               disabled={isLoading}
             >
               <Text style={styles.backButtonText}>Back</Text>

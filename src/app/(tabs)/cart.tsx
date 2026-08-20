@@ -1,12 +1,13 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Platform, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Trash, Plus, Minus } from 'lucide-react-native';
-import { useFocusEffect } from 'expo-router';
+import { Trash, Plus, Minus, ArrowLeft } from 'lucide-react-native';
+import { useFocusEffect, useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { useCartStore, CartItem } from '@/store/cartStore';
 
 export default function CartScreen() {
+  const router = useRouter();
   const { 
     items, 
     updateQuantity, 
@@ -93,7 +94,12 @@ export default function CartScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.screenTitle}>Your Cart</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 24 }}>
+          <TouchableOpacity onPress={() => router.replace('/')} style={{ marginRight: 12 }}>
+            <ArrowLeft color="#1F2937" size={24} />
+          </TouchableOpacity>
+          <Text style={[styles.screenTitle, { marginBottom: 0 }]}>Your Cart</Text>
+        </View>
 
         {Object.entries(groupedItems).map(([distributorId, group]) => {
           const groupErrors = validation.errors[distributorId];

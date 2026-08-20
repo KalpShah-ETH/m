@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, ActivityIndicator, Platform, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { Plus, Minus, ChevronDown, Filter, Lock, AlertCircle, Search } from 'lucide-react-native';
+import { Plus, Minus, ChevronDown, Filter, Lock, AlertCircle, Search, ArrowLeft } from 'lucide-react-native';
 import { useCatalogStore, CatalogProduct } from '@/store/catalogStore';
 import { useOutstandingsStore } from '@/store/outstandingsStore';
 

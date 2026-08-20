@@ -3,16 +3,26 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
-import { User, Edit2, Clock, Truck, Wallet, Lock, Phone, FileText, ChevronRight, X } from 'lucide-react-native';
+import { ArrowLeft, User, Edit2, Clock, Truck, Wallet, Lock, Phone, FileText, ChevronRight, X, LogOut, Upload, CheckCircle } from 'lucide-react-native';
 import { useAccountStore } from '@/store/accountStore';
+import { useAuthStore } from '@/store/authStore';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function ProfileScreen() {
   const router = useRouter();
   const { profile, isLoading, fetchProfile, updateProfile } = useAccountStore();
+  const uploadLicense = useAuthStore((state) => state.uploadLicense);
   
   const [isEditModalVisible, setEditModalVisible] = useState(false);
+  const [isLogoutModalVisible, setLogoutModalVisible] = useState(false);
   const [editName, setEditName] = useState('');
   const [editPhone, setEditPhone] = useState('');
+  const [editLicense20, setEditLicense20] = useState('');
+  const [editLicense21, setEditLicense21] = useState('');
+  const [editLicense20Url, setEditLicense20Url] = useState('');
+  const [editLicense21Url, setEditLicense21Url] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const [tempId] = useState(() => Date.now().toString());
 
   useEffect(() => {
     fetchProfile();
@@ -20,20 +30,59 @@ export default function ProfileScreen() {
 
   const handleEditOpen = () => {
     if (profile) {
-      setEditName(profile.name);
-      setEditPhone(profile.phone);
+      setEditName(profile.name || '');
+      setEditPhone(profile.phone || '');
+      setEditLicense20(profile.license20 || '');
+      setEditLicense21(profile.license21 || '');
+      setEditLicense20Url(profile.license20Url || '');
+      setEditLicense21Url(profile.license21Url || '');
       setEditModalVisible(true);
     }
   };
 
   const handleEditSave = async () => {
-    if (!editName || !editPhone) {
-      Alert.alert('Error', 'Name and phone cannot be empty');
+    if (!editName) {
+      Alert.alert('Error', 'Name cannot be empty');
       return;
     }
-    const { success } = await updateProfile({ name: editName, phone: editPhone });
+    setIsSaving(true);
+
+    let l20 = editLicense20Url;
+    let l21 = editLicense21Url;
+
+    if (editLicense20Url && !editLicense20Url.includes('license20')) {
+        const res = await uploadLicense(tempId, 'license20', editLicense20Url);
+        if (res.path) l20 = res.path;
+    }
+    if (editLicense21Url && !editLicense21Url.includes('license21')) {
+        const res = await uploadLicense(tempId, 'license21', editLicense21Url);
+        if (res.path) l21 = res.path;
+    }
+
+    const { success } = await updateProfile({ 
+      name: editName, 
+      license20: editLicense20, 
+      license21: editLicense21,
+      license20Url: l20,
+      license21Url: l21
+    });
+
+    setIsSaving(false);
     if (success) {
+      Toast.show({ type: 'success', text1: 'Profile Updated' });
       setEditModalVisible(false);
+    }
+  };
+
+  const pickImage = async (type: '20' | '21') => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 0.8,
+    });
+    if (!result.canceled && result.assets[0].uri) {
+      if (type === '20') setEditLicense20Url(result.assets[0].uri);
+      else setEditLicense21Url(result.assets[0].uri);
     }
   };
 
@@ -62,14 +111,15 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.header}>
+      <View style={[styles.header, { flexDirection: 'row', alignItems: 'center' }]}>
+        <TouchableOpacity onPress={() => router.replace('/')} style={{ marginRight: 12 }}>
+          <ArrowLeft color="#1F2937" size={24} />
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>My Account</Text>
       </View>
 
-      <ScrollView contentContainerStyle={styles.container}>
-        
-        {/* Profile Card */}
-        <View style={styles.profileCard}>
+      {/* Fixed Profile Card */}
+      <View style={[styles.profileCard, { marginHorizontal: 16, marginTop: 16 }]}>
           <View style={styles.profileAvatar}>
             <User color="#1F5B4E" size={40} />
           </View>
@@ -83,6 +133,8 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </View>
 
+      <ScrollView contentContainerStyle={styles.container}>
+        
         {/* App Shortcuts */}
         <View style={styles.section}>
           {menuItems.map((item, index) => (
@@ -119,19 +171,41 @@ export default function ProfileScreen() {
         </View>
 
         {/* Logout Button */}
-        <TouchableOpacity style={styles.logoutButton} onPress={() => {
-          Toast.show({ type: 'success', text1: 'Logged Out', text2: 'You have successfully logged out.' });
-          router.replace('/login');
-        }}>
+        <TouchableOpacity style={styles.logoutButton} onPress={() => setLogoutModalVisible(true)}>
           <Text style={styles.logoutButtonText}>Log Out</Text>
         </TouchableOpacity>
 
       </ScrollView>
 
+      {/* Logout Confirmation Modal */}
+      <Modal visible={isLogoutModalVisible} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { minHeight: 200, paddingBottom: 32, alignItems: 'center' }]}>
+            <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: '#FEE2E2', justifyContent: 'center', alignItems: 'center', marginBottom: 16 }}>
+              <LogOut color="#DC2626" size={32} />
+            </View>
+            <Text style={{ fontSize: 20, fontFamily: 'Inter_700Bold', color: '#1F2937', marginBottom: 8 }}>Log Out</Text>
+            <Text style={{ fontSize: 15, fontFamily: 'Inter_400Regular', color: '#666', textAlign: 'center', marginBottom: 24 }}>Are you sure you want to log out of your account?</Text>
+            <View style={{ flexDirection: 'row', width: '100%' }}>
+              <TouchableOpacity style={{ flex: 1, paddingVertical: 14, backgroundColor: '#f0f0f0', borderRadius: 8, marginRight: 8, alignItems: 'center' }} onPress={() => setLogoutModalVisible(false)}>
+                <Text style={{ fontSize: 16, fontFamily: 'Inter_600SemiBold', color: '#4B5563' }}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={{ flex: 1, paddingVertical: 14, backgroundColor: '#DC2626', borderRadius: 8, marginLeft: 8, alignItems: 'center' }} onPress={() => {
+                setLogoutModalVisible(false);
+                Toast.show({ type: 'success', text1: 'Logged Out', text2: 'You have successfully logged out.' });
+                router.replace('/login');
+              }}>
+                <Text style={{ fontSize: 16, fontFamily: 'Inter_600SemiBold', color: '#fff' }}>Yes, Log Out</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
       {/* Edit Profile Modal */}
       <Modal visible={isEditModalVisible} transparent animationType="slide">
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
+          <View style={[styles.modalContent, { maxHeight: '90%' }]}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Edit Profile</Text>
               <TouchableOpacity onPress={() => setEditModalVisible(false)}>
@@ -139,28 +213,56 @@ export default function ProfileScreen() {
               </TouchableOpacity>
             </View>
             
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Name</Text>
-              <TextInput 
-                style={styles.input}
-                value={editName}
-                onChangeText={setEditName}
-              />
-            </View>
-            
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Phone Number</Text>
-              <TextInput 
-                style={styles.input}
-                value={editPhone}
-                onChangeText={setEditPhone}
-                keyboardType="phone-pad"
-              />
-            </View>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Shop Firm Name</Text>
+                <TextInput style={[styles.input, { backgroundColor: '#f5f5f5', color: '#666' }]} value={profile?.shopFirmName} editable={false} />
+              </View>
 
-            <TouchableOpacity style={styles.primaryButton} onPress={handleEditSave}>
-              <Text style={styles.primaryButtonText}>Save Changes</Text>
-            </TouchableOpacity>
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Shop Address</Text>
+                <TextInput style={[styles.input, { backgroundColor: '#f5f5f5', color: '#666' }]} value={profile?.shopAddress} editable={false} />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Email</Text>
+                <TextInput style={[styles.input, { backgroundColor: '#f5f5f5', color: '#666' }]} value={profile?.email} editable={false} />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Phone Number</Text>
+                <TextInput style={[styles.input, { backgroundColor: '#f5f5f5', color: '#666' }]} value={profile?.phone} editable={false} />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Owner Name <Text style={{color: '#DC2626'}}>*</Text></Text>
+                <TextInput style={styles.input} value={editName} onChangeText={setEditName} />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Drug License 20/20B Number</Text>
+                <TextInput style={styles.input} value={editLicense20} onChangeText={setEditLicense20} />
+              </View>
+
+              <TouchableOpacity style={[styles.input, { flexDirection: 'row', alignItems: 'center', marginBottom: 16 }]} onPress={() => pickImage('20')}>
+                {editLicense20Url ? <CheckCircle color="#1F5B4E" size={20} style={{ marginRight: 8 }} /> : <Upload color="#666" size={20} style={{ marginRight: 8 }} />}
+                <Text style={{ color: editLicense20Url ? '#1F5B4E' : '#666' }}>{editLicense20Url ? 'Photo Selected (Tap to change)' : 'Upload 20/20B Photo'}</Text>
+              </TouchableOpacity>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Drug License 21/21B Number</Text>
+                <TextInput style={styles.input} value={editLicense21} onChangeText={setEditLicense21} />
+              </View>
+
+              <TouchableOpacity style={[styles.input, { flexDirection: 'row', alignItems: 'center', marginBottom: 24 }]} onPress={() => pickImage('21')}>
+                {editLicense21Url ? <CheckCircle color="#1F5B4E" size={20} style={{ marginRight: 8 }} /> : <Upload color="#666" size={20} style={{ marginRight: 8 }} />}
+                <Text style={{ color: editLicense21Url ? '#1F5B4E' : '#666' }}>{editLicense21Url ? 'Photo Selected (Tap to change)' : 'Upload 21/21B Photo'}</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.primaryButton} onPress={handleEditSave} disabled={isSaving}>
+                {isSaving ? <ActivityIndicator color="#fff" /> : <Text style={styles.primaryButtonText}>Save Changes</Text>}
+              </TouchableOpacity>
+            </ScrollView>
           </View>
         </View>
       </Modal>

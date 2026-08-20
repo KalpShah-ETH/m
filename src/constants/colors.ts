@@ -1,0 +1,15 @@
+export const colors = {
+  primaryForest: '#1E4D3A',
+  forestDark: '#142F23',
+  secondaryTerracotta: '#B85042',
+  terracottaLight: '#F3E1DB',
+  accentGold: '#D9A441',
+  goldLight: '#F7E9CE',
+  neutralForestTint: '#DCE8E1',
+  backgroundOffWhite: '#F6F8FA',
+  white: '#FFFFFF',
+  textSlate: '#5B6B7C',
+  textDark: '#16232F',
+  borderLight: '#E4E9EE',
+  errorRed: '#D64545',
+};

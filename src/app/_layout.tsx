@@ -8,6 +8,7 @@ import { useAuthStore } from '@/store/authStore';
 import { useEffect } from 'react';
 import { MiniCart } from '@/components/MiniCart';
 import { useFonts, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
+import { useFonts as usePoppinsFonts, Poppins_600SemiBold, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from '@/components/CustomToast';
 
@@ -25,16 +26,23 @@ export default function RootLayout() {
     Inter_700Bold,
   });
 
-  useEffect(() => {
-    fetchUser().finally(() => {
-      if (fontsLoaded) {
-        SplashScreen.hideAsync();
-      }
-    });
-  }, [fontsLoaded]);
+  const [poppinsLoaded] = usePoppinsFonts({
+    Poppins_600SemiBold,
+    Poppins_700Bold,
+  });
 
-  if (!fontsLoaded) {
-    return null; // Keep native splash screen visible until fonts loaded
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    if (fontsLoaded && poppinsLoaded && !isLoading) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, poppinsLoaded, isLoading]);
+
+  if (!fontsLoaded || !poppinsLoaded || isLoading) {
+    return null;
   }
 
   return (

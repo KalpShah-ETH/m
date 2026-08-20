@@ -1,12 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Alert, Modal, TextInput, Platform, StatusBar } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated, Modal, TextInput, Platform, StatusBar, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
-import { ArrowLeft, User, Edit2, Clock, Truck, Wallet, Lock, Phone, FileText, ChevronRight, X, LogOut, Upload, CheckCircle } from 'lucide-react-native';
+import { Feather } from '@expo/vector-icons';
 import { useAccountStore } from '@/store/accountStore';
 import { useAuthStore } from '@/store/authStore';
 import * as ImagePicker from 'expo-image-picker';
+import { colors } from '@/constants/colors';
+
+// SKELETON COMPONENT
+const Skeleton = ({ style }: { style: any }) => {
+  const animatedValue = useRef(new Animated.Value(0.5)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(animatedValue, { toValue: 1, duration: 600, useNativeDriver: true }),
+        Animated.timing(animatedValue, { toValue: 0.5, duration: 600, useNativeDriver: true })
+      ])
+    ).start();
+  }, []);
+
+  return <Animated.View style={[style, { opacity: animatedValue, backgroundColor: colors.borderLight }]} />;
+};
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -15,6 +32,8 @@ export default function ProfileScreen() {
   
   const [isEditModalVisible, setEditModalVisible] = useState(false);
   const [isLogoutModalVisible, setLogoutModalVisible] = useState(false);
+  
+  // Edit Profile States
   const [editName, setEditName] = useState('');
   const [editPhone, setEditPhone] = useState('');
   const [editLicense20, setEditLicense20] = useState('');
@@ -23,6 +42,20 @@ export default function ProfileScreen() {
   const [editLicense21Url, setEditLicense21Url] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [tempId] = useState(() => Date.now().toString());
+
+  // Password Modal State
+  const [isPasswordModalVisible, setPasswordModalVisible] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const has8Chars = newPassword.length >= 8;
+  const hasNumUpperLower = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/.test(newPassword);
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>\-_\.]/.test(newPassword);
+  const hasNoSpaces = newPassword.length > 0 && newPassword.trim() === newPassword && !newPassword.includes(' ');
 
   useEffect(() => {
     fetchProfile();
@@ -86,24 +119,65 @@ export default function ProfileScreen() {
     }
   };
 
-  const menuItems = [
-    { id: 'orders', title: 'Order History', icon: <Clock color="#1F5B4E" size={24} />, route: '/orders' },
-    { id: 'distributors', title: 'My Distributors', icon: <Truck color="#1F5B4E" size={24} />, route: '/distributors' },
-    { id: 'outstandings', title: 'Outstandings', icon: <Wallet color="#1F5B4E" size={24} />, route: '/outstandings' },
+  const yourItems = [
+    { id: 'orders', title: 'Order history', icon: 'file-text', category: 'General', route: '/orders' },
+    { id: 'distributors', title: 'Distributors', icon: 'share-2', category: 'General', route: '/distributors' },
+    { id: 'outstandings', title: 'Outstandings', icon: 'credit-card', category: 'Financial', route: '/outstandings' },
   ];
 
-  const supportItems = [
-    { id: 'password', title: 'Change Password', icon: <Lock color="#666" size={24} />, action: () => Alert.alert('Change Password', 'Password change flow would open here') },
-    { id: 'contact', title: 'Contact Us', icon: <Phone color="#666" size={24} />, action: () => Alert.alert('Contact Us', 'Support: support@medconnect.local\nPhone: +91 1800-123-4567') },
-    { id: 'terms', title: 'Terms & Conditions', icon: <FileText color="#666" size={24} />, action: () => router.push('/static/terms') },
-    { id: 'privacy', title: 'Privacy Policy', icon: <FileText color="#666" size={24} />, action: () => router.push('/static/privacy') },
+  const moreItems = [
+    { id: 'feedback', title: 'Send feedback', icon: 'message-square', category: 'General', action: () => Toast.show({ type: 'info', text1: 'Feedback opened' }) },
+    { id: 'password', title: 'Change password', icon: 'lock', category: 'General', action: () => setPasswordModalVisible(true) },
+    { id: 'contact', title: 'Contact us', icon: 'phone', category: 'General', action: () => Toast.show({ type: 'info', text1: 'Contact support' }) },
+    { id: 'terms', title: 'Terms & Conditions', icon: 'file', category: 'General', action: () => router.push('/static/terms') },
+    { id: 'logout', title: 'Logout', icon: 'power', category: 'Status', action: () => setLogoutModalVisible(true) },
   ];
+
+  const getIconColors = (category: string) => {
+    if (category === 'Financial') return { fill: colors.terracottaLight, stroke: colors.secondaryTerracotta };
+    if (category === 'Status') return { fill: colors.goldLight, stroke: colors.accentGold };
+    return { fill: colors.neutralForestTint, stroke: colors.primaryForest }; // General
+  };
+
+  const renderRow = (item: any, isLast: boolean) => {
+    const iconColors = getIconColors(item.category);
+    return (
+      <View key={item.id}>
+        <TouchableOpacity 
+          style={styles.listRow}
+          activeOpacity={0.7}
+          onPress={item.route ? () => router.push(item.route) : item.action}
+        >
+          <View style={[styles.iconCircle, { backgroundColor: iconColors.fill }]}>
+            <Feather name={item.icon as any} size={22} color={iconColors.stroke} strokeWidth={1.6} />
+          </View>
+          <Text style={styles.rowTitle}>{item.title}</Text>
+          <Feather name="chevron-right" size={18} color={colors.textSlate} />
+        </TouchableOpacity>
+        {!isLast && <View style={styles.divider} />}
+      </View>
+    );
+  };
+
+  const getInitials = (name?: string) => {
+    if (!name) return 'U';
+    return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+  };
+
+  // Mock Data
+  const mockOutstanding = '₹ 12,450';
+  const mockActiveOrders = '3';
 
   if (isLoading && !profile) {
     return (
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#1F5B4E" />
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>My Account</Text>
+        </View>
+        <View style={{ paddingHorizontal: 16, marginTop: 16 }}>
+          <Skeleton style={[styles.heroCard, { height: 160 }]} />
+          <Skeleton style={{ height: 200, borderRadius: 12, marginTop: 32 }} />
+          <Skeleton style={{ height: 260, borderRadius: 12, marginTop: 32 }} />
         </View>
       </SafeAreaView>
     );
@@ -111,161 +185,252 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={[styles.header, { flexDirection: 'row', alignItems: 'center' }]}>
+      <View style={styles.header}>
         <TouchableOpacity onPress={() => router.replace('/')} style={{ marginRight: 12 }}>
-          <ArrowLeft color="#1F2937" size={24} />
+          <Feather name="arrow-left" color={colors.textDark} size={22} strokeWidth={1.6} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>My Account</Text>
+        <View style={{ flex: 1 }} />
+        <TouchableOpacity>
+          <Feather name="bell" color={colors.textDark} size={22} strokeWidth={1.6} />
+        </TouchableOpacity>
       </View>
 
-      {/* Fixed Profile Card */}
-      <View style={[styles.profileCard, { marginHorizontal: 16, marginTop: 16 }]}>
-          <View style={styles.profileAvatar}>
-            <User color="#1F5B4E" size={40} />
-          </View>
-          <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>{profile?.name}</Text>
-            <Text style={styles.profileDetail}>{profile?.phone}</Text>
-            <Text style={styles.profileDetail}>{profile?.email}</Text>
-          </View>
-          <TouchableOpacity style={styles.editButton} onPress={handleEditOpen}>
-            <Edit2 color="#1F5B4E" size={20} />
-          </TouchableOpacity>
-        </View>
-
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         
-        {/* App Shortcuts */}
-        <View style={styles.section}>
-          {menuItems.map((item, index) => (
-            <TouchableOpacity 
-              key={item.id} 
-              style={[styles.menuItem, index === menuItems.length - 1 && styles.menuItemLast]}
-              onPress={() => router.push(item.route as any)}
-            >
-              <View style={styles.menuIconContainer}>
-                {item.icon}
+        {/* HERO CARD */}
+        <View style={styles.heroCard}>
+          <TouchableOpacity style={styles.editIconBtn} onPress={handleEditOpen}>
+            <Feather name="edit-2" color={colors.white} size={20} strokeWidth={1.6} />
+          </TouchableOpacity>
+          
+          <View style={styles.heroTopRow}>
+            <View>
+              <View style={styles.avatarCircle}>
+                <Text style={styles.avatarText}>{getInitials(profile?.name)}</Text>
               </View>
-              <Text style={styles.menuItemTitle}>{item.title}</Text>
-              <ChevronRight color="#ccc" size={20} />
-            </TouchableOpacity>
-          ))}
+              <View style={styles.cameraOverlay}>
+                <Feather name="camera" color={colors.primaryForest} size={12} strokeWidth={1.6} />
+              </View>
+            </View>
+            <View style={styles.heroInfo}>
+              <Text style={styles.heroName}>{profile?.name}</Text>
+              <Text style={styles.heroContact}>{profile?.phone} · {profile?.email}</Text>
+            </View>
+          </View>
+
+          <View style={styles.heroBottomRow}>
+            <View style={styles.planBadge}>
+              <Feather name="star" color={colors.forestDark} size={12} style={{ marginRight: 4 }} />
+              <Text style={styles.badgeText}>Silver Plan</Text>
+            </View>
+            
+            <View style={styles.statChipsRow}>
+              <View style={styles.statChip}>
+                <Text style={styles.statNumber}>{mockOutstanding}</Text>
+                <Text style={styles.statLabel}>OUTSTANDING</Text>
+              </View>
+              <View style={styles.statChip}>
+                <Text style={styles.statNumber}>{mockActiveOrders}</Text>
+                <Text style={styles.statLabel}>ACTIVE ORDERS</Text>
+              </View>
+            </View>
+          </View>
         </View>
 
-        {/* Support & Settings */}
-        <Text style={styles.sectionTitle}>Settings & Support</Text>
-        <View style={styles.section}>
-          {supportItems.map((item, index) => (
-            <TouchableOpacity 
-              key={item.id} 
-              style={[styles.menuItem, index === supportItems.length - 1 && styles.menuItemLast]}
-              onPress={item.action}
-            >
-              <View style={[styles.menuIconContainer, { backgroundColor: '#f0f0f0' }]}>
-                {item.icon}
-              </View>
-              <Text style={styles.menuItemTitle}>{item.title}</Text>
-              <ChevronRight color="#ccc" size={20} />
-            </TouchableOpacity>
-          ))}
+        {/* YOUR SECTION */}
+        <Text style={styles.sectionLabel}>YOUR</Text>
+        <View style={styles.listContainer}>
+          {yourItems.map((item, idx) => renderRow(item, idx === yourItems.length - 1))}
         </View>
 
-        {/* Logout Button */}
-        <TouchableOpacity style={styles.logoutButton} onPress={() => setLogoutModalVisible(true)}>
-          <Text style={styles.logoutButtonText}>Log Out</Text>
-        </TouchableOpacity>
+        {/* MORE SECTION */}
+        <Text style={styles.sectionLabel}>MORE</Text>
+        <View style={styles.listContainer}>
+          {moreItems.map((item, idx) => renderRow(item, idx === moreItems.length - 1))}
+        </View>
 
       </ScrollView>
 
-      {/* Logout Confirmation Modal */}
+      {/* LOGOUT MODAL */}
       <Modal visible={isLogoutModalVisible} transparent animationType="fade">
         <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { minHeight: 200, paddingBottom: 32, alignItems: 'center' }]}>
-            <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: '#FEE2E2', justifyContent: 'center', alignItems: 'center', marginBottom: 16 }}>
-              <LogOut color="#DC2626" size={32} />
-            </View>
-            <Text style={{ fontSize: 20, fontFamily: 'Inter_700Bold', color: '#1F2937', marginBottom: 8 }}>Log Out</Text>
-            <Text style={{ fontSize: 15, fontFamily: 'Inter_400Regular', color: '#666', textAlign: 'center', marginBottom: 24 }}>Are you sure you want to log out of your account?</Text>
-            <View style={{ flexDirection: 'row', width: '100%' }}>
-              <TouchableOpacity style={{ flex: 1, paddingVertical: 14, backgroundColor: '#f0f0f0', borderRadius: 8, marginRight: 8, alignItems: 'center' }} onPress={() => setLogoutModalVisible(false)}>
-                <Text style={{ fontSize: 16, fontFamily: 'Inter_600SemiBold', color: '#4B5563' }}>Cancel</Text>
+          <View style={styles.modalSheet}>
+            <Text style={styles.modalTitle}>Logout</Text>
+            <Text style={styles.modalBody}>Are you sure you want to log out of your account?</Text>
+            
+            <View style={styles.modalButtonsRow}>
+              <TouchableOpacity style={styles.btnSecondary} onPress={() => setLogoutModalVisible(false)}>
+                <Text style={styles.btnSecondaryText}>No</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={{ flex: 1, paddingVertical: 14, backgroundColor: '#DC2626', borderRadius: 8, marginLeft: 8, alignItems: 'center' }} onPress={() => {
+              <TouchableOpacity style={styles.btnPrimary} onPress={() => {
                 setLogoutModalVisible(false);
                 Toast.show({ type: 'success', text1: 'Logged Out', text2: 'You have successfully logged out.' });
                 router.replace('/login');
               }}>
-                <Text style={{ fontSize: 16, fontFamily: 'Inter_600SemiBold', color: '#fff' }}>Yes, Log Out</Text>
+                <Text style={styles.btnPrimaryText}>Yes</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
 
-      {/* Edit Profile Modal */}
+      {/* CHANGE PASSWORD MODAL */}
+      <Modal visible={isPasswordModalVisible} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalSheet}>
+            <Text style={styles.modalTitle}>Change Password</Text>
+            
+            <View style={[styles.inputWrapper, { marginTop: 16 }]}>
+              <Feather name="lock" color={colors.textSlate} size={16} style={{ marginRight: 8 }} />
+              <TextInput 
+                style={styles.passwordInput}
+                placeholder="Current Password *"
+                placeholderTextColor={colors.textSlate}
+                secureTextEntry={!showCurrentPassword}
+                value={currentPassword}
+                onChangeText={setCurrentPassword}
+              />
+              <TouchableOpacity onPress={() => setShowCurrentPassword(!showCurrentPassword)}>
+                <Feather name={showCurrentPassword ? "eye" : "eye-off"} color={colors.textSlate} size={16} />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.inputWrapper}>
+              <Feather name="lock" color={colors.textSlate} size={16} style={{ marginRight: 8 }} />
+              <TextInput 
+                style={styles.passwordInput}
+                placeholder="New Password *"
+                placeholderTextColor={colors.textSlate}
+                secureTextEntry={!showNewPassword}
+                value={newPassword}
+                onChangeText={setNewPassword}
+              />
+              <TouchableOpacity onPress={() => setShowNewPassword(!showNewPassword)}>
+                <Feather name={showNewPassword ? "eye" : "eye-off"} color={colors.textSlate} size={16} />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.inputWrapper}>
+              <Feather name="lock" color={colors.textSlate} size={16} style={{ marginRight: 8 }} />
+              <TextInput 
+                style={styles.passwordInput}
+                placeholder="Confirm New Password *"
+                placeholderTextColor={colors.textSlate}
+                secureTextEntry={!showConfirmPassword}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+              />
+              <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+                <Feather name={showConfirmPassword ? "eye" : "eye-off"} color={colors.textSlate} size={16} />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.validationHeader}>Your password must contain</Text>
+            
+            <View style={styles.validationRow}>
+              <Feather name="check" size={14} color={has8Chars ? colors.secondaryTerracotta : 'transparent'} style={[styles.valCheck, !has8Chars && { borderColor: colors.textSlate, borderWidth: 1 }]} />
+              <Text style={styles.validationText}>At least 8 letters</Text>
+            </View>
+            <View style={styles.validationRow}>
+              <Feather name="check" size={14} color={hasNumUpperLower ? colors.secondaryTerracotta : 'transparent'} style={[styles.valCheck, !hasNumUpperLower && { borderColor: colors.textSlate, borderWidth: 1 }]} />
+              <Text style={styles.validationText}>At least a number, an uppercase & a lowercase letter</Text>
+            </View>
+            <View style={styles.validationRow}>
+              <Feather name="check" size={14} color={hasSpecialChar ? colors.secondaryTerracotta : 'transparent'} style={[styles.valCheck, !hasSpecialChar && { borderColor: colors.textSlate, borderWidth: 1 }]} />
+              <Text style={styles.validationText}>At least one special character (For ex: @, -, _, . )</Text>
+            </View>
+            <View style={styles.validationRow}>
+              <Feather name="check" size={14} color={hasNoSpaces ? colors.secondaryTerracotta : 'transparent'} style={[styles.valCheck, !hasNoSpaces && { borderColor: colors.textSlate, borderWidth: 1 }]} />
+              <Text style={styles.validationText}>No space at the start or end</Text>
+            </View>
+
+            <Text style={styles.valExample}>Password example: Abhi@1234, Pharmarack@123, Abhi_1234</Text>
+
+            <View style={styles.modalButtonsRow}>
+              <TouchableOpacity style={styles.btnSecondary} onPress={() => setPasswordModalVisible(false)}>
+                <Text style={styles.btnSecondaryText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.btnPrimary, { opacity: (has8Chars && hasNumUpperLower && hasSpecialChar && hasNoSpaces && newPassword === confirmPassword && currentPassword) ? 1 : 0.5 }]} 
+                disabled={!(has8Chars && hasNumUpperLower && hasSpecialChar && hasNoSpaces && newPassword === confirmPassword && currentPassword)}
+                onPress={() => {
+                  Toast.show({ type: 'success', text1: 'Password Updated' });
+                  setPasswordModalVisible(false);
+                  setCurrentPassword(''); setNewPassword(''); setConfirmPassword('');
+                }}>
+                <Text style={styles.btnPrimaryText}>Save Changes</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* EDIT PROFILE MODAL */}
       <Modal visible={isEditModalVisible} transparent animationType="slide">
         <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { maxHeight: '90%' }]}>
-            <View style={styles.modalHeader}>
+          <View style={[styles.modalSheet, { maxHeight: '90%' }]}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <Text style={styles.modalTitle}>Edit Profile</Text>
               <TouchableOpacity onPress={() => setEditModalVisible(false)}>
-                <X color="#1F2937" size={24} />
+                <Feather name="x" color={colors.textDark} size={24} />
               </TouchableOpacity>
             </View>
             
             <ScrollView showsVerticalScrollIndicator={false}>
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Shop Firm Name</Text>
-                <TextInput style={[styles.input, { backgroundColor: '#f5f5f5', color: '#666' }]} value={profile?.shopFirmName} editable={false} />
+              <View style={styles.editInputGroup}>
+                <Text style={styles.editLabel}>Shop Firm Name</Text>
+                <TextInput style={[styles.editInput, { backgroundColor: colors.backgroundOffWhite, color: colors.textSlate }]} value={profile?.shopFirmName} editable={false} />
               </View>
 
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Shop Address</Text>
-                <TextInput style={[styles.input, { backgroundColor: '#f5f5f5', color: '#666' }]} value={profile?.shopAddress} editable={false} />
+              <View style={styles.editInputGroup}>
+                <Text style={styles.editLabel}>Shop Address</Text>
+                <TextInput style={[styles.editInput, { backgroundColor: colors.backgroundOffWhite, color: colors.textSlate }]} value={profile?.shopAddress} editable={false} />
               </View>
 
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Email</Text>
-                <TextInput style={[styles.input, { backgroundColor: '#f5f5f5', color: '#666' }]} value={profile?.email} editable={false} />
+              <View style={styles.editInputGroup}>
+                <Text style={styles.editLabel}>Email</Text>
+                <TextInput style={[styles.editInput, { backgroundColor: colors.backgroundOffWhite, color: colors.textSlate }]} value={profile?.email} editable={false} />
               </View>
 
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Phone Number</Text>
-                <TextInput style={[styles.input, { backgroundColor: '#f5f5f5', color: '#666' }]} value={profile?.phone} editable={false} />
+              <View style={styles.editInputGroup}>
+                <Text style={styles.editLabel}>Phone Number</Text>
+                <TextInput style={[styles.editInput, { backgroundColor: colors.backgroundOffWhite, color: colors.textSlate }]} value={profile?.phone} editable={false} />
               </View>
 
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Owner Name <Text style={{color: '#DC2626'}}>*</Text></Text>
-                <TextInput style={styles.input} value={editName} onChangeText={setEditName} />
+              <View style={styles.editInputGroup}>
+                <Text style={styles.editLabel}>Owner Name <Text style={{color: colors.errorRed}}>*</Text></Text>
+                <TextInput style={styles.editInput} value={editName} onChangeText={setEditName} />
               </View>
 
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Drug License 20/20B Number</Text>
-                <TextInput style={styles.input} value={editLicense20} onChangeText={setEditLicense20} />
+              <View style={styles.editInputGroup}>
+                <Text style={styles.editLabel}>Drug License 20/20B Number</Text>
+                <TextInput style={styles.editInput} value={editLicense20} onChangeText={setEditLicense20} />
               </View>
 
-              <TouchableOpacity style={[styles.input, { flexDirection: 'row', alignItems: 'center', marginBottom: 16 }]} onPress={() => pickImage('20')}>
-                {editLicense20Url ? <CheckCircle color="#1F5B4E" size={20} style={{ marginRight: 8 }} /> : <Upload color="#666" size={20} style={{ marginRight: 8 }} />}
-                <Text style={{ color: editLicense20Url ? '#1F5B4E' : '#666' }}>{editLicense20Url ? 'Photo Selected (Tap to change)' : 'Upload 20/20B Photo'}</Text>
+              <TouchableOpacity style={[styles.editInput, { flexDirection: 'row', alignItems: 'center', marginBottom: 16 }]} onPress={() => pickImage('20')}>
+                {editLicense20Url ? <Feather name="check-circle" color={colors.primaryForest} size={20} style={{ marginRight: 8 }} /> : <Feather name="upload" color={colors.textSlate} size={20} style={{ marginRight: 8 }} />}
+                <Text style={{ color: editLicense20Url ? colors.primaryForest : colors.textSlate, fontFamily: 'Inter_400Regular' }}>{editLicense20Url ? 'Photo Selected (Tap to change)' : 'Upload 20/20B Photo'}</Text>
               </TouchableOpacity>
 
-              <View style={styles.inputGroup}>
-                <Text style={styles.label}>Drug License 21/21B Number</Text>
-                <TextInput style={styles.input} value={editLicense21} onChangeText={setEditLicense21} />
+              <View style={styles.editInputGroup}>
+                <Text style={styles.editLabel}>Drug License 21/21B Number</Text>
+                <TextInput style={styles.editInput} value={editLicense21} onChangeText={setEditLicense21} />
               </View>
 
-              <TouchableOpacity style={[styles.input, { flexDirection: 'row', alignItems: 'center', marginBottom: 24 }]} onPress={() => pickImage('21')}>
-                {editLicense21Url ? <CheckCircle color="#1F5B4E" size={20} style={{ marginRight: 8 }} /> : <Upload color="#666" size={20} style={{ marginRight: 8 }} />}
-                <Text style={{ color: editLicense21Url ? '#1F5B4E' : '#666' }}>{editLicense21Url ? 'Photo Selected (Tap to change)' : 'Upload 21/21B Photo'}</Text>
+              <TouchableOpacity style={[styles.editInput, { flexDirection: 'row', alignItems: 'center', marginBottom: 24 }]} onPress={() => pickImage('21')}>
+                {editLicense21Url ? <Feather name="check-circle" color={colors.primaryForest} size={20} style={{ marginRight: 8 }} /> : <Feather name="upload" color={colors.textSlate} size={20} style={{ marginRight: 8 }} />}
+                <Text style={{ color: editLicense21Url ? colors.primaryForest : colors.textSlate, fontFamily: 'Inter_400Regular' }}>{editLicense21Url ? 'Photo Selected (Tap to change)' : 'Upload 21/21B Photo'}</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.primaryButton} onPress={handleEditSave} disabled={isSaving}>
-                {isSaving ? <ActivityIndicator color="#fff" /> : <Text style={styles.primaryButtonText}>Save Changes</Text>}
+              <TouchableOpacity style={styles.btnPrimary} onPress={handleEditSave} disabled={isSaving}>
+                <Text style={styles.btnPrimaryText}>{isSaving ? 'Saving...' : 'Save Changes'}</Text>
               </TouchableOpacity>
             </ScrollView>
           </View>
         </View>
       </Modal>
+
     </SafeAreaView>
   );
 }
@@ -274,166 +439,299 @@ const styles = StyleSheet.create({
   safeArea: {
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     flex: 1,
-    backgroundColor: '#FAFAFA',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: colors.backgroundOffWhite,
   },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 16,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    paddingVertical: 12,
   },
   headerTitle: {
-    fontSize: 24, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#1F2937',
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 20,
+    color: colors.textDark,
   },
   container: {
-    padding: 16,
+    paddingHorizontal: 16,
     paddingBottom: 40,
   },
-  profileCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 12,
-    marginBottom: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  profileAvatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: '#E8F0EE',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  profileInfo: {
-    flex: 1,
-  },
-  profileName: {
-    fontSize: 20, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#1F2937',
-    marginBottom: 4,
-  },
-  profileDetail: {
-    fontSize: 14, fontFamily: 'Inter_400Regular',
-    color: '#666',
-    marginBottom: 2,
-  },
-  editButton: {
-    padding: 8,
-    backgroundColor: '#E8F0EE',
-    borderRadius: 20,
-  },
-  sectionTitle: {
-    fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#666',
-    marginBottom: 8,
-    textTransform: 'uppercase',
-  },
-  section: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    marginBottom: 24,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: '#eee',
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  heroCard: {
+    backgroundColor: colors.primaryForest,
+    borderRadius: 18,
     padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f9f9f9',
+    marginTop: 16,
+    marginBottom: 24,
+    // Shadow
+    shadowColor: '#16232F',
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 4,
   },
-  menuItemLast: {
-    borderBottomWidth: 0,
+  heroTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
   },
-  menuIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
-    backgroundColor: '#E8F0EE',
+  avatarCircle: {
+    width: 56,
+    height: 56,
+    borderRadius: 999,
+    backgroundColor: colors.secondaryTerracotta,
+    borderWidth: 1.5,
+    borderColor: colors.accentGold,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
   },
-  menuItemTitle: {
-    flex: 1,
-    fontSize: 16, fontFamily: 'Inter_500Medium', fontWeight: '500',
-    color: '#1F2937',
+  avatarText: {
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 18,
+    color: colors.white,
   },
-  logoutButton: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#DC2626',
-    paddingVertical: 16,
-    borderRadius: 12,
+  cameraOverlay: {
+    position: 'absolute',
+    bottom: -2,
+    right: -2,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: colors.white,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  logoutButtonText: {
-    color: '#DC2626',
-    fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+  heroInfo: {
+    marginLeft: 16,
+    flex: 1,
+  },
+  heroName: {
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 18,
+    color: colors.white,
+  },
+  heroContact: {
+    fontFamily: 'Inter_400Regular',
+    fontSize: 13,
+    color: 'rgba(255, 255, 255, 0.8)',
+  },
+  editIconBtn: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    padding: 16,
+    margin: -16,
+    zIndex: 10,
+  },
+  heroBottomRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  planBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.accentGold,
+    borderRadius: 999,
+    height: 32,
+    paddingHorizontal: 14,
+  },
+  badgeText: {
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 12,
+    color: colors.forestDark,
+  },
+  statChipsRow: {
+    flexDirection: 'row',
+    marginLeft: 8,
+    flex: 1,
+  },
+  statChip: {
+    backgroundColor: '#1B3B2C',
+    borderRadius: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    marginLeft: 8,
+    minWidth: 84,
+  },
+  statNumber: {
+    fontFamily: 'Poppins_700Bold',
+    fontSize: 16,
+    color: colors.white,
+  },
+  statLabel: {
+    fontFamily: 'Inter_500Medium',
+    fontSize: 9,
+    color: colors.terracottaLight,
+    letterSpacing: 0.4,
+  },
+  sectionLabel: {
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 12,
+    color: colors.textSlate,
+    letterSpacing: 1.2,
+    paddingLeft: 16,
+    marginBottom: 8,
+  },
+  listContainer: {
+    backgroundColor: colors.white,
+    borderRadius: 12,
+    marginBottom: 32,
+    shadowColor: '#16232F',
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 4,
+  },
+  listRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    minHeight: 64,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+  },
+  iconCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 8, // radius.sm
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  rowTitle: {
+    flex: 1,
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 15,
+    color: colors.textDark,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: colors.borderLight,
+    marginLeft: 72, // 16 + 44 + 12
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    padding: 24,
-    minHeight: 300,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    backgroundColor: 'rgba(20, 47, 35, 0.55)', // forestDark 55%
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 24,
+    paddingHorizontal: 16,
+  },
+  modalSheet: {
+    width: '100%',
+    backgroundColor: colors.white,
+    borderRadius: 18,
+    padding: 24,
   },
   modalTitle: {
-    fontSize: 20, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#1F2937',
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 17,
+    color: colors.textDark,
   },
-  inputGroup: {
+  modalBody: {
+    fontFamily: 'Inter_400Regular',
+    fontSize: 13,
+    color: colors.textSlate,
+    marginTop: 8,
+    marginBottom: 24,
+  },
+  modalButtonsRow: {
+    flexDirection: 'row',
+    marginTop: 24,
+  },
+  btnPrimary: {
+    flex: 1,
+    height: 48,
+    backgroundColor: colors.primaryForest,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 8,
+  },
+  btnPrimaryText: {
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 14,
+    color: colors.white,
+    letterSpacing: 0.2,
+  },
+  btnSecondary: {
+    flex: 1,
+    height: 48,
+    backgroundColor: colors.white,
+    borderWidth: 1.5,
+    borderColor: colors.primaryForest,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 8,
+  },
+  btnSecondaryText: {
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 14,
+    color: colors.primaryForest,
+    letterSpacing: 0.2,
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 48,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    marginBottom: 12,
+  },
+  passwordInput: {
+    flex: 1,
+    fontFamily: 'Inter_400Regular',
+    fontSize: 13,
+    color: colors.textDark,
+  },
+  validationHeader: {
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 13,
+    color: colors.textSlate,
+    marginTop: 8,
+    marginBottom: 12,
+  },
+  validationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  valCheck: {
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    marginRight: 8,
+  },
+  validationText: {
+    fontFamily: 'Inter_400Regular',
+    fontSize: 13,
+    color: colors.textSlate,
+  },
+  valExample: {
+    fontFamily: 'Inter_400Regular',
+    fontSize: 11,
+    color: colors.textSlate,
+    marginLeft: 22,
+    marginTop: 4,
+    marginBottom: 8,
+  },
+  editInputGroup: {
     marginBottom: 16,
   },
-  label: {
-    fontSize: 14,
-    color: '#666',
+  editLabel: {
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 13,
+    color: colors.textDark,
     marginBottom: 8,
-    fontFamily: 'Inter_500Medium', fontWeight: '500',
   },
-  input: {
+  editInput: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.borderLight,
     borderRadius: 8,
-    padding: 14,
-    fontSize: 16, fontFamily: 'Inter_400Regular',
-    backgroundColor: '#f9f9f9',
-  },
-  primaryButton: {
-    backgroundColor: '#1F5B4E',
-    paddingVertical: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 16,
-  },
-  primaryButtonText: {
-    color: '#fff',
-    fontSize: 16, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-  },
+    paddingHorizontal: 12,
+    height: 48,
+    fontFamily: 'Inter_400Regular',
+    fontSize: 14,
+    color: colors.textDark,
+  }
 });

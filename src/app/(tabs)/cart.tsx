@@ -75,7 +75,7 @@ export default function CartScreen() {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <TouchableOpacity onPress={() => router.replace('/')} style={{ marginRight: 12 }}>
+            <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 12 }}>
               <ArrowLeft color="#1F2937" size={22} strokeWidth={1.6} />
             </TouchableOpacity>
             <Text style={styles.screenTitle}>My Cart</Text>
@@ -94,7 +94,7 @@ export default function CartScreen() {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <TouchableOpacity onPress={() => router.replace('/')} style={{ marginRight: 12 }}>
+            <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 12 }}>
               <ArrowLeft color="#1F2937" size={22} strokeWidth={1.6} />
             </TouchableOpacity>
             <Text style={styles.screenTitle}>My Cart</Text>
@@ -111,7 +111,7 @@ export default function CartScreen() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <TouchableOpacity onPress={() => router.replace('/')} style={{ marginRight: 12 }}>
+          <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 12 }}>
             <ArrowLeft color="#1F2937" size={22} strokeWidth={1.6} />
           </TouchableOpacity>
           <Text style={styles.screenTitle}>My Cart</Text>

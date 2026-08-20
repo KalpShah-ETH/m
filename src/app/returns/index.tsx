@@ -74,7 +74,7 @@ export default function ReturnsScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.replace('/')} style={styles.backButton}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <ArrowLeft color="#1F2937" size={24} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Returns</Text>

@@ -154,7 +154,7 @@ export default function BrowseScreen() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.topBar}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <TouchableOpacity onPress={() => router.replace('/')} style={{ marginRight: 12 }}>
+          <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 12 }}>
             <ArrowLeft color="#1F2937" size={22} strokeWidth={1.6} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.distributorSelector}>

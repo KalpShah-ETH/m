@@ -186,7 +186,7 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.replace('/')} style={{ marginRight: 12 }}>
+        <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 12 }}>
           <Feather name="arrow-left" color={colors.textDark} size={22} strokeWidth={1.6} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>My Account</Text>

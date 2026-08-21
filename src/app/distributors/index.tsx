@@ -1,26 +1,78 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, ActivityIndicator, Alert, Share as RNShare, Platform, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, ActivityIndicator, Alert, Platform, StatusBar } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import Toast from 'react-native-toast-message';
-import { Search, GripVertical, Plus, Share, ChevronUp, ChevronDown, ArrowLeft } from 'lucide-react-native';
+import { Feather } from '@expo/vector-icons';
+import { colors } from '@/constants/colors';
 import { useMyDistributorsStore, MyDistributor } from '@/store/myDistributorsStore';
+
+// Row Components
+const MappedRow = ({ item, index }: { item: MyDistributor, index: number }) => {
+  const isIncomplete = !item.address; // Using address to determine if complete
+
+  return (
+    <View style={[styles.rowContainer, isIncomplete && { opacity: 0.55 }]}>
+      <View style={styles.leadingCircle}>
+        <Text style={styles.leadingNumber}>{index + 1}</Text>
+      </View>
+      
+      <View style={styles.rowMiddle}>
+        <Text style={styles.bizName} numberOfLines={1}>{item.name}</Text>
+        {!isIncomplete && (
+          <View style={styles.locationLine}>
+            <Feather name="map-pin" size={11} color={colors.textSlate} />
+            <Text style={styles.locationText} numberOfLines={1}>{item.address || "Area, City"}</Text>
+          </View>
+        )}
+      </View>
+
+      <View style={styles.trailingCircle}>
+        <Feather name="move" size={18} color={colors.primaryForest} />
+      </View>
+    </View>
+  );
+};
+
+const NonMappedRow = ({ item, isToggled, onToggle }: { item: MyDistributor, isToggled: boolean, onToggle: () => void }) => {
+  return (
+    <View style={styles.rowContainer}>
+      <View style={styles.leadingCircle}>
+        <Feather name="briefcase" size={16} color={colors.primaryForest} />
+      </View>
+      
+      <View style={styles.rowMiddle}>
+        <Text style={styles.bizName} numberOfLines={1}>{item.name}</Text>
+        <View style={styles.locationLine}>
+          <Feather name="map-pin" size={11} color={colors.textSlate} />
+          <Text style={styles.locationText} numberOfLines={1}>{item.address || "Area, City"}</Text>
+        </View>
+      </View>
+
+      <TouchableOpacity style={styles.trailingBtn} onPress={onToggle} activeOpacity={0.8}>
+        {isToggled ? (
+          <Feather name="clock" size={16} color={colors.white} />
+        ) : (
+          <Feather name="plus" size={16} color={colors.white} />
+        )}
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 export default function MyDistributorsScreen() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'mapped' | 'non-mapped'>('mapped');
   const [searchQuery, setSearchQuery] = useState('');
+  const [toggledIds, setToggledIds] = useState<Set<string>>(new Set());
 
   const {
     mappedDistributors,
     nonMappedDistributors,
-    pendingIds,
     isLoading,
     fetchMapped,
     fetchNonMapped,
-    reorderMapped,
-    requestConnection,
-    setMappedLocally
+    requestConnection
   } = useMyDistributorsStore();
 
   useEffect(() => {
@@ -28,77 +80,33 @@ export default function MyDistributorsScreen() {
     fetchNonMapped();
   }, []);
 
-  const handleMoveUp = (index: number) => {
-    if (index === 0) return;
-    const newList = [...mappedDistributors];
-    const temp = newList[index - 1];
-    newList[index - 1] = newList[index];
-    newList[index] = temp;
-    setMappedLocally(newList);
-    reorderMapped(newList.map(d => d.id));
-  };
+  const handleToggle = async (id: string) => {
+    // Optimistic UI update
+    setToggledIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
 
-  const handleMoveDown = (index: number) => {
-    if (index === mappedDistributors.length - 1) return;
-    const newList = [...mappedDistributors];
-    const temp = newList[index + 1];
-    newList[index + 1] = newList[index];
-    newList[index] = temp;
-    setMappedLocally(newList);
-    reorderMapped(newList.map(d => d.id));
-  };
-
-  const handleConnect = async (distributorId: string) => {
-    const { success, error } = await requestConnection(distributorId);
-    if (success) {
-      Toast.show({ type: 'success', text1: 'Request Sent', text2: 'Connection request sent successfully!' });
-    } else {
-      Alert.alert('Error', error || 'Failed to send request');
+    // If we are toggling to "Pending" (clock), trigger the API
+    if (!toggledIds.has(id)) {
+      const { success, error } = await requestConnection(id);
+      if (success) {
+        Toast.show({ type: 'success', text1: 'Request Sent', text2: 'Connection request sent successfully!' });
+      } else {
+        Alert.alert('Error', error || 'Failed to send request');
+        // Revert toggle on failure
+        setToggledIds(prev => {
+          const next = new Set(prev);
+          next.delete(id);
+          return next;
+        });
+      }
     }
-  };
-
-  const renderMappedItem = ({ item, index }: { item: MyDistributor, index: number }) => (
-    <View style={styles.listItem}>
-      <View style={styles.numberContainer}>
-        <Text style={styles.numberText}>{index + 1}</Text>
-      </View>
-      <View style={styles.itemDetails}>
-        <Text style={styles.itemName}>{item.name}</Text>
-        <Text style={styles.itemSubtitle}>{item.contact}</Text>
-      </View>
-      <View style={styles.reorderControls}>
-        <TouchableOpacity onPress={() => handleMoveUp(index)} disabled={index === 0}>
-          <ChevronUp color={index === 0 ? '#ccc' : '#1F5B4E'} size={24} />
-        </TouchableOpacity>
-        <GripVertical color="#999" size={20} style={{ marginVertical: 4 }} />
-        <TouchableOpacity onPress={() => handleMoveDown(index)} disabled={index === mappedDistributors.length - 1}>
-          <ChevronDown color={index === mappedDistributors.length - 1 ? '#ccc' : '#1F5B4E'} size={24} />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-
-  const renderNonMappedItem = ({ item }: { item: MyDistributor }) => {
-    const isPending = pendingIds.includes(item.id);
-    
-    return (
-      <View style={styles.listItem}>
-        <View style={styles.itemDetails}>
-          <Text style={styles.itemName}>{item.name}</Text>
-        </View>
-        
-        {isPending ? (
-          <View style={[styles.connectButton, { backgroundColor: '#e5e7eb' }]}>
-            <Text style={[styles.connectButtonText, { color: '#6b7280' }]}>Pending</Text>
-          </View>
-        ) : (
-          <TouchableOpacity style={styles.connectButton} onPress={() => handleConnect(item.id)}>
-            <Plus color="#1F5B4E" size={16} style={{ marginRight: 4 }} />
-            <Text style={styles.connectButtonText}>Connect</Text>
-          </TouchableOpacity>
-        )}
-      </View>
-    );
   };
 
   const filteredMapped = mappedDistributors.filter(d => d.name.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -106,58 +114,73 @@ export default function MyDistributorsScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.topBar}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <ArrowLeft color="#1F2937" size={24} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>My Distributors</Text>
+      {/* 4.1 Header */}
+      <View style={styles.header}>
+        <View style={styles.headerLeft}>
+          <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
+            <Feather name="arrow-left" size={16} color={colors.textDark} />
+          </TouchableOpacity>
+          <Text style={styles.screenTitle}>My Distributors</Text>
+        </View>
         <TouchableOpacity>
           <Text style={styles.resetLink}>Reset</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={styles.container}>
-        {/* Inner Tabs */}
-        <View style={styles.tabContainer}>
-          <TouchableOpacity 
-            style={[styles.tab, activeTab === 'mapped' && styles.tabActive]}
-            onPress={() => setActiveTab('mapped')}
-          >
-            <Text style={[styles.tabText, activeTab === 'mapped' && styles.tabTextActive]}>Mapped</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={[styles.tab, activeTab === 'non-mapped' && styles.tabActive]}
-            onPress={() => setActiveTab('non-mapped')}
-          >
-            <Text style={[styles.tabText, activeTab === 'non-mapped' && styles.tabTextActive]}>Non-Mapped</Text>
-          </TouchableOpacity>
+      {/* 4.2 Tabs */}
+      <View style={styles.tabsContainer}>
+        <TouchableOpacity 
+          style={styles.tab} 
+          activeOpacity={0.8}
+          onPress={() => setActiveTab('mapped')}
+        >
+          <Text style={[styles.tabLabel, activeTab === 'mapped' && styles.tabLabelActive]}>Mapped</Text>
+          {activeTab === 'mapped' && <View style={styles.tabUnderline} />}
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.tab} 
+          activeOpacity={0.8}
+          onPress={() => setActiveTab('non-mapped')}
+        >
+          <Text style={[styles.tabLabel, activeTab === 'non-mapped' && styles.tabLabelActive]}>Non-Mapped</Text>
+          {activeTab === 'non-mapped' && <View style={styles.tabUnderline} />}
+        </TouchableOpacity>
+      </View>
+
+      {/* 4.3 Search Bar */}
+      <View style={styles.searchWrapper}>
+        <View style={styles.searchBar}>
+          <Feather name="search" size={16} color={colors.textSlate} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search by name, area or city..."
+            placeholderTextColor={colors.textSlate}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
         </View>
+      </View>
 
-        {/* Search Bar */}
-        <View style={styles.searchContainer}>
-            <Search color="#999" size={20} style={styles.searchIcon} />
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search distributor name..."
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              placeholderTextColor="#999"
-            />
-          </View>
-
+      {/* 4.4 Row List Container */}
+      <View style={styles.listContainer}>
         {isLoading ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#1F5B4E" />
-          </View>
+          <ActivityIndicator size="large" color={colors.primaryForest} style={{ marginTop: 40 }} />
         ) : (
           <>
             {activeTab === 'mapped' && (
               <FlatList
                 data={filteredMapped}
                 keyExtractor={(item) => item.id}
-                renderItem={renderMappedItem}
-                contentContainerStyle={styles.listContainer}
-                ListEmptyComponent={<Text style={styles.emptyText}>No mapped distributors found.</Text>}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: 100 }}
+                ListHeaderComponent={
+                  <Text style={styles.helperText}>Select and drag to reorder your priority list</Text>
+                }
+                ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+                renderItem={({ item, index }) => (
+                  <MappedRow item={item} index={index} />
+                )}
               />
             )}
 
@@ -165,13 +188,49 @@ export default function MyDistributorsScreen() {
               <FlatList
                 data={filteredNonMapped}
                 keyExtractor={(item) => item.id}
-                renderItem={renderNonMappedItem}
-                contentContainerStyle={styles.listContainer}
-                ListEmptyComponent={<Text style={styles.emptyText}>No non-mapped distributors found.</Text>}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: 100 }}
+                ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+                renderItem={({ item }) => (
+                  <NonMappedRow 
+                    item={item} 
+                    isToggled={toggledIds.has(item.id)}
+                    onToggle={() => handleToggle(item.id)}
+                  />
+                )}
               />
             )}
           </>
         )}
+      </View>
+
+      {/* 7. Bottom Navigation */}
+      <View style={styles.bottomNav}>
+        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/(tabs)')}>
+          <Feather name="home" size={22} color={colors.primaryForest} />
+          <Text style={[styles.navLabel, styles.navLabelActive]}>Home</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/(tabs)/browse')}>
+          <Feather name="compass" size={22} color={colors.textSlate} />
+          <Text style={styles.navLabel}>Browse</Text>
+        </TouchableOpacity>
+        
+        <View style={styles.fabContainer}>
+          <TouchableOpacity style={styles.fab} onPress={() => router.push('/(tabs)/search')}>
+            <Feather name="search" size={24} color={colors.white} />
+          </TouchableOpacity>
+        </View>
+        
+        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/(tabs)/orders')}>
+          <Feather name="package" size={22} color={colors.textSlate} />
+          <Text style={styles.navLabel}>Orders</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/(tabs)/cart')}>
+          <Feather name="shopping-cart" size={22} color={colors.textSlate} />
+          <Text style={styles.navLabel}>Cart</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -179,225 +238,214 @@ export default function MyDistributorsScreen() {
 
 const styles = StyleSheet.create({
   safeArea: {
-    
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: colors.backgroundOffWhite,
   },
-  topBar: {
+  // Header
+  header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: colors.white,
+    paddingTop: 14,
     paddingHorizontal: 16,
-    paddingVertical: 16,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    paddingBottom: 12,
   },
-  backButton: {
-    padding: 4,
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  headerTitle: {
-    fontSize: 20,
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#1F2937',
+  backBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  screenTitle: {
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 19,
+    color: colors.textDark,
   },
   resetLink: {
-    fontSize: 16,
-    color: '#1F5B4E',
-    fontFamily: 'Inter_500Medium', fontWeight: '500',
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 14,
+    color: colors.primaryForest,
   },
-  container: {
-    flex: 1,
-    paddingTop: 16,
-  },
-  tabContainer: {
+  // Tabs
+  tabsContainer: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    marginBottom: 16,
+    borderBottomColor: colors.borderLight,
   },
   tab: {
     flex: 1,
     paddingVertical: 12,
     alignItems: 'center',
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
+    justifyContent: 'center',
+    position: 'relative',
   },
-  tabActive: {
-    borderBottomColor: '#1F5B4E',
-  },
-  tabText: {
+  tabLabel: {
+    fontFamily: 'Inter_500Medium',
     fontSize: 14,
-    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
-    color: '#666',
+    color: colors.textSlate,
   },
-  tabTextActive: {
-    color: '#1F5B4E',
+  tabLabelActive: {
+    fontFamily: 'Inter_700Bold',
+    color: colors.primaryForest,
   },
-  searchContainer: {
+  tabUnderline: {
+    position: 'absolute',
+    bottom: 0,
+    width: '44%', // 72% - 28% = 44% width centered
+    height: 2.5,
+    backgroundColor: colors.primaryForest,
+    borderTopLeftRadius: 2,
+    borderTopRightRadius: 2,
+  },
+  // Search
+  searchWrapper: {
+    paddingTop: 14,
+    paddingHorizontal: 16,
+  },
+  searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    marginHorizontal: 16,
-    marginBottom: 16,
-    borderRadius: 8,
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.borderLight,
+    borderRadius: 10,
+    height: 44,
     paddingHorizontal: 12,
-    height: 48,
-  },
-  searchIcon: {
-    marginRight: 8,
   },
   searchInput: {
     flex: 1,
-    height: '100%',
-    fontSize: 15, fontFamily: 'Inter_400Regular',
+    marginLeft: 8,
+    fontFamily: 'Inter_400Regular',
+    fontSize: 13,
+    color: colors.textDark,
   },
+  // List
   listContainer: {
+    flex: 1,
+    paddingTop: 14,
     paddingHorizontal: 16,
-    paddingBottom: 100,
   },
-  listItem: {
+  helperText: {
+    fontFamily: 'Inter_400Regular',
+    fontSize: 11.5,
+    color: colors.textSlate,
+    marginBottom: 4,
+  },
+  // Rows
+  rowContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
+    backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: '#eee',
+    borderColor: colors.borderLight,
+    borderRadius: 12,
+    padding: 12,
   },
-  numberContainer: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: '#E8F0EE',
+  leadingCircle: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: colors.neutralForestTint,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
-  numberText: {
-    color: '#1F5B4E',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    fontSize: 14,
+  leadingNumber: {
+    fontFamily: 'Inter_700Bold',
+    fontSize: 13,
+    color: colors.textDark,
   },
-  itemDetails: {
+  rowMiddle: {
     flex: 1,
+    justifyContent: 'center',
   },
-  itemName: {
-    fontSize: 16,
-    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
-    color: '#1F2937',
+  bizName: {
+    fontFamily: 'Inter_700Bold',
+    fontSize: 13.5,
+    color: colors.textDark,
     marginBottom: 4,
   },
-  itemSubtitle: {
-    fontSize: 13, fontFamily: 'Inter_400Regular',
-    color: '#666',
-  },
-  reorderControls: {
-    alignItems: 'center',
-    paddingLeft: 12,
-    borderLeftWidth: 1,
-    borderLeftColor: '#f0f0f0',
-  },
-  connectButton: {
+  locationLine: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#1F5B4E',
-    borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
   },
-  connectButtonText: {
-    color: '#1F5B4E',
-    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
-    fontSize: 14,
-  },
-  loadingContainer: {
+  locationText: {
+    fontFamily: 'Inter_400Regular',
+    fontSize: 11,
+    color: colors.textSlate,
+    marginLeft: 4,
     flex: 1,
+  },
+  trailingCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: colors.neutralForestTint,
     justifyContent: 'center',
     alignItems: 'center',
+    marginLeft: 12,
   },
-  emptyText: {
-    textAlign: 'center',
-    color: '#999',
-    marginTop: 40,
-    fontSize: 15, fontFamily: 'Inter_400Regular',
-  },
-  referContainer: {
-    padding: 16,
-  },
-  referTitle: {
-    fontSize: 20,
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#1F2937',
-    marginBottom: 8,
-  },
-  referSubtitle: {
-    fontSize: 14, fontFamily: 'Inter_400Regular',
-    color: '#666',
-    marginBottom: 24,
-  },
-  formGroup: {
-    marginBottom: 16,
-  },
-  label: {
-    fontSize: 14,
-    color: '#1F2937',
-    marginBottom: 8,
-    fontFamily: 'Inter_500Medium', fontWeight: '500',
-  },
-  input: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    height: 50,
-    paddingHorizontal: 16,
-    fontSize: 15, fontFamily: 'Inter_400Regular',
-  },
-  submitButton: {
-    backgroundColor: '#1F5B4E',
-    height: 50,
-    borderRadius: 8,
+  trailingBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.primaryForest,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 8,
+    marginLeft: 12,
   },
-  submitButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-  },
-  dividerContainer: {
+  // Bottom Nav
+  bottomNav: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 70,
+    backgroundColor: colors.white,
+    borderTopWidth: 1,
+    borderTopColor: colors.borderLight,
     flexDirection: 'row',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    marginVertical: 24,
+    paddingBottom: Platform.OS === 'ios' ? 15 : 0, // safe area padding
   },
-  divider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#ddd',
+  navItem: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  dividerText: {
-    marginHorizontal: 16,
-    color: '#999',
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+  navLabel: {
+    fontFamily: 'Inter_500Medium',
+    fontSize: 10,
+    color: colors.textSlate,
+    marginTop: 4,
   },
-  shareButton: {
-    flexDirection: 'row',
-    backgroundColor: '#1F5B4E',
-    height: 50,
-    borderRadius: 8,
+  navLabelActive: {
+    fontFamily: 'Inter_600SemiBold',
+    color: colors.primaryForest,
+  },
+  fabContainer: {
+    top: -20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  fab: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: colors.primaryForest,
+    borderWidth: 4,
+    borderColor: colors.backgroundOffWhite,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  shareButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
 });

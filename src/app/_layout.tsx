@@ -56,6 +56,8 @@ export default function RootLayout() {
         <Stack.Screen name="outstandings" options={{ headerShown: false, animation: 'slide_from_right' }} />
         <Stack.Screen name="generic" options={{ headerShown: false, animation: 'slide_from_right' }} />
         <Stack.Screen name="returns" options={{ headerShown: false, animation: 'slide_from_right' }} />
+        <Stack.Screen name="static/terms" options={{ headerShown: false, animation: 'slide_from_right' }} />
+        <Stack.Screen name="static/privacy" options={{ headerShown: false, animation: 'slide_from_right' }} />
       </Stack>
       <MiniCart />
       <Toast config={toastConfig} />

@@ -279,34 +279,6 @@ export default function SearchScreen() {
         )}
       </View>
 
-      {/* 9. Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/(tabs)')}>
-          <Feather name="home" size={22} color={colors.textSlate} />
-          <Text style={styles.navLabel}>Home</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/(tabs)/browse')}>
-          <Feather name="compass" size={22} color={colors.textSlate} />
-          <Text style={styles.navLabel}>Browse</Text>
-        </TouchableOpacity>
-        
-        <View style={styles.fabContainer}>
-          <TouchableOpacity style={styles.fab}>
-            <Feather name="search" size={24} color={colors.white} />
-          </TouchableOpacity>
-        </View>
-        
-        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/(tabs)/orders')}>
-          <Feather name="package" size={22} color={colors.textSlate} />
-          <Text style={styles.navLabel}>Orders</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/(tabs)/cart')}>
-          <Feather name="shopping-cart" size={22} color={colors.textSlate} />
-          <Text style={styles.navLabel}>Cart</Text>
-        </TouchableOpacity>
-      </View>
 
       {/* 6. Select Distributor Modal */}
       <Modal visible={isDistributorModalVisible} transparent animationType="slide">

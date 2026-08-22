@@ -189,8 +189,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       if (ext === 'heic') mimeType = 'image/heic';
       
       const res = await fetch(localUri);
-      const blob = await res.blob();
-      const { data, error } = await supabase.storage.from('licenses').upload(path, blob, { 
+      const arrayBuffer = await res.arrayBuffer();
+      const { data, error } = await supabase.storage.from('licenses').upload(path, arrayBuffer, { 
         upsert: true,
         contentType: mimeType
       });

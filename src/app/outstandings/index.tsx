@@ -54,8 +54,7 @@ export default function OutstandingsScreen() {
   const [activeDistributor, setActiveDistributor] = useState<any>(null);
   
   // Modal states
-  const [isLoadingModalVisible, setLoadingModalVisible] = useState(false);
-  const [isOrderModalVisible, setOrderModalVisible] = useState(false);
+  const [modalState, setModalState] = useState<'none' | 'loading' | 'order'>('none');
   
   // Toolbar states
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
@@ -88,18 +87,16 @@ export default function OutstandingsScreen() {
 
   const handleCardPress = (distributor: any) => {
     setActiveDistributor(distributor);
-    setLoadingModalVisible(true);
+    setModalState('loading');
     
     // Simulate network delay then open order details
     setTimeout(() => {
-      setLoadingModalVisible(false);
-      setOrderModalVisible(true);
+      setModalState('order');
     }, 1200);
   };
 
   const handleCloseAll = () => {
-    setLoadingModalVisible(false);
-    setOrderModalVisible(false);
+    setModalState('none');
     setSelectAll(false);
     setSelectedInvoices({});
   };
@@ -226,127 +223,118 @@ export default function OutstandingsScreen() {
         />
       </View>
 
-      {/* 1. LOADING MODAL */}
-      <Modal visible={isLoadingModalVisible} transparent animationType="fade">
+      {/* UNIFIED MODAL TO PREVENT FLICKERING */}
+      <Modal visible={modalState !== 'none'} transparent animationType="fade">
         <View style={styles.modalOverlay}>
           <SafeAreaView style={{ flex: 1 }}>
             <View style={{ height: 100 }} />
 
-
-            {/* White Sheet */}
-            <View style={styles.modalSheet}>
-              <View style={styles.sheetHeader}>
-                <Text style={styles.sheetDistributorName}>{activeDistributor?.name}</Text>
-                <TouchableOpacity style={styles.sheetCloseBtn} onPress={handleCloseAll}>
-                  <Feather name="x" size={16} color={colors.secondaryTerracotta} />
-                </TouchableOpacity>
-              </View>
-              
-              <View style={styles.spinnerArea}>
-                <Animated.View style={{ transform: [{ rotate: spin }] }}>
-                  <View style={styles.customSpinner}>
-                    {[...Array(12)].map((_, i) => (
-                      <View 
-                        key={i} 
-                        style={[
-                          styles.spinnerDot, 
-                          { transform: [{ rotate: `${i * 30}deg` }, { translateY: -16 }] }
-                        ]} 
-                      />
-                    ))}
-                  </View>
-                </Animated.View>
-              </View>
-            </View>
-          </SafeAreaView>
-        </View>
-      </Modal>
-
-      {/* 2. ORDER DETAILS MODAL */}
-      <Modal visible={isOrderModalVisible} transparent animationType="fade">
-        <View style={styles.modalOverlay}>
-          <SafeAreaView style={{ flex: 1 }}>
-            <View style={{ height: 100 }} />
-
-
-            {/* White Sheet */}
-            <View style={styles.orderSheet}>
-              <View style={styles.orderSheetHeader}>
-                <Text style={styles.sheetDistributorName}>{activeDistributor?.name}</Text>
-                <TouchableOpacity style={styles.sheetCloseBtn} onPress={handleCloseAll}>
-                  <Feather name="x" size={16} color={colors.secondaryTerracotta} />
-                </TouchableOpacity>
-              </View>
-
-              {/* Toolbar */}
-              <View style={styles.orderToolbar}>
-                <View style={styles.toolbarLeft}>
-                  <TouchableOpacity 
-                    style={[styles.checkbox, selectAll && styles.checkboxChecked]}
-                    onPress={toggleSelectAll}
-                    activeOpacity={0.8}
-                  >
-                    {selectAll && <Feather name="check" size={12} color={colors.white} />}
-                  </TouchableOpacity>
-                  <Text style={styles.toolbarSelectText}>Select</Text>
-                </View>
-                
-                <View style={styles.toolbarDivider} />
-                
-                <View style={styles.toolbarRight}>
-                  <Text style={styles.sortByLabel}>Sort by:</Text>
-                  
-                  <TouchableOpacity style={styles.sortOption} onPress={() => setSortOrder('newest')} activeOpacity={0.8}>
-                    <View style={[styles.radio, sortOrder === 'newest' && styles.radioActive]}>
-                      {sortOrder === 'newest' && <View style={styles.radioInner} />}
-                    </View>
-                    <Text style={[styles.sortLabel, sortOrder === 'newest' && styles.sortLabelActive]}>Newest</Text>
-                  </TouchableOpacity>
-                  
-                  <TouchableOpacity style={styles.sortOption} onPress={() => setSortOrder('oldest')} activeOpacity={0.8}>
-                    <View style={[styles.radio, sortOrder === 'oldest' && styles.radioActive]}>
-                      {sortOrder === 'oldest' && <View style={styles.radioInner} />}
-                    </View>
-                    <Text style={[styles.sortLabel, sortOrder === 'oldest' && styles.sortLabelActive]}>Oldest</Text>
+            {modalState === 'loading' ? (
+              /* White Sheet for Loading */
+              <View style={styles.modalSheet}>
+                <View style={styles.sheetHeader}>
+                  <Text style={styles.sheetDistributorName}>{activeDistributor?.name}</Text>
+                  <TouchableOpacity style={styles.sheetCloseBtn} onPress={handleCloseAll}>
+                    <Feather name="x" size={16} color={colors.secondaryTerracotta} />
                   </TouchableOpacity>
                 </View>
+                
+                <View style={styles.spinnerArea}>
+                  <Animated.View style={{ transform: [{ rotate: spin }] }}>
+                    <View style={styles.customSpinner}>
+                      {[...Array(12)].map((_, i) => (
+                        <View 
+                          key={i} 
+                          style={[
+                            styles.spinnerDot, 
+                            { transform: [{ rotate: `${i * 30}deg` }, { translateY: -16 }] }
+                          ]} 
+                        />
+                      ))}
+                    </View>
+                  </Animated.View>
+                </View>
               </View>
+            ) : modalState === 'order' ? (
+              /* White Sheet for Order Details */
+              <View style={styles.orderSheet}>
+                <View style={styles.orderSheetHeader}>
+                  <Text style={styles.sheetDistributorName}>{activeDistributor?.name}</Text>
+                  <TouchableOpacity style={styles.sheetCloseBtn} onPress={handleCloseAll}>
+                    <Feather name="x" size={16} color={colors.secondaryTerracotta} />
+                  </TouchableOpacity>
+                </View>
 
-              {/* Invoice List */}
-              <View style={styles.invoiceListContainer}>
-                {activeDistributor?.invoices?.length === 0 ? (
-                  <View style={[styles.emptyState, { paddingTop: 40 }]}>
-                    <Text style={{ fontFamily: 'Inter_400Regular', color: colors.textSlate }}>
-                      No invoices found for this distributor.
-                    </Text>
+                {/* Toolbar */}
+                <View style={styles.orderToolbar}>
+                  <View style={styles.toolbarLeft}>
+                    <TouchableOpacity 
+                      style={[styles.checkbox, selectAll && styles.checkboxChecked]}
+                      onPress={toggleSelectAll}
+                      activeOpacity={0.8}
+                    >
+                      {selectAll && <Feather name="check" size={12} color={colors.white} />}
+                    </TouchableOpacity>
+                    <Text style={styles.toolbarSelectText}>Select</Text>
                   </View>
-                ) : (
-                  <FlatList
-                    data={activeDistributor?.invoices || []}
-                    keyExtractor={(item) => item.id}
-                    renderItem={renderInvoiceItem}
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ padding: 12, paddingBottom: 24 }}
-                    ListFooterComponent={
-                      <View style={styles.invoiceSummary}>
-                        <View style={styles.summaryCol}>
-                          <Text style={styles.summaryLabel}>Total Amount</Text>
-                          <Text style={styles.summaryValue}>{activeDistributor?.totals.amount}</Text>
-                        </View>
-                        <View style={styles.summaryCol}>
-                          <Text style={styles.summaryLabel}>Total Received</Text>
-                          <Text style={styles.summaryValue}>{activeDistributor?.totals.received}</Text>
-                        </View>
-                        <View style={styles.summaryCol}>
-                          <Text style={styles.summaryLabel}>Total Balance</Text>
-                          <Text style={styles.summaryValue}>{activeDistributor?.totals.balance}</Text>
-                        </View>
+                  
+                  <View style={styles.toolbarDivider} />
+                  
+                  <View style={styles.toolbarRight}>
+                    <Text style={styles.sortByLabel}>Sort by:</Text>
+                    
+                    <TouchableOpacity style={styles.sortOption} onPress={() => setSortOrder('newest')} activeOpacity={0.8}>
+                      <View style={[styles.radio, sortOrder === 'newest' && styles.radioActive]}>
+                        {sortOrder === 'newest' && <View style={styles.radioInner} />}
                       </View>
-                    }
-                  />
-                )}
+                      <Text style={[styles.sortLabel, sortOrder === 'newest' && styles.sortLabelActive]}>Newest</Text>
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity style={styles.sortOption} onPress={() => setSortOrder('oldest')} activeOpacity={0.8}>
+                      <View style={[styles.radio, sortOrder === 'oldest' && styles.radioActive]}>
+                        {sortOrder === 'oldest' && <View style={styles.radioInner} />}
+                      </View>
+                      <Text style={[styles.sortLabel, sortOrder === 'oldest' && styles.sortLabelActive]}>Oldest</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                {/* Invoice List */}
+                <View style={styles.invoiceListContainer}>
+                  {activeDistributor?.invoices?.length === 0 ? (
+                    <View style={[styles.emptyState, { paddingTop: 40 }]}>
+                      <Text style={{ fontFamily: 'Inter_400Regular', color: colors.textSlate }}>
+                        No invoices found for this distributor.
+                      </Text>
+                    </View>
+                  ) : (
+                    <FlatList
+                      data={activeDistributor?.invoices || []}
+                      keyExtractor={(item) => item.id}
+                      renderItem={renderInvoiceItem}
+                      showsVerticalScrollIndicator={false}
+                      contentContainerStyle={{ padding: 12, paddingBottom: 24 }}
+                      ListFooterComponent={
+                        <View style={styles.invoiceSummary}>
+                          <View style={styles.summaryCol}>
+                            <Text style={styles.summaryLabel}>Total Amount</Text>
+                            <Text style={styles.summaryValue}>{activeDistributor?.totals.amount}</Text>
+                          </View>
+                          <View style={styles.summaryCol}>
+                            <Text style={styles.summaryLabel}>Total Received</Text>
+                            <Text style={styles.summaryValue}>{activeDistributor?.totals.received}</Text>
+                          </View>
+                          <View style={styles.summaryCol}>
+                            <Text style={styles.summaryLabel}>Total Balance</Text>
+                            <Text style={styles.summaryValue}>{activeDistributor?.totals.balance}</Text>
+                          </View>
+                        </View>
+                      }
+                    />
+                  )}
+                </View>
               </View>
-            </View>
+            ) : null}
           </SafeAreaView>
         </View>
       </Modal>

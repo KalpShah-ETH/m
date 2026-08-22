@@ -62,12 +62,12 @@ export default function HomeScreen() {
   }, []);
 
   const gridItems = [
-    { id: '1', title: 'Distributors', icon: <Graph color={colors.primaryForest} size={32} weight="duotone" />, bg: colors.neutralForestTint, route: '/distributors' },
-    { id: '2', title: 'Outstanding', icon: <Receipt color={colors.secondaryTerracotta} size={32} weight="duotone" />, bg: colors.terracottaLight, route: '/outstandings' },
-    { id: '3', title: 'Company Schemes', icon: <Tag color={colors.accentGold} size={32} weight="duotone" />, bg: colors.goldLight },
-    { id: '4', title: 'Generic', icon: <Pill color={colors.primaryForest} size={32} weight="duotone" />, bg: colors.neutralForestTint, route: '/generic' },
-    { id: '5', title: 'Company Cashback', icon: <Wallet color={colors.secondaryTerracotta} size={32} weight="duotone" />, bg: colors.terracottaLight },
-    { id: '6', title: 'Returns', icon: <Package color={colors.accentGold} size={32} weight="duotone" />, bg: colors.goldLight, route: '/returns' },
+    { id: '1', title: 'Distributors', icon: <Graph color={colors.primaryForest} size={22} weight="regular" />, bg: colors.neutralForestTint, route: '/distributors' },
+    { id: '2', title: 'Outstanding', icon: <Receipt color={colors.secondaryTerracotta} size={22} weight="regular" />, bg: colors.terracottaLight, route: '/outstandings' },
+    { id: '3', title: 'Company Schemes', icon: <Tag color={colors.accentGold} size={22} weight="regular" />, bg: colors.goldLight },
+    { id: '4', title: 'Generic', icon: <Pill color={colors.primaryForest} size={22} weight="regular" />, bg: colors.neutralForestTint, route: '/generic' },
+    { id: '5', title: 'Company Cashback', icon: <Wallet color={colors.secondaryTerracotta} size={22} weight="regular" />, bg: colors.terracottaLight },
+    { id: '6', title: 'Returns', icon: <Package color={colors.accentGold} size={22} weight="regular" />, bg: colors.goldLight, route: '/returns' },
   ];
 
   const renderBanner = ({ item }: { item: typeof bannerSlides[0] }) => (
@@ -276,11 +276,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tileIconContainer: {
-    width: 64,
-    height: 64,
-    borderRadius: 8,
+    width: 52,
+    height: 52,
+    borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 8,
   },
   tileLabel: {
     fontFamily: 'Inter_500Medium',

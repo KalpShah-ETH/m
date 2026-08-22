@@ -47,7 +47,7 @@ export default function LoginScreen() {
 
   // Small logo header: separate element, grows in as hero disappears
   const logoHeaderStyle = useAnimatedStyle(() => ({
-    height: interpolate(isKeyboardOpen.value, [0, 1], [0, 90], Extrapolation.CLAMP),
+    height: interpolate(isKeyboardOpen.value, [0, 1], [0, 120], Extrapolation.CLAMP),
     opacity: interpolate(isKeyboardOpen.value, [0, 1], [0, 1], Extrapolation.CLAMP),
   }));
 
@@ -168,18 +168,20 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   logoImg: {
-    height: 44,
-    width: 130,
+    height: 88,
+    width: 260,
   },
   heroWrap: {
     width: '100%',
     overflow: 'hidden',
     borderBottomLeftRadius: 40,
     borderBottomRightRadius: 40,
+    backgroundColor: '#1E3E34', // Fills any transparent gaps with the brand color
   },
   heroImg: {
     width: '100%',
-    height: 300, // fixed — matches hero's starting collapsed height
+    height: 300, 
+    transform: [{ scale: 1.02 }], // Slight stretch to hide baked-in PNG transparent borders
   },
   formContainer: {
     flex: 1,

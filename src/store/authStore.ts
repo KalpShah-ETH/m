@@ -181,12 +181,19 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       if (!localUri || localUri.startsWith('pending/')) return { path: localUri, error: null };
       
-      const ext = localUri.split('.').pop() || 'jpg';
+      const ext = localUri.split('.').pop()?.toLowerCase() || 'jpg';
       const path = `pending/${tempId}/${licenseKey}.${ext}`;
+      
+      let mimeType = 'image/jpeg';
+      if (ext === 'png') mimeType = 'image/png';
+      if (ext === 'heic') mimeType = 'image/heic';
       
       const res = await fetch(localUri);
       const blob = await res.blob();
-      const { data, error } = await supabase.storage.from('licenses').upload(path, blob, { upsert: true });
+      const { data, error } = await supabase.storage.from('licenses').upload(path, blob, { 
+        upsert: true,
+        contentType: mimeType
+      });
       
       if (error) return { path: null, error };
       return { path: data.path, error: null };

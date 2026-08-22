@@ -9,7 +9,7 @@ import { useMyDistributorsStore, MyDistributor } from '@/store/myDistributorsSto
 
 // Row Components
 const MappedRow = ({ item, index }: { item: MyDistributor, index: number }) => {
-  const isIncomplete = !item.address; // Using address to determine if complete
+  const isIncomplete = !item.area || !item.city; // Using area and city to determine if complete
 
   return (
     <View style={[styles.rowContainer, isIncomplete && { opacity: 0.55 }]}>
@@ -22,7 +22,9 @@ const MappedRow = ({ item, index }: { item: MyDistributor, index: number }) => {
         {!isIncomplete && (
           <View style={styles.locationLine}>
             <Feather name="map-pin" size={11} color={colors.textSlate} />
-            <Text style={styles.locationText} numberOfLines={1}>{item.address || "Area, City"}</Text>
+            <Text style={styles.locationText} numberOfLines={1}>
+              {item.area && item.city ? `${item.area}, ${item.city}` : "Area, City"}
+            </Text>
           </View>
         )}
       </View>
@@ -45,7 +47,9 @@ const NonMappedRow = ({ item, isToggled, onToggle }: { item: MyDistributor, isTo
         <Text style={styles.bizName} numberOfLines={1}>{item.name}</Text>
         <View style={styles.locationLine}>
           <Feather name="map-pin" size={11} color={colors.textSlate} />
-          <Text style={styles.locationText} numberOfLines={1}>{item.address || "Area, City"}</Text>
+          <Text style={styles.locationText} numberOfLines={1}>
+            {item.area && item.city ? `${item.area}, ${item.city}` : "Area, City"}
+          </Text>
         </View>
       </View>
 

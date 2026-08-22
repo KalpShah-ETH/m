@@ -37,10 +37,12 @@ create table public.distributors (
   user_id uuid null,
   minimum_order_value numeric null default 0,
   max_debt_amount numeric null default 0,
+  area text not null,
+  city text not null,
   constraint distributors_pkey primary key (id),
   constraint distributors_code_key unique (code),
-  constraint distributors_user_id_fkey foreign KEY (user_id) references auth.users (id)
-);
+  constraint distributors_user_id_fkey foreign KEY (user_id) references auth.users (id) on delete CASCADE
+) TABLESPACE pg_default;
 
 -- 3. USER ROLES
 create table public.user_roles (
@@ -306,9 +308,9 @@ CREATE TRIGGER on_auth_user_created
 -- ============================================
 
 -- Example Distributors
-INSERT INTO public.distributors (id, name, code, address, phone) VALUES
-  ('d1111111-1111-1111-1111-111111111111', 'PharmaCorp Distributors', 'PHC123', 'Mumbai, India', '+91 9876543210'),
-  ('d2222222-2222-2222-2222-222222222222', 'MediLife Supplies', 'MLS456', 'Pune, India', '+91 8765432109');
+INSERT INTO public.distributors (id, name, code, address, phone, area, city) VALUES
+  ('d1111111-1111-1111-1111-111111111111', 'PharmaCorp Distributors', 'PHC123', 'Mumbai, India', '+91 9876543210', 'Andheri East', 'Mumbai'),
+  ('d2222222-2222-2222-2222-222222222222', 'MediLife Supplies', 'MLS456', 'Pune, India', '+91 8765432109', 'Kothrud', 'Pune');
 
 -- Example Categories
 INSERT INTO public.categories (id, name, icon_key) VALUES

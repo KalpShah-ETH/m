@@ -7,7 +7,8 @@ export interface MyDistributor {
   name: string;
   priority?: number;
   contact?: string;
-  address?: string;
+  area?: string;
+  city?: string;
 }
 
 interface MyDistributorsState {
@@ -43,7 +44,7 @@ export const useMyDistributorsStore = create<MyDistributorsState>((set, get) => 
 
     const { data, error } = await supabase
       .from('retailer_distributor_map')
-      .select('priority, distributors(id, name, phone, address)')
+      .select('priority, distributors(id, name, phone, area, city)')
       .eq('retailer_id', user.id)
       .eq('status', 'approved')
       .order('priority', { ascending: true });
@@ -56,7 +57,8 @@ export const useMyDistributorsStore = create<MyDistributorsState>((set, get) => 
         name: item.distributors.name,
         priority: item.priority,
         contact: item.distributors.phone,
-        address: item.distributors.address
+        area: item.distributors.area,
+        city: item.distributors.city
       }));
       set({ mappedDistributors: mapped, isLoading: false });
     }
@@ -80,7 +82,7 @@ export const useMyDistributorsStore = create<MyDistributorsState>((set, get) => 
     const mappedIds = mappedMaps?.filter(m => m.status === 'approved').map(m => m.distributor_id) || [];
     const pendingIds = mappedMaps?.filter(m => m.status === 'pending').map(m => m.distributor_id) || [];
 
-    let query = supabase.from('distributors').select('id, name, phone, address');
+    let query = supabase.from('distributors').select('id, name, phone, area, city');
     
     const { data, error } = await query;
 
@@ -93,7 +95,8 @@ export const useMyDistributorsStore = create<MyDistributorsState>((set, get) => 
         id: item.id,
         name: item.name,
         contact: item.phone,
-        address: item.address
+        area: item.area,
+        city: item.city
       }));
       set({ nonMappedDistributors: nonMapped, pendingIds, isLoading: false });
     }

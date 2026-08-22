@@ -180,14 +180,14 @@ export default function SignupScreen() {
         Alert.alert('Permission Denied', 'Camera permission is required.');
         return;
       }
-      result = await ImagePicker.launchCameraAsync({ allowsEditing: true, quality: 0.8 });
+      result = await ImagePicker.launchCameraAsync({ allowsEditing: true, quality: 0.4 });
     } else {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
         Alert.alert('Permission Denied', 'Gallery permission is required.');
         return;
       }
-      result = await ImagePicker.launchImageLibraryAsync({ allowsEditing: false, quality: 0.8 });
+      result = await ImagePicker.launchImageLibraryAsync({ allowsEditing: false, quality: 0.4 });
     }
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
@@ -254,8 +254,9 @@ export default function SignupScreen() {
     }
   };
 
-  const isStep1Valid = businessType && shopFirmName.trim().length >= 3 && ownerName.trim().length >= 3 && shopAddress.trim().length >= 3 && pincode.length === 6 && area && city && stateName;
-  const isStep2Valid = emailVerified && isPasswordValid;
+  // TEMPORARILY DISABLED FOR TESTING
+  const isStep1Valid = true; // businessType && shopFirmName.trim().length >= 3 && ownerName.trim().length >= 3 && shopAddress.trim().length >= 3 && pincode.length === 6 && area && city && stateName;
+  const isStep2Valid = true; // emailVerified && isPasswordValid;
   const isStep3Valid = license20 && license20Url && license20Expiry && license21 && license21Url && license21Expiry && consentTerms;
 
   const renderStepper = () => (

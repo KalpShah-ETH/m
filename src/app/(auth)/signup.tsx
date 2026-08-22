@@ -231,7 +231,9 @@ export default function SignupScreen() {
 
     if (err20 || err21) {
       setIsLoading(false);
-      Alert.alert('Upload Failed', 'Document upload failed. Please tap the red fields to retry.');
+      const msg20 = err20 ? `L20: ${err20.message || JSON.stringify(err20)}` : '';
+      const msg21 = err21 ? `L21: ${err21.message || JSON.stringify(err21)}` : '';
+      Alert.alert('Upload Failed', `Details:\n${msg20}\n${msg21}`);
       return;
     }
 

@@ -12,6 +12,18 @@ import { useFonts as usePoppinsFonts, Poppins_600SemiBold, Poppins_700Bold } fro
 import Toast from 'react-native-toast-message';
 import { toastConfig } from '@/components/CustomToast';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: 1,
+    },
+  },
+});
+
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -46,21 +58,23 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      {/* <AnimatedSplashOverlay /> */}
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="profile/index" options={{ headerShown: false, animation: 'slide_from_right' }} />
-        <Stack.Screen name="distributors" options={{ headerShown: false, animation: 'slide_from_right' }} />
-        <Stack.Screen name="outstandings" options={{ headerShown: false, animation: 'slide_from_right' }} />
-        <Stack.Screen name="generic" options={{ headerShown: false, animation: 'slide_from_right' }} />
-        <Stack.Screen name="returns" options={{ headerShown: false, animation: 'slide_from_right' }} />
-        <Stack.Screen name="static/terms" options={{ headerShown: false, animation: 'slide_from_right' }} />
-        <Stack.Screen name="static/privacy" options={{ headerShown: false, animation: 'slide_from_right' }} />
-      </Stack>
-      <MiniCart />
-      <Toast config={toastConfig} />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        {/* <AnimatedSplashOverlay /> */}
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="profile/index" options={{ headerShown: false, animation: 'slide_from_right' }} />
+          <Stack.Screen name="distributors" options={{ headerShown: false, animation: 'slide_from_right' }} />
+          <Stack.Screen name="outstandings" options={{ headerShown: false, animation: 'slide_from_right' }} />
+          <Stack.Screen name="generic" options={{ headerShown: false, animation: 'slide_from_right' }} />
+          <Stack.Screen name="returns" options={{ headerShown: false, animation: 'slide_from_right' }} />
+          <Stack.Screen name="static/terms" options={{ headerShown: false, animation: 'slide_from_right' }} />
+          <Stack.Screen name="static/privacy" options={{ headerShown: false, animation: 'slide_from_right' }} />
+        </Stack>
+        <MiniCart />
+        <Toast config={toastConfig} />
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }

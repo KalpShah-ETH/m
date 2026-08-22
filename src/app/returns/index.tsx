@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1F5B4E',
   },
   subFilterText: {
-    fontSize: 14, fontFamily: 'Inter_400Regular',
+    fontSize: 14,
     color: '#666',
     fontFamily: 'Inter_500Medium', fontWeight: '500',
   },
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   itemsLabel: {
-    fontSize: 14, fontFamily: 'Inter_400Regular',
+    fontSize: 14,
     color: '#1F2937',
     fontFamily: 'Inter_500Medium', fontWeight: '500',
   },

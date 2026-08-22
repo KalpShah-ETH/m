@@ -1,56 +1,53 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, ActivityIndicator, Platform, StatusBar } from 'react-native';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Plus, Minus, ChevronDown, Filter, Lock, AlertCircle } from 'lucide-react-native';
 import { useCatalogStore, CatalogProduct } from '@/store/catalogStore';
 import { useOutstandingsStore } from '@/store/outstandingsStore';
+import { useCategories, useCatalogProducts, useRequestConnection } from '@/api/catalog';
+import { useQueryClient } from '@tanstack/react-query';
 
-export default function DistributorCatalogScreen() {
+export default React.memo(function DistributorCatalogScreen() {
   const { id } = useLocalSearchParams();
+  const distributorId = id as string;
   const router = useRouter();
+  const queryClient = useQueryClient();
   
-  const { 
-    categories, 
-    products, 
-    activeTab, 
-    selectedCategory, 
-    isLoadingCategories, 
-    isLoadingProducts,
-    connectionRequestStatus,
-    setActiveTab, 
-    setSelectedCategory, 
-    fetchCategories, 
-    fetchProducts,
-    requestConnection,
-    updateProductQuantity
-  } = useCatalogStore();
+  // Zustand selectors (only select what is needed!)
+  const activeTab = useCatalogStore(state => state.activeTab);
+  const selectedCategory = useCatalogStore(state => state.selectedCategory);
+  const setActiveTab = useCatalogStore(state => state.setActiveTab);
+  const setSelectedCategory = useCatalogStore(state => state.setSelectedCategory);
+
+  // React Query Hooks
+  const { data: categories = [], isLoading: isLoadingCategories } = useCategories(distributorId);
+  const { data: products = [], isLoading: isLoadingProducts } = useCatalogProducts(distributorId, selectedCategory, activeTab);
+  const { mutate: requestConnection, isPending: isRequestingConnection, isSuccess: isRequestSuccess } = useRequestConnection();
 
   const [expandedProductId, setExpandedProductId] = useState<string | null>(null);
 
-  const { records, fetchOutstandings } = useOutstandingsStore();
+  // Outstandings logic (should ideally be migrated to RQ as well, but for now we selectively select)
+  const outstandingRecord = useOutstandingsStore(useCallback(state => state.records.find(r => r.distributorId === distributorId), [distributorId]));
+  const fetchOutstandings = useOutstandingsStore(state => state.fetchOutstandings);
+  const outstandingsLength = useOutstandingsStore(state => state.records.length);
 
   useEffect(() => {
-    if (records.length === 0) {
+    if (outstandingsLength === 0) {
       fetchOutstandings();
     }
-  }, []);
+  }, [outstandingsLength]);
 
-  const outstandingRecord = records.find(r => r.distributorId === id);
+  const updateProductQuantity = useCallback((productId: string, newQuantity: number) => {
+    if (newQuantity < 0) return;
+    queryClient.setQueryData(['catalogProducts', distributorId, selectedCategory, activeTab], (oldData: CatalogProduct[] | undefined) => {
+      if (!oldData) return [];
+      return oldData.map(p => p.id === productId ? { ...p, quantityInCart: newQuantity } : p);
+    });
+    // Here you would also update the actual cart store or trigger a mutation to supabase cart
+  }, [queryClient, distributorId, selectedCategory, activeTab]);
 
-  useEffect(() => {
-    if (id) {
-      fetchCategories(id as string);
-    }
-  }, [id]);
-
-  useEffect(() => {
-    if (id) {
-      fetchProducts(id as string, selectedCategory, activeTab);
-    }
-  }, [id, selectedCategory, activeTab]);
-
-  const renderCategoryTile = ({ item }: { item: any }) => {
+  const renderCategoryTile = useCallback(({ item }: { item: any }) => {
     const isSelected = selectedCategory === item.id;
     return (
       <TouchableOpacity 
@@ -62,9 +59,9 @@ export default function DistributorCatalogScreen() {
         </Text>
       </TouchableOpacity>
     );
-  };
+  }, [selectedCategory, setSelectedCategory]);
 
-  const renderProductCard = ({ item }: { item: CatalogProduct }) => {
+  const renderProductCard = useCallback(({ item }: { item: CatalogProduct }) => {
     const isExpanded = expandedProductId === item.id;
     const isMapped = activeTab === 'mapped';
 
@@ -134,20 +131,20 @@ export default function DistributorCatalogScreen() {
             )
           ) : (
             <TouchableOpacity 
-              style={[styles.requestButton, connectionRequestStatus === 'pending' && styles.requestButtonPending]}
-              onPress={() => requestConnection(id as string)}
-              disabled={connectionRequestStatus !== 'idle'}
+              style={[styles.requestButton, isRequestingConnection && styles.requestButtonPending]}
+              onPress={() => requestConnection(distributorId)}
+              disabled={isRequestingConnection || isRequestSuccess}
             >
               <Text style={styles.requestButtonText}>
-                {connectionRequestStatus === 'pending' ? 'Requesting...' : 
-                 connectionRequestStatus === 'success' ? 'Requested' : 'Request to Connect'}
+                {isRequestingConnection ? 'Requesting...' : 
+                 isRequestSuccess ? 'Requested' : 'Request to Connect'}
               </Text>
             </TouchableOpacity>
           )}
         </View>
       </View>
     );
-  };
+  }, [expandedProductId, activeTab, isRequestingConnection, isRequestSuccess, requestConnection, distributorId, updateProductQuantity]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -223,7 +220,7 @@ export default function DistributorCatalogScreen() {
       </View>
     </SafeAreaView>
   );
-}
+});
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -308,7 +305,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1F5B4E',
   },
   categoryText: {
-    fontSize: 14, fontFamily: 'Inter_400Regular',
+    fontSize: 14,
     color: '#1F2937',
     fontFamily: 'Inter_500Medium', fontWeight: '500',
   },

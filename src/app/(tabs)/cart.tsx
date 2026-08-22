@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Platform, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Trash, Plus, Minus, ArrowLeft } from 'lucide-react-native';
@@ -6,24 +6,23 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { useCartStore, CartItem } from '@/store/cartStore';
 
-export default function CartScreen() {
+export default React.memo(function CartScreen() {
   const router = useRouter();
-  const { 
-    items, 
-    updateQuantity, 
-    removeItem, 
-    getGroupedByDistributor, 
-    getCartTotal, 
-    placeOrder, 
-    isLoading,
-    distributorLimits,
-    fetchLimits
-  } = useCartStore();
+  
+  const items = useCartStore(state => state.items);
+  const updateQuantity = useCartStore(state => state.updateQuantity);
+  const removeItem = useCartStore(state => state.removeItem);
+  const getGroupedByDistributor = useCartStore(state => state.getGroupedByDistributor);
+  const getCartTotal = useCartStore(state => state.getCartTotal);
+  const placeOrder = useCartStore(state => state.placeOrder);
+  const isLoading = useCartStore(state => state.isLoading);
+  const distributorLimits = useCartStore(state => state.distributorLimits);
+  const fetchLimits = useCartStore(state => state.fetchLimits);
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       fetchLimits();
-    }, [])
+    }, [fetchLimits])
   );
 
   const [orderStatus, setOrderStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -182,7 +181,7 @@ export default function CartScreen() {
       </ScrollView>
     </SafeAreaView>
   );
-}
+});
 
 const styles = StyleSheet.create({
   safeArea: {

@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1F5B4E',
   },
   categoryText: {
-    fontSize: 14, fontFamily: 'Inter_400Regular',
+    fontSize: 14,
     color: '#1F2937',
     fontFamily: 'Inter_500Medium', fontWeight: '500',
   },

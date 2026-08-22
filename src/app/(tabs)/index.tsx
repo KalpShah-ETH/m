@@ -12,11 +12,16 @@ const SLIDE_WIDTH = width * 0.88;
 const GAP = 12;
 const SNAP_INTERVAL = SLIDE_WIDTH + GAP;
 
-const bannerSlides = [
-  { id: '1', title: 'Extra 5% Margins\nThis Week', sub: 'On select respiratory ranges', gradient: [colors.primaryForest, '#142F23'] },
-  { id: '2', title: 'Bulk Order Discounts\nActive Now', sub: 'Save up to 15% on generic medicines', gradient: [colors.secondaryTerracotta, '#662c24'] },
-  { id: '3', title: 'New Distributor\nPartnership', sub: 'Connect for exclusive offers', gradient: [colors.accentGold, '#85611e'] },
+const originalSlides = [
+  { title: 'Extra 5% Margins\nThis Week', sub: 'On select respiratory ranges', gradient: [colors.primaryForest, '#142F23'] },
+  { title: 'Bulk Order Discounts\nActive Now', sub: 'Save up to 15% on generic medicines', gradient: [colors.secondaryTerracotta, '#662c24'] },
+  { title: 'New Distributor\nPartnership', sub: 'Connect for exclusive offers', gradient: [colors.accentGold, '#85611e'] },
 ];
+
+const bannerSlides = Array.from({ length: 22 }).map((_, index) => ({
+  id: String(index + 1),
+  ...originalSlides[index % originalSlides.length]
+}));
 
 const ExploreTile = ({ icon, label, bgClass, onPress }: any) => {
   const scaleAnim = useRef(new Animated.Value(1)).current;

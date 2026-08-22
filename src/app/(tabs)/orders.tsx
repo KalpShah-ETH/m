@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, ActivityIndicator, Linking, Platform, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Search, Filter, Phone, ChevronRight, CheckCircle, Clock, ArrowLeft } from 'lucide-react-native';
-import { useOrdersStore, Order } from '@/store/ordersStore';
+import { Order } from '@/store/ordersStore';
+import { useOrders, useOrdersSummary } from '@/api/orders';
 
-export default function OrdersScreen() {
+export default React.memo(function OrdersScreen() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'mapped' | 'non-mapped'>('mapped');
   const [searchQuery, setSearchQuery] = useState('');
@@ -18,26 +19,22 @@ export default function OrdersScreen() {
   });
   const [toDate, setToDate] = useState(() => new Date().toISOString().split('T')[0]);
 
-  const { orders, summary, isLoading, fetchOrders, fetchSummary } = useOrdersStore();
+  // React Query Hooks
+  const { data: summary = { totalCount: 0, totalValue: 0 } } = useOrdersSummary();
+  const { data: orders = [], isLoading } = useOrders(activeTab, fromDate, toDate);
 
-  useEffect(() => {
-    fetchSummary();
+  const filteredOrders = useMemo(() => {
+    return orders.filter(o => 
+      o.orderNumber.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      o.distributorName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [orders, searchQuery]);
+
+  const handleCall = useCallback((phone: string) => {
+    Linking.openURL(`tel:${phone}`);
   }, []);
 
-  useEffect(() => {
-    fetchOrders({ tab: activeTab, from: fromDate, to: toDate });
-  }, [activeTab, fromDate, toDate]);
-
-  const filteredOrders = orders.filter(o => 
-    o.orderNumber.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    o.distributorName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const handleCall = (phone: string) => {
-    Linking.openURL(`tel:${phone}`);
-  };
-
-  const getStatusIcon = (status: string) => {
+  const getStatusIcon = useCallback((status: string) => {
     switch (status) {
       case 'processed':
       case 'shipped':
@@ -46,9 +43,9 @@ export default function OrdersScreen() {
       default:
         return <Clock color="#f29900" size={16} style={{ marginRight: 4 }} />;
     }
-  };
+  }, []);
 
-  const renderItem = ({ item }: { item: Order }) => (
+  const renderItem = useCallback(({ item }: { item: Order }) => (
     <View style={styles.card}>
       <View style={styles.cardHeader}>
         <Text style={styles.orderNumber}>{item.orderNumber}</Text>
@@ -79,7 +76,7 @@ export default function OrdersScreen() {
         <ChevronRight color="#1F5B4E" size={20} />
       </TouchableOpacity>
     </View>
-  );
+  ), [getStatusIcon, handleCall, router]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -157,7 +154,7 @@ export default function OrdersScreen() {
       </View>
     </SafeAreaView>
   );
-}
+});
 
 const styles = StyleSheet.create({
   safeArea: {

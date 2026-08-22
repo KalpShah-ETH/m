@@ -87,7 +87,7 @@ export default function SignupScreen() {
   const [license21UploadError, setLicense21UploadError] = useState(false);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    let timer: ReturnType<typeof setTimeout>;
     if (showOtpModal && otpCountdown > 0) {
       timer = setTimeout(() => setOtpCountdown(otpCountdown - 1), 1000);
     }

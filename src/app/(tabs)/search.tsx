@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Modal, ScrollView, Dimensions, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { colors } from '@/constants/colors';
-import { useSearchStore } from '@/store/searchStore';
+import { useSearchProducts } from '@/api/search';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -28,7 +28,7 @@ const MOCK_DISTRIBUTORS = [
 
 // --- Components ---
 
-const ProductCard = ({ item, variant }: { item: any; variant: 'idle' | 'results' }) => {
+const ProductCard = React.memo(({ item, variant }: { item: any; variant: 'idle' | 'results' }) => {
   const isZeroStock = item.stock === 'zero' || item.stock_status === 'out-of-stock';
   
   return (
@@ -85,9 +85,9 @@ const ProductCard = ({ item, variant }: { item: any; variant: 'idle' | 'results'
       </View>
     </View>
   );
-};
+});
 
-const PromoCarousel = () => {
+const PromoCarousel = React.memo(() => {
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
   const slideWidth = 314;
@@ -102,9 +102,17 @@ const PromoCarousel = () => {
     }
   }, [activeIndex, snapInterval]);
 
-  const scrollToSlide = (index: number) => {
+  const scrollToSlide = useCallback((index: number) => {
     flatListRef.current?.scrollToOffset({ offset: index * snapInterval, animated: true });
-  };
+  }, [snapInterval]);
+
+  const renderSlide = useCallback(({ item }: { item: any }) => (
+    <View style={[styles.slide, { backgroundColor: item.colors[0], marginRight: gap }]}>
+      <View style={[styles.slideHighlight, { backgroundColor: item.colors[1] }]} />
+      <Text style={styles.slideTitle}>{item.title}</Text>
+      <Text style={styles.slideSubtitle}>{item.subtitle}</Text>
+    </View>
+  ), []);
 
   return (
     <View style={styles.carouselWrapper}>
@@ -119,13 +127,7 @@ const PromoCarousel = () => {
         onScroll={onScroll}
         scrollEventThrottle={16}
         keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <View style={[styles.slide, { backgroundColor: item.colors[0], marginRight: gap }]}>
-            <View style={[styles.slideHighlight, { backgroundColor: item.colors[1] }]} />
-            <Text style={styles.slideTitle}>{item.title}</Text>
-            <Text style={styles.slideSubtitle}>{item.subtitle}</Text>
-          </View>
-        )}
+        renderItem={renderSlide}
       />
       <View style={styles.dotsContainer}>
         {PROMO_SLIDES.map((_, i) => (
@@ -136,11 +138,12 @@ const PromoCarousel = () => {
       </View>
     </View>
   );
-};
+});
 
-export default function SearchScreen() {
+export default React.memo(function SearchScreen() {
   const router = useRouter();
   const [query, setQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'mapped' | 'non-mapped'>('mapped');
   
   const [isDistributorModalVisible, setDistributorModalVisible] = useState(false);
@@ -149,30 +152,31 @@ export default function SearchScreen() {
   const [distCheckboxStates, setDistCheckboxStates] = useState<Record<string, boolean>>({});
   const [saveDistributorChecked, setSaveDistributorChecked] = useState(true);
 
-  const { products, isLoading, searchProducts, clearResults } = useSearchStore();
-
-  const trimmedQuery = query.trim();
-  const isResultsState = trimmedQuery.length >= 3;
-
+  // Debounce the query for React Query
   useEffect(() => {
     const handler = setTimeout(() => {
-      if (trimmedQuery.length >= 3) {
-        searchProducts(trimmedQuery);
-      } else {
-        clearResults();
-      }
+      setDebouncedQuery(query.trim());
     }, 300);
     return () => clearTimeout(handler);
-  }, [trimmedQuery]);
+  }, [query]);
 
-  const handleClear = () => {
+  // Use React Query instead of Zustand store
+  const { data: products = [] } = useSearchProducts(debouncedQuery);
+
+  const isResultsState = debouncedQuery.length >= 3;
+
+  const handleClear = useCallback(() => {
     setQuery('');
-    clearResults();
-  };
+    setDebouncedQuery('');
+  }, []);
 
-  const toggleDistCheckbox = (id: string) => {
+  const toggleDistCheckbox = useCallback((id: string) => {
     setDistCheckboxStates(prev => ({ ...prev, [id]: !prev[id] }));
-  };
+  }, []);
+
+  const renderResultItem = useCallback(({ item }: { item: any }) => (
+    <ProductCard item={item} variant="results" />
+  ), []);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -268,7 +272,7 @@ export default function SearchScreen() {
               keyExtractor={item => item.id}
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.listPadding}
-              renderItem={({ item }) => <ProductCard item={item} variant="results" />}
+              renderItem={renderResultItem}
               ListEmptyComponent={
                 <View style={{ alignItems: 'center', paddingTop: 40 }}>
                   <Text style={{ fontFamily: 'Inter_400Regular', color: colors.textSlate }}>No products found.</Text>
@@ -361,7 +365,7 @@ export default function SearchScreen() {
 
     </SafeAreaView>
   );
-}
+});
 
 const styles = StyleSheet.create({
   safeArea: {

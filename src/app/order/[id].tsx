@@ -1,22 +1,23 @@
-import React, { useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, Linking, Platform, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Phone, ArrowLeft, CheckCircle, Clock, MapPin, Building2 } from 'lucide-react-native';
-import { useOrdersStore } from '@/store/ordersStore';
+import { useOrderById } from '@/api/orders';
 
-export default function OrderDetailScreen() {
+export default React.memo(function OrderDetailScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
-  const { currentOrder, isLoadingDetail, fetchOrderById } = useOrdersStore();
+  
+  const { data: currentOrder, isLoading } = useOrderById(id as string);
 
-  useEffect(() => {
-    if (id) {
-      fetchOrderById(id as string);
+  const handleCall = useCallback(() => {
+    if (currentOrder?.distributorContact) {
+      Linking.openURL(`tel:${currentOrder.distributorContact}`);
     }
-  }, [id]);
+  }, [currentOrder?.distributorContact]);
 
-  if (isLoadingDetail || !currentOrder) {
+  if (isLoading || !currentOrder) {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
@@ -31,12 +32,6 @@ export default function OrderDetailScreen() {
       </SafeAreaView>
     );
   }
-
-  const handleCall = () => {
-    if (currentOrder.distributorContact) {
-      Linking.openURL(`tel:${currentOrder.distributorContact}`);
-    }
-  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -126,7 +121,7 @@ export default function OrderDetailScreen() {
       </ScrollView>
     </SafeAreaView>
   );
-}
+});
 
 const styles = StyleSheet.create({
   safeArea: {

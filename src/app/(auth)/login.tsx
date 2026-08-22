@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Keyboard, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
-import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing, interpolate, interpolateColor } from 'react-native-reanimated';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing, interpolate, interpolateColor, Extrapolation } from 'react-native-reanimated';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
 import { Link, useRouter } from 'expo-router';
 import { useAuthStore } from '@/store/authStore';
@@ -23,57 +23,33 @@ export default function LoginScreen() {
   const isKeyboardOpen = useSharedValue(0);
 
   useEffect(() => {
-    const showSubscription = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
-      () => {
-        isKeyboardOpen.value = withTiming(1, { duration: 300, easing: Easing.out(Easing.ease) });
-      }
-    );
-    const hideSubscription = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
-      () => {
-        isKeyboardOpen.value = withTiming(0, { duration: 300, easing: Easing.out(Easing.ease) });
-      }
-    );
+    const showEvt = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvt = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSub = Keyboard.addListener(showEvt, () => {
+      isKeyboardOpen.value = withTiming(1, { duration: 300, easing: Easing.out(Easing.ease) });
+    });
+    const hideSub = Keyboard.addListener(hideEvt, () => {
+      isKeyboardOpen.value = withTiming(0, { duration: 300, easing: Easing.out(Easing.ease) });
+    });
 
     return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
+      showSub.remove();
+      hideSub.remove();
     };
   }, []);
 
-  const headerStyle = useAnimatedStyle(() => {
-    return {
-      height: interpolate(isKeyboardOpen.value, [0, 1], [300, 120]),
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: interpolateColor(isKeyboardOpen.value, [0, 1], ['#1E3E34', 'transparent']),
-      borderBottomLeftRadius: interpolate(isKeyboardOpen.value, [0, 1], [40, 0]),
-      borderBottomRightRadius: interpolate(isKeyboardOpen.value, [0, 1], [40, 0]),
-      overflow: 'hidden',
-      zIndex: 10,
-    };
-  });
+  // Hero: collapses away completely
+  const heroStyle = useAnimatedStyle(() => ({
+    height: interpolate(isKeyboardOpen.value, [0, 1], [300, 0], Extrapolation.CLAMP),
+    opacity: interpolate(isKeyboardOpen.value, [0, 1], [1, 0], Extrapolation.CLAMP),
+  }));
 
-  const bigImageStyle = useAnimatedStyle(() => {
-    return {
-      opacity: interpolate(isKeyboardOpen.value, [0, 1], [1, 0]),
-      height: interpolate(isKeyboardOpen.value, [0, 1], [300, 0]),
-      width: '100%',
-      position: 'absolute',
-      bottom: interpolate(isKeyboardOpen.value, [0, 1], [-40, 0]), // Shift downwards to overlap the curve
-      zIndex: 15,
-    };
-  });
-
-  const smallLogoStyle = useAnimatedStyle(() => {
-    return {
-      opacity: interpolate(isKeyboardOpen.value, [0, 1], [0, 1]),
-      height: interpolate(isKeyboardOpen.value, [0, 1], [0, 80]),
-      width: interpolate(isKeyboardOpen.value, [0, 1], [0, 200]),
-      marginTop: interpolate(isKeyboardOpen.value, [0, 1], [0, 30]),
-    };
-  });
+  // Small logo header: separate element, grows in as hero disappears
+  const logoHeaderStyle = useAnimatedStyle(() => ({
+    height: interpolate(isKeyboardOpen.value, [0, 1], [0, 90], Extrapolation.CLAMP),
+    opacity: interpolate(isKeyboardOpen.value, [0, 1], [0, 1], Extrapolation.CLAMP),
+  }));
 
   const handleLogin = async () => {
     if (!email || !password) return;
@@ -101,21 +77,22 @@ export default function LoginScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
       >
-        <Animated.View style={headerStyle}>
-          <Animated.View style={bigImageStyle}>
-            <Image 
-              source={require('@/assets/images/hero.png')} 
-              style={{ width: '100%', height: '100%' }} 
-              contentFit="cover" // Cover so it doesn't leave empty gaps on the sides
-            />
-          </Animated.View>
-          <Animated.View style={[smallLogoStyle, { position: 'absolute' }]}>
-            <Image 
-              source={require('@/assets/images/logo-1-nodal-cross.png')} 
-              style={{ width: '100%', height: '100%' }} 
-              contentFit="contain" 
-            />
-          </Animated.View>
+        {/* Small logo header — sibling, NOT nested inside hero */}
+        <Animated.View style={[styles.logoHeader, logoHeaderStyle]}>
+          <Image
+            source={require('@/assets/images/logo-1-nodal-cross.png')}
+            style={styles.logoImg}
+            contentFit="contain"
+          />
+        </Animated.View>
+
+        {/* Hero — collapses on its own, no absolute children inside it */}
+        <Animated.View style={[styles.heroWrap, heroStyle]}>
+          <Image
+            source={require('@/assets/images/hero.png')}
+            style={styles.heroImg}
+            contentFit="cover"
+          />
         </Animated.View>
 
         <View style={styles.formContainer}>
@@ -183,6 +160,26 @@ const styles = StyleSheet.create({
   },
   keyboardView: {
     flex: 1,
+  },
+  logoHeader: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  logoImg: {
+    height: 44,
+    width: 130,
+  },
+  heroWrap: {
+    width: '100%',
+    overflow: 'hidden',
+    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 40,
+  },
+  heroImg: {
+    width: '100%',
+    height: 300, // fixed — matches hero's starting collapsed height
   },
   formContainer: {
     flex: 1,

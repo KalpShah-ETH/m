@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Activity
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Search, Filter, Phone, ChevronRight, CheckCircle, Clock, ArrowLeft } from 'lucide-react-native';
+import { Feather } from '@expo/vector-icons';
+import { colors } from '@/constants/colors';
 import { Order } from '@/store/ordersStore';
 import { useOrders, useOrdersSummary } from '@/api/orders';
 
@@ -84,11 +86,11 @@ export default React.memo(function OrdersScreen() {
         
         {/* Header Summary */}
         <View style={styles.header}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
-            <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 12 }}>
-              <ArrowLeft color="#1F2937" size={22} strokeWidth={1.6} />
+          <View style={styles.appHeader}>
+            <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+              <Feather name="chevron-left" size={18} color={colors.forestDark} style={{ marginLeft: -2 }} />
             </TouchableOpacity>
-            <Text style={[styles.headerTitle, { marginBottom: 0 }]}>Orders</Text>
+            <Text style={styles.appTitle}>Orders</Text>
           </View>
           <View style={styles.summaryContainer}>
             <View style={styles.summaryBox}>
@@ -166,21 +168,42 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    padding: 16,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
+    paddingBottom: 16,
   },
-  headerTitle: {
-    fontSize: 24, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#1F2937',
-    marginBottom: 16,
+  appHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingTop: 10,
+    paddingBottom: 8,
+    backgroundColor: colors.white,
+    gap: 14,
+  },
+  backBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: colors.forestDark,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  appTitle: {
+    fontFamily: 'Poppins_700Bold',
+    fontSize: 22,
+    color: colors.textDark,
+    letterSpacing: -0.3,
   },
   summaryContainer: {
     flexDirection: 'row',
     backgroundColor: '#E8F0EE',
     borderRadius: 8,
     padding: 16,
+    marginHorizontal: 16,
+    marginTop: 8,
   },
   summaryBox: {
     flex: 1,

@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator }
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Plus, Minus, ChevronDown, Filter, Lock, AlertCircle, Search, ArrowLeft } from 'lucide-react-native';
+import { Feather } from '@expo/vector-icons';
+import { colors } from '@/constants/colors';
 import { useCatalogStore, CatalogProduct } from '@/store/catalogStore';
 import { useOutstandingsStore } from '@/store/outstandingsStore';
 import { useCategories, useCatalogProducts, useRequestConnection } from '@/api/catalog';
@@ -147,18 +149,20 @@ export default React.memo(function BrowseScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.topBar}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 12 }}>
-            <ArrowLeft color="#1F2937" size={22} strokeWidth={1.6} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.distributorSelector}>
-            <Text style={styles.distributorNameText}>{distributorName}</Text>
-            <ChevronDown color="#1F2937" size={20} style={{ marginLeft: 4 }} />
-          </TouchableOpacity>
-        </View>
+      <View style={styles.appHeader}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+          <Feather name="chevron-left" size={18} color={colors.forestDark} style={{ marginLeft: -2 }} />
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.distributorSelector}>
+          <Text style={styles.appTitle}>{distributorName}</Text>
+          <Feather name="chevron-down" color={colors.textDark} size={20} style={{ marginLeft: 4, marginTop: 4 }} />
+        </TouchableOpacity>
+        
+        <View style={{ flex: 1 }} />
+        
         <TouchableOpacity>
-          <Search color="#1F2937" size={24} />
+          <Feather name="search" color={colors.textDark} size={22} />
         </TouchableOpacity>
       </View>
 
@@ -242,23 +246,33 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FAFAFA',
   },
-  topBar: {
+  appHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    paddingTop: 10,
+    paddingBottom: 8,
+    backgroundColor: colors.white,
+    gap: 14,
+  },
+  backBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: colors.forestDark,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  appTitle: {
+    fontFamily: 'Poppins_700Bold',
+    fontSize: 22,
+    color: colors.textDark,
+    letterSpacing: -0.3,
   },
   distributorSelector: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  distributorNameText: {
-    fontSize: 18, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#1F2937',
   },
   container: {
     flex: 1,

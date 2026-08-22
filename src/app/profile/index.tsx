@@ -171,9 +171,10 @@ export default function ProfileScreen() {
   if (isLoading && !profile) {
     return (
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>My Account</Text>
-        </View>
+      <View style={styles.appHeader}>
+        <View style={styles.backBtn} />
+        <Text style={styles.appTitle}>My Account</Text>
+      </View>
         <View style={{ paddingHorizontal: 16, marginTop: 16 }}>
           <Skeleton style={[styles.heroCard, { height: 160 }]} />
           <Skeleton style={{ height: 200, borderRadius: 12, marginTop: 32 }} />
@@ -185,14 +186,14 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 12 }}>
-          <Feather name="arrow-left" color={colors.textDark} size={22} strokeWidth={1.6} />
+      <View style={styles.appHeader}>
+        <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
+          <Feather name="chevron-left" size={18} color={colors.forestDark} style={{ marginLeft: -2 }} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>My Account</Text>
+        <Text style={styles.appTitle}>My Account</Text>
         <View style={{ flex: 1 }} />
         <TouchableOpacity>
-          <Feather name="bell" color={colors.textDark} size={22} strokeWidth={1.6} />
+          <Feather name="bell" color={colors.forestDark} size={22} strokeWidth={1.6} />
         </TouchableOpacity>
       </View>
 
@@ -435,16 +436,29 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.backgroundOffWhite,
   },
-  header: {
+  appHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingTop: 10,
+    paddingBottom: 8,
+    backgroundColor: colors.white,
+    gap: 14,
   },
-  headerTitle: {
-    fontFamily: 'Poppins_600SemiBold',
-    fontSize: 20,
+  backBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: colors.forestDark,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  appTitle: {
+    fontFamily: 'Poppins_700Bold',
+    fontSize: 22,
     color: colors.textDark,
+    letterSpacing: -0.3,
   },
   container: {
     paddingHorizontal: 16,

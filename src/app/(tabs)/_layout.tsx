@@ -1,16 +1,19 @@
 import { Tabs } from 'expo-router';
 import { View, Platform } from 'react-native';
 import { House, Compass, MagnifyingGlass, Package, ShoppingCart } from 'phosphor-react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabsLayout() {
+  const insets = useSafeAreaInsets();
+
   return (
     <Tabs screenOptions={{ 
       headerShown: false,
       tabBarActiveTintColor: '#1E4D3A', // primaryForest
       tabBarInactiveTintColor: '#5B6B7C', // textSlate
       tabBarStyle: {
-        height: Platform.OS === 'ios' ? 88 : 70,
-        paddingBottom: Platform.OS === 'ios' ? 28 : 12,
+        height: 60 + insets.bottom,
+        paddingBottom: insets.bottom > 0 ? insets.bottom : 12,
         paddingTop: 10,
         backgroundColor: '#FFFFFF',
         borderTopWidth: 1,
@@ -26,14 +29,14 @@ export default function TabsLayout() {
         name="index" 
         options={{ 
           title: 'Home',
-          tabBarIcon: ({ color, focused }) => <House color={color} size={22} weight={focused ? 'fill' : 'regular'} /> 
+          tabBarIcon: ({ color, focused }) => <House color={color as string} size={22} weight={focused ? 'fill' : 'regular'} /> 
         }} 
       />
       <Tabs.Screen 
         name="browse" 
         options={{ 
           title: 'Browse',
-          tabBarIcon: ({ color }) => <Compass color={color} size={22} weight="regular" /> 
+          tabBarIcon: ({ color }) => <Compass color={color as string} size={22} weight="regular" /> 
         }} 
       />
       <Tabs.Screen 
@@ -66,14 +69,14 @@ export default function TabsLayout() {
         name="orders" 
         options={{ 
           title: 'Orders',
-          tabBarIcon: ({ color }) => <Package color={color} size={22} weight="regular" /> 
+          tabBarIcon: ({ color }) => <Package color={color as string} size={22} weight="regular" /> 
         }} 
       />
       <Tabs.Screen 
         name="cart" 
         options={{ 
           title: 'Cart',
-          tabBarIcon: ({ color }) => <ShoppingCart color={color} size={22} weight="regular" /> 
+          tabBarIcon: ({ color }) => <ShoppingCart color={color as string} size={22} weight="regular" /> 
         }} 
       />
     </Tabs>

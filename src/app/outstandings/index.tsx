@@ -229,20 +229,9 @@ export default function OutstandingsScreen() {
       {/* 1. LOADING MODAL */}
       <Modal visible={isLoadingModalVisible} transparent animationType="fade">
         <View style={styles.modalOverlay}>
-          {/* Header replica to blend with overlay */}
           <SafeAreaView style={{ flex: 1 }}>
-            <View style={styles.modalHeaderReplica}>
-              <View style={[styles.backBtn, { borderColor: colors.white }]}>
-                <Feather name="chevron-left" size={18} color={colors.white} style={{ marginLeft: -2 }} />
-              </View>
-              <Text style={[styles.appTitle, { color: colors.white }]}>Outstandings</Text>
-            </View>
-            <View style={styles.searchBarContainerReplica}>
-              <View style={styles.searchInputWrapReplica}>
-                <Feather name="search" size={18} color={colors.white} />
-                <Text style={styles.searchInputReplica}>Search distributor here</Text>
-              </View>
-            </View>
+            <View style={{ height: 100 }} />
+
 
             {/* White Sheet */}
             <View style={styles.modalSheet}>
@@ -277,19 +266,8 @@ export default function OutstandingsScreen() {
       <Modal visible={isOrderModalVisible} transparent animationType="fade">
         <View style={styles.modalOverlay}>
           <SafeAreaView style={{ flex: 1 }}>
-            {/* Header replica */}
-            <View style={styles.modalHeaderReplica}>
-              <TouchableOpacity style={[styles.backBtn, { borderColor: colors.white }]} onPress={handleCloseAll}>
-                <Feather name="chevron-left" size={18} color={colors.white} style={{ marginLeft: -2 }} />
-              </TouchableOpacity>
-              <Text style={[styles.appTitle, { color: colors.white }]}>Outstandings</Text>
-            </View>
-            <View style={styles.searchBarContainerReplica}>
-              <View style={styles.searchInputWrapReplica}>
-                <Feather name="search" size={18} color={colors.white} />
-                <Text style={styles.searchInputReplica}>Search distributor here</Text>
-              </View>
-            </View>
+            <View style={{ height: 100 }} />
+
 
             {/* White Sheet */}
             <View style={styles.orderSheet}>

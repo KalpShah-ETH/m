@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Alert,
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { ArrowLeft, CheckCircle, Circle, ShoppingCart } from 'lucide-react-native';
+import { Feather } from '@expo/vector-icons';
+import { colors } from '@/constants/colors';
 import { useReturnsStore, ReturnItem } from '@/store/returnsStore';
 
 export default function InitiateReturnScreen() {
@@ -66,11 +68,11 @@ export default function InitiateReturnScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => step > 1 ? setStep(step - 1) : router.back()} style={styles.backButton}>
-          <ArrowLeft color="#1F2937" size={24} />
+      <View style={styles.appHeader}>
+        <TouchableOpacity onPress={() => step > 1 ? setStep(step - 1) : router.back()} style={styles.backBtn}>
+          <Feather name="chevron-left" size={18} color={colors.forestDark} style={{ marginLeft: -2 }} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Initiate Return</Text>
+        <Text style={styles.appTitle}>Initiate Return</Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.container}>
@@ -184,20 +186,29 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  header: {
+  appHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    paddingTop: 10,
+    paddingBottom: 8,
+    backgroundColor: colors.white,
+    gap: 14,
   },
-  backButton: {
-    marginRight: 16,
+  backBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: colors.forestDark,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  headerTitle: {
-    fontSize: 20, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#1F2937',
+  appTitle: {
+    fontFamily: 'Poppins_700Bold',
+    fontSize: 22,
+    color: colors.textDark,
+    letterSpacing: -0.3,
   },
   container: {
     padding: 24,

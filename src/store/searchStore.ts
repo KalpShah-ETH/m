@@ -41,14 +41,19 @@ export const useSearchStore = create<SearchState>((set) => ({
     
     // Represents GET /products/search?q={query}
     // Using Supabase textSearch or ilike
-    const { data, error } = await supabase
-      .from('products')
-      .select('*')
-      .ilike('name', `%${query}%`)
-      .limit(20)
-      .catch(() => ({ data: null, error: { message: 'Table not found' } }));
-      
-    if (error || !data) {
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .ilike('name', `%${query}%`)
+        .limit(20);
+        
+      if (error || !data) {
+        throw new Error('Fallback to mock data');
+      } else {
+        set({ products: data, isLoading: false });
+      }
+    } catch (e) {
       // Mocking data for development
       set({ 
         products: [
@@ -58,8 +63,6 @@ export const useSearchStore = create<SearchState>((set) => ({
         ], 
         isLoading: false 
       });
-    } else {
-      set({ products: data, isLoading: false });
     }
   },
 
@@ -72,14 +75,19 @@ export const useSearchStore = create<SearchState>((set) => ({
     set({ isLoading: true, error: null });
     
     // Represents GET /distributors/search?q={query}
-    const { data, error } = await supabase
-      .from('distributors')
-      .select('*')
-      .ilike('name', `%${query}%`)
-      .limit(20)
-      .catch(() => ({ data: null, error: { message: 'Table not found' } }));
-      
-    if (error || !data) {
+    try {
+      const { data, error } = await supabase
+        .from('distributors')
+        .select('*')
+        .ilike('name', `%${query}%`)
+        .limit(20);
+        
+      if (error || !data) {
+        throw new Error('Fallback to mock data');
+      } else {
+        set({ distributors: data, isLoading: false });
+      }
+    } catch (e) {
       // Mocking data for development
       set({ 
         distributors: [
@@ -88,8 +96,6 @@ export const useSearchStore = create<SearchState>((set) => ({
         ], 
         isLoading: false 
       });
-    } else {
-      set({ distributors: data, isLoading: false });
     }
   },
 

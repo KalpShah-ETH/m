@@ -1,8 +1,10 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Platform, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Trash, Plus, Minus, ArrowLeft } from 'lucide-react-native';
+import { ArrowLeft, Trash2, ShoppingCart, Plus, Minus, Trash } from 'lucide-react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
+import { Feather } from '@expo/vector-icons';
+import { colors } from '@/constants/colors';
 import Toast from 'react-native-toast-message';
 import { useCartStore, CartItem } from '@/store/cartStore';
 
@@ -72,13 +74,11 @@ export default React.memo(function CartScreen() {
   if (orderStatus === 'success') {
     return (
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.header}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 12 }}>
-              <ArrowLeft color="#1F2937" size={22} strokeWidth={1.6} />
-            </TouchableOpacity>
-            <Text style={styles.screenTitle}>My Cart</Text>
-          </View>
+        <View style={styles.appHeader}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+            <Feather name="chevron-left" size={18} color={colors.forestDark} style={{ marginLeft: -2 }} />
+          </TouchableOpacity>
+          <Text style={styles.appTitle}>My Cart</Text>
         </View>
         <View style={styles.emptyContainer}>
           <Text style={styles.successTitle}>Order Placed Successfully!</Text>
@@ -91,13 +91,11 @@ export default React.memo(function CartScreen() {
   if (items.length === 0) {
     return (
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.header}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 12 }}>
-              <ArrowLeft color="#1F2937" size={22} strokeWidth={1.6} />
-            </TouchableOpacity>
-            <Text style={styles.screenTitle}>My Cart</Text>
-          </View>
+        <View style={styles.appHeader}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+            <Feather name="chevron-left" size={18} color={colors.forestDark} style={{ marginLeft: -2 }} />
+          </TouchableOpacity>
+          <Text style={styles.appTitle}>My Cart</Text>
         </View>
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyText}>Your cart is empty.</Text>
@@ -108,14 +106,12 @@ export default React.memo(function CartScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.header}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 12 }}>
-            <ArrowLeft color="#1F2937" size={22} strokeWidth={1.6} />
+        <View style={styles.appHeader}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+            <Feather name="chevron-left" size={18} color={colors.forestDark} style={{ marginLeft: -2 }} />
           </TouchableOpacity>
-          <Text style={styles.screenTitle}>My Cart</Text>
+          <Text style={styles.appTitle}>My Cart</Text>
         </View>
-      </View>
       <ScrollView contentContainerStyle={styles.container}>
 
         {Object.entries(groupedItems).map(([distributorId, group]) => {
@@ -188,19 +184,33 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FAFAFA',
   },
-  header: {
-    padding: 16,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+  appHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingTop: 10,
+    paddingBottom: 8,
+    backgroundColor: colors.white,
+    gap: 14,
+  },
+  backBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: colors.forestDark,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  appTitle: {
+    fontFamily: 'Poppins_700Bold',
+    fontSize: 22,
+    color: colors.textDark,
+    letterSpacing: -0.3,
   },
   container: {
     padding: 16,
     paddingBottom: 100, // Extra padding for the mini cart at the bottom
-  },
-  screenTitle: {
-    fontSize: 24, fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#1F2937',
   },
   groupContainer: {
     backgroundColor: '#fff',

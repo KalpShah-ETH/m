@@ -58,3 +58,9 @@ CREATE POLICY "Users can read temp pending files" ON storage.objects
 CREATE POLICY "Users can delete temp pending files" ON storage.objects
   FOR DELETE TO authenticated
   USING (bucket_id = 'licenses' AND name LIKE 'pending/%');
+
+-- 3. Allow anonymous users (during registration) to upload files ONLY into the pending/ folder
+DROP POLICY IF EXISTS "Allow anon uploads to pending folder" ON storage.objects;
+CREATE POLICY "Allow anon uploads to pending folder" ON storage.objects
+  FOR INSERT TO public
+  WITH CHECK (bucket_id = 'licenses' AND name LIKE 'pending/%');

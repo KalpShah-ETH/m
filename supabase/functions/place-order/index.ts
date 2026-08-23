@@ -18,12 +18,17 @@ serve(async (req) => {
       { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
     )
 
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    )
+
     // Get the user
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser()
     if (userError || !user) throw new Error('Unauthorized')
 
     // 1. Fetch current cart items with product details (for ptr snapshot)
-    const { data: cartItems, error: cartError } = await supabaseClient
+    const { data: cartItems, error: cartError } = await supabaseAdmin
       .from('cart_items')
       .select('*, products(ptr)')
       .eq('retailer_id', user.id)
@@ -48,7 +53,7 @@ serve(async (req) => {
       const orderNumber = 'ORD-' + Math.floor(100000 + Math.random() * 900000)
 
       // Insert Order
-      const { data: order, error: orderError } = await supabaseClient
+      const { data: order, error: orderError } = await supabaseAdmin
         .from('orders')
         .insert({
           order_number: orderNumber,
@@ -70,7 +75,7 @@ serve(async (req) => {
         ptr_at_order: item.products.ptr
       }))
 
-      const { error: itemsError } = await supabaseClient
+      const { error: itemsError } = await supabaseAdmin
         .from('order_items')
         .insert(orderItemsToInsert)
 
@@ -79,7 +84,7 @@ serve(async (req) => {
     }
 
     // 4. Clear cart for this retailer
-    const { error: clearError } = await supabaseClient
+    const { error: clearError } = await supabaseAdmin
       .from('cart_items')
       .delete()
       .eq('retailer_id', user.id)

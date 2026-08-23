@@ -18,6 +18,11 @@ serve(async (req) => {
       { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
     )
 
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    )
+
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser()
     if (userError || !user) throw new Error('Unauthorized')
 
@@ -29,7 +34,7 @@ serve(async (req) => {
 
     // Verify order belongs to user if order_id is provided
     if (order_id) {
-      const { data: order, error: orderCheckError } = await supabaseClient
+      const { data: order, error: orderCheckError } = await supabaseAdmin
         .from('orders')
         .select('id')
         .eq('id', order_id)
@@ -39,7 +44,7 @@ serve(async (req) => {
     }
 
     // Insert draft return
-    const { data: returnRecord, error: insertError } = await supabaseClient
+    const { data: returnRecord, error: insertError } = await supabaseAdmin
       .from('returns')
       .insert({
         retailer_id: user.id,

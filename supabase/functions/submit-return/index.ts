@@ -18,6 +18,11 @@ serve(async (req) => {
       { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
     )
 
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    )
+
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser()
     if (userError || !user) throw new Error('Unauthorized')
 
@@ -27,7 +32,7 @@ serve(async (req) => {
       throw new Error('Missing return_id')
     }
 
-    const { data: updatedReturn, error: updateError } = await supabaseClient
+    const { data: updatedReturn, error: updateError } = await supabaseAdmin
       .from('returns')
       .update({ status: 'submitted' })
       .eq('id', return_id)

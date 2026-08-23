@@ -456,7 +456,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     // Negative margin to bleed to the edges of the grey band
     marginHorizontal: -14, 
-    marginBottom: -22, // to push it to the bottom
+    marginBottom: 0, // removed negative margin so it doesn't bleed under the tab bar
   },
   footerInfo: {
     paddingTop: 14,

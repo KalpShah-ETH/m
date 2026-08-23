@@ -18,6 +18,11 @@ serve(async (req: Request) => {
       { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
     )
 
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    )
+
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser()
     if (userError || !user) throw new Error('Unauthorized')
 
@@ -42,7 +47,7 @@ serve(async (req: Request) => {
     let newMap;
     if (existing) {
       // It's already in the DB but rejected, so we just update it to pending
-      const { data, error: updateError } = await supabaseClient
+      const { data, error: updateError } = await supabaseAdmin
         .from('retailer_distributor_map')
         .update({ status: 'pending' })
         .eq('id', existing.id)
@@ -52,7 +57,7 @@ serve(async (req: Request) => {
       newMap = data
     } else {
       // It's not in the DB, so we safely insert a brand new row
-      const { data, error: insertError } = await supabaseClient
+      const { data, error: insertError } = await supabaseAdmin
         .from('retailer_distributor_map')
         .insert({
           retailer_id: user.id,

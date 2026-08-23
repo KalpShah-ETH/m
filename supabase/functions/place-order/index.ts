@@ -39,7 +39,7 @@ serve(async (req: Request) => {
 
     // 2. Group items by distributor_id
     const itemsByDistributor: Record<string, any[]> = {}
-    cartItems.forEach(item => {
+    cartItems.forEach((item: any) => {
       if (!itemsByDistributor[item.distributor_id]) itemsByDistributor[item.distributor_id] = []
       itemsByDistributor[item.distributor_id].push(item)
     })
@@ -49,7 +49,7 @@ serve(async (req: Request) => {
     // 3. Process each distributor's order
     for (const [distributorId, items] of Object.entries(itemsByDistributor)) {
       // Calculate total amount
-      const totalAmount = items.reduce((sum, item) => sum + (item.products.ptr * item.quantity), 0)
+      const totalAmount = items.reduce((sum, item: any) => sum + (item.products.ptr * item.quantity), 0)
       const orderNumber = 'ORD-' + Math.floor(100000 + Math.random() * 900000)
 
       // Insert Order
@@ -68,7 +68,7 @@ serve(async (req: Request) => {
       if (orderError) throw orderError
 
       // Create Order Items
-      const orderItemsToInsert = items.map(item => ({
+      const orderItemsToInsert = items.map((item: any) => ({
         order_id: order.id,
         product_id: item.product_id,
         quantity: item.quantity,

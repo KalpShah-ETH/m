@@ -6,7 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -16,6 +16,11 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
+    )
+
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser()
@@ -30,8 +35,8 @@ serve(async (req) => {
     // Since we don't have atomic batch update in REST, we will loop 
     // In production, an RPC is better, but this handles the array via standard updates
     const updates = []
-    for (const item of items) {
-      const { error } = await supabaseClient
+    for (const item of items as any[]) {
+      const { error } = await supabaseAdmin
         .from('retailer_distributor_map')
         .update({ priority: item.priority })
         .eq('retailer_id', user.id)
@@ -44,7 +49,7 @@ serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200,
     })
-  } catch (error) {
+  } catch (error: any) {
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,

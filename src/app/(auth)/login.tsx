@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Keyboard, StatusBar } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Keyboard, StatusBar, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing, interpolate, interpolateColor, Extrapolation } from 'react-native-reanimated';
@@ -101,24 +101,39 @@ export default function LoginScreen() {
 
           {apiError ? <Text style={styles.errorText}>{apiError}</Text> : null}
 
-          <FloatingLabelInput
-            label="Email"
-            value={email}
-            onChangeText={setEmail}
-            leftIcon={<Mail color="#666" size={20} />}
-            autoCapitalize="none"
-            keyboardType="email-address"
-          />
+          <View style={styles.field}>
+            <Text style={styles.label}>Email</Text>
+            <View style={styles.inputWrap}>
+              <Mail color="#7e938e" size={17} style={styles.leftIcon} />
+              <TextInput 
+                style={styles.input} 
+                placeholder="Email" 
+                placeholderTextColor="#ababa5"
+                value={email}
+                onChangeText={setEmail}
+                autoCapitalize="none"
+                keyboardType="email-address"
+              />
+            </View>
+          </View>
 
-          <FloatingLabelInput
-            label="Password"
-            value={password}
-            onChangeText={setPassword}
-            leftIcon={<Lock color="#666" size={20} />}
-            rightIcon={showPassword ? <EyeOff color="#666" size={20} /> : <Eye color="#666" size={20} />}
-            onRightIconPress={() => setShowPassword(!showPassword)}
-            isPassword={!showPassword}
-          />
+          <View style={styles.field}>
+            <Text style={styles.label}>Password</Text>
+            <View style={styles.inputWrap}>
+              <Lock color="#7e938e" size={17} style={styles.leftIcon} />
+              <TextInput 
+                style={styles.input} 
+                placeholder="Password" 
+                placeholderTextColor="#ababa5"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+              />
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.rightIcon}>
+                {showPassword ? <EyeOff color="#7e938e" size={17} /> : <Eye color="#7e938e" size={17} />}
+              </TouchableOpacity>
+            </View>
+          </View>
 
           <TouchableOpacity 
             style={[styles.primaryButton, !isButtonEnabled && styles.disabledButton]} 
@@ -130,12 +145,16 @@ export default function LoginScreen() {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.forgotPassword}>
-            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-          </TouchableOpacity>
+          <View style={styles.forgotPassword}>
+            <TouchableOpacity>
+              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+            </TouchableOpacity>
+          </View>
 
           <View style={styles.dividerContainer}>
+            <View style={styles.dividerLine} />
             <Text style={styles.dividerText}>Or</Text>
+            <View style={styles.dividerLine} />
           </View>
 
           <View style={styles.signupContainer}>
@@ -146,7 +165,6 @@ export default function LoginScreen() {
               </TouchableOpacity>
             </Link>
           </View>
-
         </View>
       </KeyboardAvoidingView>
     </View>
@@ -156,7 +174,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#fdfcf9',
   },
   keyboardView: {
     flex: 1,
@@ -176,31 +194,31 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderBottomLeftRadius: 40,
     borderBottomRightRadius: 40,
-    backgroundColor: '#1E3E34', // Fills any transparent gaps with the brand color
+    backgroundColor: '#1E3E34',
   },
   heroImg: {
     width: '100%',
     height: 300, 
-    transform: [{ scale: 1.02 }], // Slight stretch to hide baked-in PNG transparent borders
+    transform: [{ scale: 1.02 }],
   },
   formContainer: {
     flex: 1,
     padding: 24,
-    paddingTop: 50, // Added extra padding so the overlapping image doesn't block the text
+    paddingTop: 50,
   },
   title: {
-    fontSize: 32,
+    fontSize: 34,
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
-    color: '#1F2937',
-    marginBottom: 8,
+    color: '#14211d',
+    marginBottom: 17,
     textAlign: 'center',
+    letterSpacing: 0,
   },
   subtitle: {
-    fontSize: 16, 
-    fontFamily: 'Inter_700Bold', 
-    fontWeight: 'bold',
-    color: '#999',
-    marginBottom: 32,
+    fontSize: 13, 
+    fontFamily: 'Inter_400Regular', 
+    color: '#56717a',
+    marginBottom: 39,
     textAlign: 'center',
   },
   errorText: {
@@ -208,60 +226,97 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     textAlign: 'center',
   },
+  field: {
+    marginBottom: 25,
+  },
+  label: {
+    fontSize: 13,
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
+    color: '#223330',
+    marginBottom: 10,
+  },
+  inputWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 56,
+    borderWidth: 1,
+    borderColor: '#e9e8e2',
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    backgroundColor: 'transparent',
+  },
+  leftIcon: {
+    marginRight: 10,
+  },
+  rightIcon: {
+    padding: 5,
+  },
+  input: {
+    flex: 1,
+    height: '100%',
+    fontFamily: 'Inter_400Regular',
+    fontSize: 14,
+    color: '#223330',
+  },
   primaryButton: {
-    backgroundColor: '#5076cf',
-    height: 50,
-    borderRadius: 8,
+    backgroundColor: '#00865e',
+    height: 56,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: 15,
+    marginBottom: 27,
   },
   disabledButton: {
     backgroundColor: '#e0e0e0',
   },
   primaryButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontFamily: 'Inter_700Bold', fontWeight: 'bold',
+    color: '#ffffff',
+    fontSize: 15,
+    fontFamily: 'Inter_600SemiBold', fontWeight: '600',
   },
   disabledButtonText: {
     color: '#999',
   },
   forgotPassword: {
     alignItems: 'center',
-    marginTop: 24,
+    marginBottom: 27,
   },
   forgotPasswordText: {
-    color: '#1F2937',
-    fontSize: 15, 
-    fontFamily: 'Inter_700Bold', 
-    fontWeight: 'bold',
+    color: '#223330',
+    fontSize: 14, 
+    fontFamily: 'Inter_500Medium', 
+    fontWeight: '500',
   },
   dividerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 24,
+    marginBottom: 29,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#e9e8e2',
   },
   dividerText: {
-    marginHorizontal: 16,
-    color: '#999',
-    fontSize: 14, fontFamily: 'Inter_400Regular',
+    marginHorizontal: 12,
+    color: '#9a9a9a',
+    fontSize: 12, 
+    fontFamily: 'Inter_400Regular',
   },
   signupContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 8,
   },
   signupText: {
-    color: '#666',
-    fontSize: 15, 
-    fontFamily: 'Inter_700Bold', 
-    fontWeight: 'bold',
+    color: '#223330',
+    fontSize: 14, 
+    fontFamily: 'Inter_400Regular', 
   },
   signupLink: {
-    color: '#5076cf',
-    fontSize: 15,
+    color: '#00865e',
+    fontSize: 14,
     fontFamily: 'Inter_700Bold', fontWeight: 'bold',
   },
 });

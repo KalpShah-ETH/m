@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Keyboard, StatusBar, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Keyboard, StatusBar, TextInput, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing, interpolate, interpolateColor, Extrapolation } from 'react-native-reanimated';
@@ -95,7 +95,7 @@ export default function LoginScreen() {
           />
         </Animated.View>
 
-        <View style={styles.formContainer}>
+        <ScrollView style={styles.formScroll} contentContainerStyle={styles.formContainer} showsVerticalScrollIndicator={false}>
           <Text style={styles.title}>Login</Text>
           <Text style={styles.subtitle}>Enter your credentials to access account</Text>
 
@@ -165,7 +165,7 @@ export default function LoginScreen() {
               </TouchableOpacity>
             </Link>
           </View>
-        </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </View>
   );
@@ -201,10 +201,17 @@ const styles = StyleSheet.create({
     height: 300, 
     transform: [{ scale: 1.02 }],
   },
-  formContainer: {
+  formScroll: {
     flex: 1,
+    backgroundColor: '#fdfcf9',
+    borderTopWidth: 1,
+    borderTopColor: '#e9e8e2',
+  },
+  formContainer: {
+    flexGrow: 1,
     padding: 24,
     paddingTop: 50,
+    paddingBottom: 40,
   },
   title: {
     fontSize: 34,
@@ -217,8 +224,8 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 13, 
     fontFamily: 'Inter_400Regular', 
-    color: '#56717a',
-    marginBottom: 39,
+    color: '#999999',
+    marginBottom: 20,
     textAlign: 'center',
   },
   errorText: {
@@ -264,7 +271,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 15,
+    marginTop: 5,
     marginBottom: 27,
   },
   disabledButton: {

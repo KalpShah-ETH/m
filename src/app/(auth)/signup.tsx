@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
+import WebStyleInput from '@/components/WebStyleInput';
 export default function SignupScreen() {
   const router = useRouter();
   const signup = useAuthStore((state) => state.signup);
@@ -320,38 +320,47 @@ export default function SignupScreen() {
                 <ChevronDown color="#666" size={20} />
               </TouchableOpacity>
 
-              <View style={[styles.inputContainer, shopFirmNameError && { borderColor: '#DC2626', borderWidth: 1 }]}>
-                <Store color="#666" size={20} style={styles.icon} />
-                <TextInput style={styles.input} placeholder="Name of the Shop/Firm *" value={shopFirmName} onChangeText={(t) => { setShopFirmName(t); if (shopFirmNameError && t.trim().length >= 3) setShopFirmNameError(false); }} onBlur={() => setShopFirmNameError(shopFirmName.trim().length > 0 && shopFirmName.trim().length < 3)} placeholderTextColor="#999" />
-              </View>
+              <WebStyleInput
+                leftIcon={<Store color="#666" size={20} />}
+                placeholder="Name of the Shop/Firm *"
+                value={shopFirmName}
+                onChangeText={(t) => { setShopFirmName(t); if (shopFirmNameError && t.trim().length >= 3) setShopFirmNameError(false); }}
+                onBlur={() => setShopFirmNameError(shopFirmName.trim().length > 0 && shopFirmName.trim().length < 3)}
+                error={shopFirmNameError}
+              />
               {shopFirmNameError && <Text style={{ color: '#DC2626', fontSize: 12, marginTop: -8, marginBottom: 8, marginLeft: 4, fontFamily: 'Inter_500Medium' }}>Must be at least 3 characters</Text>}
 
-              <View style={[styles.inputContainer, ownerNameError && { borderColor: '#DC2626', borderWidth: 1 }]}>
-                <User color="#666" size={20} style={styles.icon} />
-                <TextInput style={styles.input} placeholder="Name of the Owner *" value={ownerName} onChangeText={(t) => { setOwnerName(t); if (ownerNameError && t.trim().length >= 3) setOwnerNameError(false); }} onBlur={() => setOwnerNameError(ownerName.trim().length > 0 && ownerName.trim().length < 3)} placeholderTextColor="#999" />
-              </View>
+              <WebStyleInput
+                leftIcon={<User color="#666" size={20} />}
+                placeholder="Name of the Owner *"
+                value={ownerName}
+                onChangeText={(t) => { setOwnerName(t); if (ownerNameError && t.trim().length >= 3) setOwnerNameError(false); }}
+                onBlur={() => setOwnerNameError(ownerName.trim().length > 0 && ownerName.trim().length < 3)}
+                error={ownerNameError}
+              />
               {ownerNameError && <Text style={{ color: '#DC2626', fontSize: 12, marginTop: -8, marginBottom: 8, marginLeft: 4, fontFamily: 'Inter_500Medium' }}>Must be at least 3 characters</Text>}
 
-              <View style={[styles.inputContainer, shopAddressError && { borderColor: '#DC2626', borderWidth: 1 }]}>
-                <MapPin color="#666" size={20} style={styles.icon} />
-                <TextInput style={styles.input} placeholder="Shop Address *" value={shopAddress} onChangeText={(t) => { setShopAddress(t); if (shopAddressError && t.trim().length >= 3) setShopAddressError(false); }} onBlur={() => setShopAddressError(shopAddress.trim().length > 0 && shopAddress.trim().length < 3)} placeholderTextColor="#999" />
-              </View>
+              <WebStyleInput
+                leftIcon={<MapPin color="#666" size={20} />}
+                placeholder="Shop Address *"
+                value={shopAddress}
+                onChangeText={(t) => { setShopAddress(t); if (shopAddressError && t.trim().length >= 3) setShopAddressError(false); }}
+                onBlur={() => setShopAddressError(shopAddress.trim().length > 0 && shopAddress.trim().length < 3)}
+                error={shopAddressError}
+              />
               {shopAddressError && <Text style={{ color: '#DC2626', fontSize: 12, marginTop: -8, marginBottom: 8, marginLeft: 4, fontFamily: 'Inter_500Medium' }}>Must be at least 3 characters</Text>}
 
-              <View style={styles.inputContainer}>
-                <MapPin color="#666" size={20} style={styles.icon} />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Pincode *"
-                  value={pincode}
-                  onChangeText={handlePincodeChange}
-                  onBlur={handlePincodeBlur}
-                  keyboardType="number-pad"
-                  maxLength={6}
-                  placeholderTextColor="#999"
-                />
-                {isFetchingPincode && <ActivityIndicator color="#1F5B4E" size="small" />}
-              </View>
+              <WebStyleInput
+                leftIcon={<MapPin color="#666" size={20} />}
+                rightIcon={isFetchingPincode ? <ActivityIndicator color="#1F5B4E" size="small" /> : undefined}
+                placeholder="Pincode *"
+                value={pincode}
+                onChangeText={handlePincodeChange}
+                onBlur={handlePincodeBlur}
+                keyboardType="number-pad"
+                maxLength={6}
+                error={pincodeError}
+              />
               {pincodeError && <Text style={{ color: '#DC2626', fontSize: 12, marginTop: -8, marginBottom: 8, marginLeft: 4, fontFamily: 'Inter_500Medium' }}>Please enter a valid pincode</Text>}
 
               <TouchableOpacity style={styles.inputContainer} onPress={() => setShowAreaModal(true)} disabled={areaOptions.length === 0}>
@@ -363,12 +372,18 @@ export default function SignupScreen() {
               </TouchableOpacity>
 
               <View style={styles.row}>
-                <View style={[styles.inputContainer, styles.flex1, { marginRight: 8, backgroundColor: '#f0f0f0' }]}>
-                  <TextInput style={styles.input} placeholder="City" value={city} editable={false} placeholderTextColor="#999" />
-                </View>
-                <View style={[styles.inputContainer, styles.flex1, { marginLeft: 8, backgroundColor: '#f0f0f0' }]}>
-                  <TextInput style={styles.input} placeholder="State" value={stateName} editable={false} placeholderTextColor="#999" />
-                </View>
+                <WebStyleInput
+                  containerStyle={[styles.flex1, { marginRight: 8 }]}
+                  placeholder="City"
+                  value={city}
+                  editable={false}
+                />
+                <WebStyleInput
+                  containerStyle={[styles.flex1, { marginLeft: 8 }]}
+                  placeholder="State"
+                  value={stateName}
+                  editable={false}
+                />
               </View>
             </View>
           )}
@@ -376,52 +391,44 @@ export default function SignupScreen() {
           {currentStep === 2 && (
             <View style={styles.formSection}>
               {/* Step 2 Fields */}
-              <View style={styles.inputContainer}>
-                <Mail color="#666" size={20} style={styles.icon} />
-                <TextInput
-                  style={[styles.input, emailVerified && { color: '#666' }]}
-                  placeholder="Shop Email ID *"
-                  value={shopEmail}
-                  onChangeText={(text) => { setShopEmail(text); setEmailVerified(false); }}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  editable={!emailVerified}
-                  placeholderTextColor="#999"
-                />
-                {emailVerified ? (
-                  <CheckCircle color="#1F5B4E" size={20} />
-                ) : (
-                  <TouchableOpacity onPress={handleSendOtp} disabled={isLoading}>
-                    <Text style={styles.verifyText}>Verify</Text>
-                  </TouchableOpacity>
-                )}
-              </View>
+              <WebStyleInput
+                leftIcon={<Mail color="#666" size={20} />}
+                rightIcon={emailVerified ? <CheckCircle color="#1F5B4E" size={20} /> : <Text style={styles.verifyText}>Verify</Text>}
+                onRightIconPress={emailVerified ? undefined : handleSendOtp}
+                placeholder="Shop Email ID *"
+                value={shopEmail}
+                onChangeText={(text) => { setShopEmail(text); setEmailVerified(false); }}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                editable={!emailVerified}
+                error={!!emailError}
+              />
               {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
-              <View style={styles.inputContainer}>
-                <User color="#666" size={20} style={styles.icon} />
-                <TextInput style={styles.input} placeholder="Pharmacist name (Optional)" value={pharmacistName} onChangeText={setPharmacistName} placeholderTextColor="#999" />
-              </View>
+              <WebStyleInput
+                leftIcon={<User color="#666" size={20} />}
+                placeholder="Pharmacist name (Optional)"
+                value={pharmacistName}
+                onChangeText={setPharmacistName}
+              />
 
-              <View style={styles.inputContainer}>
-                <Phone color="#666" size={20} style={styles.icon} />
-                <TextInput style={styles.input} placeholder="Pharmacist number (Optional)" value={pharmacistNumber} onChangeText={setPharmacistNumber} keyboardType="phone-pad" placeholderTextColor="#999" />
-              </View>
+              <WebStyleInput
+                leftIcon={<Phone color="#666" size={20} />}
+                placeholder="Pharmacist number (Optional)"
+                value={pharmacistNumber}
+                onChangeText={setPharmacistNumber}
+                keyboardType="phone-pad"
+              />
 
-              <View style={styles.inputContainer}>
-                <Lock color="#666" size={20} style={styles.icon} />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Password *"
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={!showPassword}
-                  placeholderTextColor="#999"
-                />
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-                  {showPassword ? <EyeOff color="#666" size={20} /> : <Eye color="#666" size={20} />}
-                </TouchableOpacity>
-              </View>
+              <WebStyleInput
+                leftIcon={<Lock color="#666" size={20} />}
+                rightIcon={showPassword ? <EyeOff color="#666" size={20} /> : <Eye color="#666" size={20} />}
+                onRightIconPress={() => setShowPassword(!showPassword)}
+                placeholder="Password *"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+              />
 
               <View style={styles.validationBox}>
                 <View style={styles.validationRow}>
@@ -456,9 +463,7 @@ export default function SignupScreen() {
                     <Info size={16} color="#6B7280" />
                   </TouchableOpacity>
                 </View>
-                <View style={styles.inputContainer}>
-                  <TextInput style={styles.input} placeholder="Drug license number" value={license20} onChangeText={setLicense20} placeholderTextColor="#999" />
-                </View>
+                <WebStyleInput placeholder="Drug license number" value={license20} onChangeText={setLicense20} />
                 <View style={styles.row}>
                   {license20Url ? (
                     <View style={[styles.uploadBox, styles.flex1, { marginRight: 8, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 16, borderColor: '#1F5B4E' }]}>
@@ -492,9 +497,7 @@ export default function SignupScreen() {
                     <Info size={16} color="#6B7280" />
                   </TouchableOpacity>
                 </View>
-                <View style={styles.inputContainer}>
-                  <TextInput style={styles.input} placeholder="Drug license number" value={license21} onChangeText={setLicense21} placeholderTextColor="#999" />
-                </View>
+                <WebStyleInput placeholder="Drug license number" value={license21} onChangeText={setLicense21} />
                 <View style={styles.row}>
                   {license21Url ? (
                     <View style={[styles.uploadBox, styles.flex1, { marginRight: 8, flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 16, borderColor: '#1F5B4E' }]}>
@@ -522,15 +525,9 @@ export default function SignupScreen() {
 
               {/* Other Section */}
               <Text style={styles.otherHeader}>Other (Optional)</Text>
-              <View style={styles.inputContainer}>
-                <TextInput style={styles.input} placeholder="GSTIN Number" value={gstin} onChangeText={setGstin} placeholderTextColor="#999" />
-              </View>
-              <View style={styles.inputContainer}>
-                <TextInput style={styles.input} placeholder="PAN Number" value={pan} onChangeText={setPan} placeholderTextColor="#999" />
-              </View>
-              <View style={styles.inputContainer}>
-                <TextInput style={styles.input} placeholder="Referral Code" value={referral} onChangeText={setReferral} placeholderTextColor="#999" />
-              </View>
+              <WebStyleInput placeholder="GSTIN Number" value={gstin} onChangeText={setGstin} />
+              <WebStyleInput placeholder="PAN Number" value={pan} onChangeText={setPan} />
+              <WebStyleInput placeholder="Referral Code" value={referral} onChangeText={setReferral} />
 
               {/* Consent Checkboxes */}
               <View style={styles.checkboxContainer}>
@@ -700,7 +697,7 @@ export default function SignupScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FAFAFA' },
+  container: { flex: 1, backgroundColor: '#faf6df' },
   keyboardView: { flex: 1 },
   scrollContent: { padding: 24, flexGrow: 1 },
   headerRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 24, marginTop: 16 },
@@ -717,7 +714,7 @@ const styles = StyleSheet.create({
   stepLabelActive: { color: '#1F5B4E', fontFamily: 'Inter_700Bold' },
   stepLine: { flex: 1, height: 2, backgroundColor: '#DDDDDD', marginHorizontal: 8, marginTop: -16 },
   formSection: { flex: 1 },
-  inputContainer: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#DDDDDD', borderRadius: 8, marginBottom: 16, paddingHorizontal: 12, height: 50, backgroundColor: '#fff' },
+  inputContainer: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#DDDDDD', borderRadius: 16, marginBottom: 16, paddingHorizontal: 12, height: 50, backgroundColor: '#fff' },
   icon: { marginRight: 10 },
   input: { flex: 1, height: '100%', color: '#1F2937', fontSize: 16, fontFamily: 'Inter_400Regular' },
   inputText: { flex: 1, color: '#1F2937', fontSize: 16, fontFamily: 'Inter_400Regular' },
@@ -739,7 +736,7 @@ const styles = StyleSheet.create({
   licenseLabel: { fontSize: 14, fontFamily: 'Inter_700Bold', color: '#1F2937' },
   asterisk: { color: '#DC2626' },
   infoIcon: { marginLeft: 6 },
-  uploadBox: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 50, borderWidth: 1, borderColor: '#1F5B4E', borderStyle: 'dashed', borderRadius: 8, backgroundColor: '#fff', paddingHorizontal: 12 },
+  uploadBox: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 50, borderWidth: 1, borderColor: '#1F5B4E', borderStyle: 'dashed', borderRadius: 16, backgroundColor: '#fff', paddingHorizontal: 12 },
   uploadText: { color: '#1F5B4E', fontSize: 14, fontFamily: 'Inter_700Bold', flex: 1 },
   otherHeader: { fontSize: 16, fontFamily: 'Inter_700Bold', color: '#1F2937', marginBottom: 16, marginTop: 8 },
   checkboxContainer: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: 16 },
@@ -749,9 +746,9 @@ const styles = StyleSheet.create({
   linkText: { color: '#1F5B4E', fontFamily: 'Inter_700Bold' },
 
   actionButtons: { flexDirection: 'row', gap: 16, marginTop: 32 },
-  backButton: { flex: 1, height: 50, borderRadius: 8, borderWidth: 1, borderColor: '#DDDDDD', justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' },
+  backButton: { flex: 1, height: 50, borderRadius: 16, borderWidth: 1, borderColor: '#DDDDDD', justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' },
   backButtonText: { color: '#1F2937', fontSize: 16, fontFamily: 'Inter_700Bold' },
-  submitButton: { flex: 2, height: 50, borderRadius: 8, backgroundColor: '#1F5B4E', justifyContent: 'center', alignItems: 'center' },
+  submitButton: { flex: 2, height: 50, borderRadius: 16, backgroundColor: '#1F5B4E', justifyContent: 'center', alignItems: 'center' },
   disabledButton: { backgroundColor: '#A8C4BC' },
   submitButtonText: { color: '#fff', fontSize: 16, fontFamily: 'Inter_700Bold' },
 
@@ -782,6 +779,6 @@ const styles = StyleSheet.create({
   resendText: { textAlign: 'center', fontSize: 14, color: '#6B7280', marginBottom: 24, fontFamily: 'Inter_400Regular' },
   countdownText: { color: '#1F2937' },
   resendLink: { color: '#1F5B4E', fontFamily: 'Inter_700Bold' },
-  primaryButton: { backgroundColor: '#1F5B4E', height: 50, borderRadius: 8, justifyContent: 'center', alignItems: 'center' },
+  primaryButton: { backgroundColor: '#1F5B4E', height: 50, borderRadius: 16, justifyContent: 'center', alignItems: 'center' },
   primaryButtonText: { color: '#fff', fontSize: 16, fontFamily: 'Inter_700Bold' },
 });

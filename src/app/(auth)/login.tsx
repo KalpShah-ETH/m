@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Keyboard, StatusBar, TextInput, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Keyboard, StatusBar, TextInput, ScrollView, BackHandler } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming, Easing, interpolate, interpolateColor, Extrapolation } from 'react-native-reanimated';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
 import { Link, useRouter } from 'expo-router';
 import { useAuthStore } from '@/store/authStore';
-import FloatingLabelInput from '@/components/FloatingLabelInput';
+import WebStyleInput from '@/components/WebStyleInput';
 import { Image } from 'expo-image';
 
 export default function LoginScreen() {
@@ -24,18 +24,24 @@ export default function LoginScreen() {
 
   useEffect(() => {
     const showEvt = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
-    const hideEvt = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
 
     const showSub = Keyboard.addListener(showEvt, () => {
       isKeyboardOpen.value = withTiming(1, { duration: 300, easing: Easing.out(Easing.ease) });
     });
-    const hideSub = Keyboard.addListener(hideEvt, () => {
-      isKeyboardOpen.value = withTiming(0, { duration: 300, easing: Easing.out(Easing.ease) });
-    });
+
+    const backAction = () => {
+      if (isKeyboardOpen.value > 0) {
+        isKeyboardOpen.value = withTiming(0, { duration: 300, easing: Easing.out(Easing.ease) });
+        return true; // prevent default back action
+      }
+      return false; // allow default back action (exit app if at root)
+    };
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
 
     return () => {
       showSub.remove();
-      hideSub.remove();
+      backHandler.remove();
     };
   }, []);
 
@@ -103,36 +109,27 @@ export default function LoginScreen() {
 
           <View style={styles.field}>
             <Text style={styles.label}>Email</Text>
-            <View style={styles.inputWrap}>
-              <Mail color="#7e938e" size={17} style={styles.leftIcon} />
-              <TextInput 
-                style={styles.input} 
-                placeholder="Email" 
-                placeholderTextColor="#ababa5"
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-                keyboardType="email-address"
-              />
-            </View>
+            <WebStyleInput
+              leftIcon={<Mail color="#7e938e" size={17} />}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              keyboardType="email-address"
+            />
           </View>
 
           <View style={styles.field}>
             <Text style={styles.label}>Password</Text>
-            <View style={styles.inputWrap}>
-              <Lock color="#7e938e" size={17} style={styles.leftIcon} />
-              <TextInput 
-                style={styles.input} 
-                placeholder="Password" 
-                placeholderTextColor="#ababa5"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={!showPassword}
-              />
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.rightIcon}>
-                {showPassword ? <EyeOff color="#7e938e" size={17} /> : <Eye color="#7e938e" size={17} />}
-              </TouchableOpacity>
-            </View>
+            <WebStyleInput
+              leftIcon={<Lock color="#7e938e" size={17} />}
+              rightIcon={showPassword ? <EyeOff color="#7e938e" size={17} /> : <Eye color="#7e938e" size={17} />}
+              onRightIconPress={() => setShowPassword(!showPassword)}
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
+            />
           </View>
 
           <TouchableOpacity 
@@ -174,7 +171,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fdfcf9',
+    backgroundColor: '#faf6df',
   },
   keyboardView: {
     flex: 1,
@@ -203,7 +200,7 @@ const styles = StyleSheet.create({
   },
   formScroll: {
     flex: 1,
-    backgroundColor: '#fdfcf9',
+    backgroundColor: '#faf6df',
     borderTopWidth: 1,
     borderTopColor: '#e9e8e2',
   },
@@ -242,33 +239,10 @@ const styles = StyleSheet.create({
     color: '#223330',
     marginBottom: 10,
   },
-  inputWrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 56,
-    borderWidth: 1,
-    borderColor: '#e9e8e2',
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    backgroundColor: 'transparent',
-  },
-  leftIcon: {
-    marginRight: 10,
-  },
-  rightIcon: {
-    padding: 5,
-  },
-  input: {
-    flex: 1,
-    height: '100%',
-    fontFamily: 'Inter_400Regular',
-    fontSize: 14,
-    color: '#223330',
-  },
   primaryButton: {
     backgroundColor: '#00865e',
     height: 56,
-    borderRadius: 12,
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 5,
